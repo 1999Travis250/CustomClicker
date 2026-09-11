@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.travis.customclicker.controller.MainController"
+      alignment="CENTER"
+      spacing="20"
+      prefWidth="700"
+      prefHeight="500"
+      stylesheets="@../css/styles.css">
+
+    <Label text="CustomClicker" styleClass="title-label"/>
+
+    <Button text="Start" fx:id="startButton" onAction="#handleStart"/>
+
+</VBox>

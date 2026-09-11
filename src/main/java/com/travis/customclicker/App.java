@@ -1,19 +1,21 @@
 package com.travis.customclicker;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class App extends Application {
 
     @Override
-    public void start(Stage stage) {
-        Label label = new Label("CustomClicker");
+    public void start(Stage stage) throws IOException {
+        FXMLLoader loader = new FXMLLoader(
+                App.class.getResource("/views/main-view.fxml")
+        );
 
-        StackPane root = new StackPane(label);
-        Scene scene = new Scene(root, 600, 400);
+        Scene scene = new Scene(loader.load());
 
         stage.setTitle("CustomClicker");
         stage.setScene(scene);

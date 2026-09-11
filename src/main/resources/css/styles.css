@@ -1,0 +1,17 @@
+.root {
+  -fx-background-color: #1e1f22;
+}
+
+.title-label {
+  -fx-text-fill: white;
+  -fx-font-size: 28px;
+  -fx-font-weight: bold;
+}
+
+.button {
+  -fx-background-color: #3b82f6;
+  -fx-text-fill: white;
+  -fx-font-size: 14px;
+  -fx-padding: 10px 24px;
+  -fx-background-radius: 8px;
+}
