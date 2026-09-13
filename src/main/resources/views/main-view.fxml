@@ -6,8 +6,7 @@
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.travis.customclicker.controller.MainController"
-            prefWidth="1200"
-            prefHeight="800"
+            prefWidth="1200" prefHeight="800"
             styleClass="app-root"
             stylesheets="@../css/styles.css">
 
@@ -20,64 +19,49 @@
     <!-- SIDEBAR -->
     <left>
         <VBox prefWidth="250" spacing="12" styleClass="sidebar">
-            <padding>
-                <Insets top="28" right="18" bottom="24" left="18"/>
-            </padding>
+            <padding><Insets top="28" right="18" bottom="24" left="18"/></padding>
 
             <Label text="✦" styleClass="logo"/>
             <Label text="CustomClicker" styleClass="sidebar-title"/>
 
             <Region prefHeight="28"/>
 
-            <Button text="[X]   Clicker" maxWidth="Infinity" styleClass="nav-active"/>
-            <Button text="[X]   Profiles" maxWidth="Infinity" styleClass="nav-button"/>
-            <Button text="[X]   Recorder" maxWidth="Infinity" styleClass="nav-button"/>
-            <Button text="[X]   Statistics" maxWidth="Infinity" styleClass="nav-button"/>
-            <Button text="[X]   Settings" maxWidth="Infinity" styleClass="nav-button"/>
-            <Button text="[X]   About" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="⌂   Clicker" maxWidth="Infinity" styleClass="nav-active"/>
+            <Button text="≡   Profiles" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="◉   Recorder" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="▥   Statistics" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="⚙   Settings" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="ⓘ   About" maxWidth="Infinity" styleClass="nav-button"/>
 
             <Region VBox.vgrow="ALWAYS"/>
 
             <Label text="Use responsibly. The developer is not responsible for illegal, unauthorized, or grey-area use."
-                   wrapText="true"
-                   styleClass="disclaimer"/>
+                   wrapText="true" styleClass="disclaimer"/>
         </VBox>
     </left>
 
     <!-- MAIN CONTENT -->
     <center>
         <VBox spacing="16" styleClass="main-content">
-            <padding>
-                <Insets top="16" right="20" bottom="18" left="20"/>
-            </padding>
+            <padding><Insets top="16" right="20" bottom="18" left="20"/></padding>
 
             <!-- TITLE BAR -->
-            <HBox alignment="CENTER_LEFT"
-                  prefHeight="46"
+            <HBox alignment="CENTER_LEFT" prefHeight="46"
                   onMousePressed="#handleWindowPressed"
                   onMouseDragged="#handleWindowDragged">
 
                 <Label text="CustomClicker" styleClass="page-title"/>
                 <Region prefWidth="16"/>
 
-                <!-- STATUS -->
-                <HBox alignment="CENTER"
-                      spacing="6"
-                      styleClass="status-pill">
-
+                <HBox alignment="CENTER" spacing="6" styleClass="status-pill">
                     <Label text="●" styleClass="status-dot"/>
                     <Label text="Idle" styleClass="status-text"/>
                 </HBox>
 
                 <Region HBox.hgrow="ALWAYS"/>
 
-                <Button text="−"
-                        onAction="#handleMinimize"
-                        styleClass="window-button"/>
-
-                <Button text="×"
-                        onAction="#handleClose"
-                        styleClass="window-close"/>
+                <Button text="−" onAction="#handleMinimize" styleClass="window-button"/>
+                <Button text="×" onAction="#handleClose" styleClass="window-close"/>
             </HBox>
 
             <!-- TIMING -->
@@ -85,231 +69,222 @@
 
                 <VBox spacing="2">
                     <Label text="Timing" styleClass="card-title"/>
-                    <Label text="Control how fast and when to click."
-                           styleClass="muted"/>
+                    <Label text="Control how fast and when to click." styleClass="muted"/>
                 </VBox>
 
                 <!-- MAIN TIMING TABS -->
-                <HBox styleClass="tab-bar"
-                      alignment="CENTER">
-
-                    <ToggleButton text="Fixed"
-                                  selected="true"
-                                  toggleGroup="$timingGroup"
-                                  maxWidth="Infinity"
-                                  HBox.hgrow="ALWAYS"
-                                  styleClass="tab"/>
+                <HBox alignment="CENTER" styleClass="tab-bar">
+                    <ToggleButton fx:id="fixedTimingButton" text="Fixed" selected="true"
+                                  toggleGroup="$timingGroup" maxWidth="Infinity"
+                                  HBox.hgrow="ALWAYS" styleClass="tab"/>
 
                     <Region styleClass="tab-divider"/>
 
-                    <ToggleButton text="Random CPS"
-                                  toggleGroup="$timingGroup"
-                                  maxWidth="Infinity"
-                                  HBox.hgrow="ALWAYS"
-                                  styleClass="tab"/>
+                    <ToggleButton fx:id="randomCpsButton" text="Random CPS"
+                                  toggleGroup="$timingGroup" maxWidth="Infinity"
+                                  HBox.hgrow="ALWAYS" styleClass="tab"/>
 
                     <Region styleClass="tab-divider"/>
 
-                    <ToggleButton text="Random Interval"
-                                  toggleGroup="$timingGroup"
-                                  maxWidth="Infinity"
-                                  HBox.hgrow="ALWAYS"
-                                  styleClass="tab"/>
+                    <ToggleButton fx:id="randomIntervalButton" text="Random Interval"
+                                  toggleGroup="$timingGroup" maxWidth="Infinity"
+                                  HBox.hgrow="ALWAYS" styleClass="tab"/>
                 </HBox>
 
-                <GridPane hgap="28">
+                <StackPane prefHeight="135" minHeight="135" maxHeight="135">
 
-                    <columnConstraints>
-                        <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
-                        <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
-                    </columnConstraints>
+                    <!-- FIXED -->
+                    <GridPane fx:id="fixedPane" hgap="28" maxWidth="Infinity">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                            <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                        </columnConstraints>
 
-                    <!-- LEFT SIDE -->
-                    <VBox GridPane.columnIndex="0"
-                          spacing="8"
-                          maxWidth="Infinity">
+                        <VBox GridPane.columnIndex="0" spacing="8" maxWidth="Infinity">
+                            <HBox styleClass="tab-bar">
+                                <ToggleButton fx:id="fixedIntervalButton" text="Interval"
+                                              selected="true" toggleGroup="$fixedGroup"
+                                              maxWidth="Infinity" HBox.hgrow="ALWAYS"
+                                              styleClass="tab"/>
 
-                        <HBox styleClass="tab-bar">
+                                <ToggleButton fx:id="fixedCpsButton" text="CPS"
+                                              toggleGroup="$fixedGroup"
+                                              maxWidth="Infinity" HBox.hgrow="ALWAYS"
+                                              styleClass="tab"/>
+                            </HBox>
 
-                            <ToggleButton text="Interval"
-                                          selected="true"
-                                          toggleGroup="$fixedGroup"
-                                          maxWidth="Infinity"
-                                          HBox.hgrow="ALWAYS"
-                                          styleClass="tab"/>
+                            <Label fx:id="fixedValueLabel" text="Interval (ms)" styleClass="field-label"/>
+                            <Spinner fx:id="fixedValueSpinner" editable="true" maxWidth="Infinity"/>
+                            <Label fx:id="fixedHelperLabel"
+                                   text="Use a constant delay between clicks."
+                                   styleClass="muted"/>
+                        </VBox>
 
-                            <ToggleButton text="CPS"
-                                          toggleGroup="$fixedGroup"
-                                          maxWidth="Infinity"
-                                          HBox.hgrow="ALWAYS"
-                                          styleClass="tab"/>
-                        </HBox>
+                        <VBox GridPane.columnIndex="1" spacing="8" maxWidth="Infinity">
+                            <Label fx:id="fixedEquivalentTitle"
+                                   text="Equivalent Speed"
+                                   styleClass="field-label"/>
 
-                        <Label text="Interval (ms)"
-                               styleClass="field-label"/>
+                            <Label fx:id="fixedEquivalentValue"
+                                   text="10 CPS"
+                                   maxWidth="Infinity"
+                                   styleClass="display-field"/>
 
-                        <Spinner fx:id="intervalSpinner"
-                                 editable="true"
-                                 maxWidth="Infinity"/>
+                            <Label fx:id="fixedEquivalentHelper"
+                                   text="Equivalent clicking speed."
+                                   styleClass="muted"/>
+                        </VBox>
+                    </GridPane>
 
-                        <Label text="Use a constant delay between clicks."
-                               styleClass="muted"/>
-                    </VBox>
+                    <!-- RANDOM CPS -->
+                    <GridPane fx:id="randomCpsPane" hgap="28" maxWidth="Infinity"
+                              visible="false" managed="false">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                            <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                        </columnConstraints>
 
-                    <!-- RIGHT SIDE -->
-                    <VBox GridPane.columnIndex="1"
-                          spacing="8"
-                          maxWidth="Infinity">
+                        <VBox GridPane.columnIndex="0" spacing="8" maxWidth="Infinity">
+                            <HBox spacing="12">
+                                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                    <Label text="Minimum CPS" styleClass="field-label"/>
+                                    <Spinner fx:id="minCpsSpinner" editable="true" maxWidth="Infinity"/>
+                                </VBox>
 
-                        <Label text="Equivalent Speed"
-                               styleClass="field-label"/>
+                                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                    <Label text="Maximum CPS" styleClass="field-label"/>
+                                    <Spinner fx:id="maxCpsSpinner" editable="true" maxWidth="Infinity"/>
+                                </VBox>
+                            </HBox>
 
-                        <Label fx:id="equivalentSpeedLabel"
-                               text="10 CPS"
-                               maxWidth="Infinity"
-                               styleClass="display-field"/>
+                            <Label text="Clicks are randomly chosen within this CPS range."
+                                   styleClass="muted"/>
+                        </VBox>
 
-                        <Label text="Use a constant rate with no randomization."
-                               styleClass="muted"/>
-                    </VBox>
+                        <VBox GridPane.columnIndex="1" spacing="8" maxWidth="Infinity">
+                            <Label text="Equivalent Interval" styleClass="field-label"/>
+                            <Label text="≈ 667 – 2000 ms"
+                                   maxWidth="Infinity"
+                                   styleClass="display-field"/>
+                            <Label text="Equivalent delay range between clicks."
+                                   styleClass="muted"/>
+                        </VBox>
+                    </GridPane>
 
-                </GridPane>
+                    <!-- RANDOM INTERVAL -->
+                    <GridPane fx:id="randomIntervalPane" hgap="28" maxWidth="Infinity"
+                              visible="false" managed="false">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                            <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                        </columnConstraints>
+
+                        <VBox GridPane.columnIndex="0" spacing="8" maxWidth="Infinity">
+                            <HBox spacing="12">
+                                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                    <Label text="Minimum Interval (ms)" styleClass="field-label"/>
+                                    <Spinner fx:id="minIntervalSpinner" editable="true" maxWidth="Infinity"/>
+                                </VBox>
+
+                                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                    <Label text="Maximum Interval (ms)" styleClass="field-label"/>
+                                    <Spinner fx:id="maxIntervalSpinner" editable="true" maxWidth="Infinity"/>
+                                </VBox>
+                            </HBox>
+
+                            <Label text="Each delay is randomly chosen within this interval range."
+                                   styleClass="muted"/>
+                        </VBox>
+
+                        <VBox GridPane.columnIndex="1" spacing="8" maxWidth="Infinity">
+                            <Label text="Equivalent Speed" styleClass="field-label"/>
+                            <Label text="≈ 3.3 – 10 CPS"
+                                   maxWidth="Infinity"
+                                   styleClass="display-field"/>
+                            <Label text="Equivalent clicking speed for this interval range."
+                                   styleClass="muted"/>
+                        </VBox>
+                    </GridPane>
+
+                </StackPane>
             </VBox>
 
-            <!-- CLICK BEHAVIOR + CLICK TARGET -->
+            <!-- CLICK BEHAVIOR + TARGET -->
             <GridPane hgap="16">
-
                 <columnConstraints>
-                    <ColumnConstraints percentWidth="50"
-                                       hgrow="ALWAYS"
-                                       minWidth="0"/>
-                    <ColumnConstraints percentWidth="50"
-                                       hgrow="ALWAYS"
-                                       minWidth="0"/>
+                    <ColumnConstraints percentWidth="50" hgrow="ALWAYS" minWidth="0"/>
+                    <ColumnConstraints percentWidth="50" hgrow="ALWAYS" minWidth="0"/>
                 </columnConstraints>
 
                 <!-- CLICK BEHAVIOR -->
-                <VBox GridPane.columnIndex="0"
-                      spacing="14"
-                      maxWidth="Infinity"
-                      styleClass="card, half-card">
+                <VBox GridPane.columnIndex="0" spacing="14"
+                      maxWidth="Infinity" styleClass="card, half-card">
 
                     <VBox spacing="2">
-                        <Label text="Click Behavior"
-                               styleClass="card-title"/>
-                        <Label text="Choose what kind of clicks to perform."
-                               styleClass="muted"/>
+                        <Label text="Click Behavior" styleClass="card-title"/>
+                        <Label text="Choose what kind of clicks to perform." styleClass="muted"/>
                     </VBox>
 
                     <HBox alignment="CENTER_LEFT">
-                        <Label text="Mouse Button"
-                               prefWidth="125"
-                               styleClass="field-label"/>
-
-                        <ComboBox fx:id="mouseButtonCombo"
-                                  maxWidth="Infinity"
-                                  HBox.hgrow="ALWAYS"/>
+                        <Label text="Mouse Button" prefWidth="125" styleClass="field-label"/>
+                        <ComboBox fx:id="mouseButtonCombo" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
                     </HBox>
 
                     <HBox alignment="CENTER_LEFT">
-                        <Label text="Click Type"
-                               prefWidth="125"
-                               styleClass="field-label"/>
-
-                        <ComboBox fx:id="clickTypeCombo"
-                                  maxWidth="Infinity"
-                                  HBox.hgrow="ALWAYS"/>
+                        <Label text="Click Type" prefWidth="125" styleClass="field-label"/>
+                        <ComboBox fx:id="clickTypeCombo" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
                     </HBox>
 
                     <HBox alignment="CENTER_LEFT">
-                        <Label text="Repeat"
-                               prefWidth="125"
-                               styleClass="field-label"/>
-
-                        <ComboBox fx:id="repeatCombo"
-                                  maxWidth="Infinity"
-                                  HBox.hgrow="ALWAYS"/>
+                        <Label text="Repeat" prefWidth="125" styleClass="field-label"/>
+                        <ComboBox fx:id="repeatCombo" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
                     </HBox>
                 </VBox>
 
                 <!-- CLICK TARGET -->
-                <VBox GridPane.columnIndex="1"
-                      spacing="12"
-                      maxWidth="Infinity"
-                      styleClass="card, half-card">
+                <VBox GridPane.columnIndex="1" spacing="12"
+                      maxWidth="Infinity" styleClass="card, half-card">
 
                     <VBox spacing="2">
-                        <Label text="Click Target"
-                               styleClass="card-title"/>
-                        <Label text="Where to click on the screen."
-                               styleClass="muted"/>
+                        <Label text="Click Target" styleClass="card-title"/>
+                        <Label text="Where to click on the screen." styleClass="muted"/>
                     </VBox>
 
-                    <RadioButton text="Follow Cursor"
-                                 selected="true"
-                                 toggleGroup="$targetGroup"
-                                 prefHeight="24"/>
+                    <RadioButton text="Follow Cursor" selected="true"
+                                 toggleGroup="$targetGroup" prefHeight="24"/>
 
                     <RadioButton text="Fixed Position"
-                                 toggleGroup="$targetGroup"
-                                 prefHeight="24"/>
+                                 toggleGroup="$targetGroup" prefHeight="24"/>
 
-                    <HBox spacing="10"
-                          alignment="CENTER_LEFT">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="X" styleClass="field-label"/>
+                        <Spinner fx:id="xSpinner" editable="true" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
 
-                        <Label text="X"
-                               styleClass="field-label"/>
-
-                        <Spinner fx:id="xSpinner"
-                                 editable="true"
-                                 maxWidth="Infinity"
-                                 HBox.hgrow="ALWAYS"/>
-
-                        <Label text="Y"
-                               styleClass="field-label"/>
-
-                        <Spinner fx:id="ySpinner"
-                                 editable="true"
-                                 maxWidth="Infinity"
-                                 HBox.hgrow="ALWAYS"/>
+                        <Label text="Y" styleClass="field-label"/>
+                        <Spinner fx:id="ySpinner" editable="true" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
                     </HBox>
 
-                    <Button text="[X]   Pick from screen"
+                    <Button text="⌾   Pick from screen"
                             maxWidth="Infinity"
                             styleClass="secondary-button"/>
                 </VBox>
-
             </GridPane>
 
             <!-- PROFILE -->
-            <HBox spacing="12"
-                  alignment="CENTER_LEFT"
-                  styleClass="card, profile-card">
-
-                <Label text="Profile"
-                       styleClass="card-title"/>
-
-                <ComboBox fx:id="profileCombo"
-                          prefWidth="350"/>
-
+            <HBox spacing="12" alignment="CENTER_LEFT" styleClass="card, profile-card">
+                <Label text="Profile" styleClass="card-title"/>
+                <ComboBox fx:id="profileCombo" prefWidth="350"/>
                 <Region HBox.hgrow="ALWAYS"/>
-
-                <Button text="+   New Profile"
-                        styleClass="secondary-button"/>
+                <Button text="+   New Profile" styleClass="secondary-button"/>
             </HBox>
 
             <!-- START -->
-            <Button fx:id="startButton"
-                    text="[X]   Start Clicking   F6"
-                    maxWidth="Infinity"
-                    prefHeight="68"
-                    onAction="#handleStart"
-                    styleClass="start-button"/>
+            <Button fx:id="startButton" text="▶   Start Clicking   F6"
+                    maxWidth="Infinity" prefHeight="68"
+                    onAction="#handleStart" styleClass="start-button"/>
 
             <Label text="Left click  •  Fixed 100 ms  •  Follow cursor"
-                   maxWidth="Infinity"
-                   alignment="CENTER"
-                   styleClass="summary"/>
+                   maxWidth="Infinity" alignment="CENTER" styleClass="summary"/>
 
         </VBox>
     </center>

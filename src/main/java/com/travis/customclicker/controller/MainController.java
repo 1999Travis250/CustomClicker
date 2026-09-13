@@ -5,47 +5,107 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 public class MainController {
 
-    @FXML private Spinner<Integer> intervalSpinner;
-    @FXML private Spinner<Integer> xSpinner;
-    @FXML private Spinner<Integer> ySpinner;
+    @FXML private Spinner<Integer> fixedValueSpinner, minIntervalSpinner, maxIntervalSpinner, xSpinner, ySpinner;
+    @FXML private Spinner<Double> minCpsSpinner, maxCpsSpinner;
 
-    @FXML private ComboBox<String> mouseButtonCombo;
-    @FXML private ComboBox<String> clickTypeCombo;
-    @FXML private ComboBox<String> repeatCombo;
-    @FXML private ComboBox<String> profileCombo;
+    @FXML private ComboBox<String> mouseButtonCombo, clickTypeCombo, repeatCombo, profileCombo;
 
-    private double xOffset;
-    private double yOffset;
+    @FXML private ToggleButton fixedTimingButton, randomCpsButton, randomIntervalButton;
+    @FXML private ToggleButton fixedIntervalButton, fixedCpsButton;
+
+    @FXML private Label fixedValueLabel, fixedHelperLabel;
+    @FXML private Label fixedEquivalentTitle, fixedEquivalentValue, fixedEquivalentHelper;
+
+    @FXML private GridPane fixedPane, randomCpsPane, randomIntervalPane;
+
+    private double xOffset, yOffset;
 
     @FXML
     private void initialize() {
-        intervalSpinner.setValueFactory(
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 60000, 100)
+        showFixedIntervalMode();
+
+        minCpsSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0.1, 100, 0.5, 0.1));
+        maxCpsSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0.1, 100, 1.5, 0.1));
+
+        minIntervalSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 60000, 100));
+        maxIntervalSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 60000, 300));
+
+        xSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, 0));
+        ySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, 0));
+
+        setupCombo(mouseButtonCombo, "Left", "Left", "Right", "Middle");
+        setupCombo(clickTypeCombo, "Single", "Single", "Double");
+        setupCombo(repeatCombo, "Until stopped", "Until stopped", "Fixed amount");
+        setupCombo(profileCombo, "Default", "Default");
+
+        setupTab(fixedTimingButton, () -> showTimingPane(fixedPane));
+        setupTab(randomCpsButton, () -> showTimingPane(randomCpsPane));
+        setupTab(randomIntervalButton, () -> showTimingPane(randomIntervalPane));
+
+        setupTab(fixedIntervalButton, this::showFixedIntervalMode);
+        setupTab(fixedCpsButton, this::showFixedCpsMode);
+    }
+
+    @SafeVarargs
+    private final void setupCombo(ComboBox<String> combo, String selected, String... items) {
+        combo.getItems().addAll(items);
+        combo.setValue(selected);
+    }
+
+    private void setupTab(ToggleButton button, Runnable action) {
+        button.setOnAction(event -> {
+            if (!button.isSelected()) {
+                button.setSelected(true);
+                return;
+            }
+            action.run();
+        });
+    }
+
+    private void showTimingPane(GridPane selectedPane) {
+        for (GridPane pane : new GridPane[]{fixedPane, randomCpsPane, randomIntervalPane}) {
+            boolean active = pane == selectedPane;
+            pane.setVisible(active);
+            pane.setManaged(active);
+        }
+    }
+
+    private void showFixedIntervalMode() {
+        configureFixedMode(
+                "Interval (ms)",
+                "Use a constant delay between clicks.",
+                "Equivalent Speed",
+                "10 CPS",
+                "Equivalent clicking speed.",
+                1, 60000, 100
         );
+    }
 
-        xSpinner.setValueFactory(
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, 0)
+    private void showFixedCpsMode() {
+        configureFixedMode(
+                "Clicks per second (CPS)",
+                "Use a constant number of clicks per second.",
+                "Equivalent Interval",
+                "100 ms",
+                "Equivalent delay between clicks.",
+                1, 100, 10
         );
+    }
 
-        ySpinner.setValueFactory(
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, 0)
-        );
-
-        mouseButtonCombo.getItems().addAll("Left", "Right", "Middle");
-        mouseButtonCombo.setValue("Left");
-
-        clickTypeCombo.getItems().addAll("Single", "Double");
-        clickTypeCombo.setValue("Single");
-
-        repeatCombo.getItems().addAll("Until stopped", "Fixed amount");
-        repeatCombo.setValue("Until stopped");
-
-        profileCombo.getItems().add("Default");
-        profileCombo.setValue("Default");
+    private void configureFixedMode(String valueLabel, String helper, String equivalentTitle,
+                                    String equivalentValue, String equivalentHelper,
+                                    int min, int max, int initial) {
+        fixedValueLabel.setText(valueLabel);
+        fixedHelperLabel.setText(helper);
+        fixedEquivalentTitle.setText(equivalentTitle);
+        fixedEquivalentValue.setText(equivalentValue);
+        fixedEquivalentHelper.setText(equivalentHelper);
+        fixedValueSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(min, max, initial));
     }
 
     @FXML

@@ -10,13 +10,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Scene scene = new Scene(
-                FXMLLoader.load(
-                        App.class.getResource("/views/main-view.fxml")
-                ),
-                1200,
-                800
-        );
+        Scene scene = new Scene(FXMLLoader.load(App.class.getResource("/views/main-view.fxml")), 1200, 800);
 
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setScene(scene);
