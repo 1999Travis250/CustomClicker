@@ -2,6 +2,7 @@ package com.travis.customclicker.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
@@ -13,19 +14,17 @@ import java.util.List;
 
 public class MainController {
 
-    // Clicker controls
+    // Clicker
     @FXML private Spinner<Integer> fixedValueSpinner, minIntervalSpinner, maxIntervalSpinner, xSpinner, ySpinner;
     @FXML private Spinner<Double> minCpsSpinner, maxCpsSpinner;
     @FXML private ComboBox<String> mouseButtonCombo, clickTypeCombo, repeatCombo, profileCombo;
-    @FXML private ToggleButton fixedTimingButton, randomCpsButton, randomIntervalButton;
-    @FXML private ToggleButton fixedIntervalButton, fixedCpsButton;
-    @FXML private Label fixedValueLabel, fixedHelperLabel;
-    @FXML private Label fixedEquivalentTitle, fixedEquivalentValue, fixedEquivalentHelper;
+    @FXML private ToggleButton fixedTimingButton, randomCpsButton, randomIntervalButton, fixedIntervalButton, fixedCpsButton;
+    @FXML private Label fixedValueLabel, fixedHelperLabel, fixedEquivalentTitle, fixedEquivalentValue, fixedEquivalentHelper;
     @FXML private GridPane fixedPane, randomCpsPane, randomIntervalPane;
 
     // Navigation
-    @FXML private Button clickerNavButton, profilesNavButton;
-    @FXML private VBox clickerPage, profilesPage;
+    @FXML private Button clickerNavButton, profilesNavButton, settingsNavButton;
+    @FXML private VBox clickerPage, profilesPage, settingsPage;
 
     // Profiles
     @FXML private VBox profileList;
@@ -37,6 +36,12 @@ public class MainController {
     private final List<Profile> profiles = new ArrayList<>();
     private Profile selectedProfile;
     private int nextProfileNumber = 1;
+
+    // Settings
+    @FXML private ComboBox<String> languageCombo, uiScaleCombo, updateCombo;
+    @FXML private ToggleButton greenAccent, blueAccent, purpleAccent, pinkAccent, orangeAccent, yellowAccent;
+    @FXML private ToggleButton launchStartupCheck, alwaysOnTopCheck, minimizeToTrayCheck;
+    @FXML private TextField startHotkeyField, nextProfileHotkeyField;
 
     private double xOffset, yOffset;
 
@@ -56,20 +61,22 @@ public class MainController {
     private void initialize() {
         initializeClicker();
         initializeProfiles();
+        initializeSettings();
         showPage(clickerPage);
     }
+
+    // CLICKER
 
     private void initializeClicker() {
         showFixedIntervalMode();
 
-        minCpsSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0.1, 100, 0.5, 0.1));
-        maxCpsSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0.1, 100, 1.5, 0.1));
+        initDoubleSpinner(minCpsSpinner, 0.1, 100, 0.5);
+        initDoubleSpinner(maxCpsSpinner, 0.1, 100, 1.5);
 
-        minIntervalSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 60000, 100));
-        maxIntervalSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 60000, 300));
-
-        xSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, 0));
-        ySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, 0));
+        initIntSpinner(minIntervalSpinner, 1, 60000, 100);
+        initIntSpinner(maxIntervalSpinner, 1, 60000, 300);
+        initIntSpinner(xSpinner, 0, 10000, 0);
+        initIntSpinner(ySpinner, 0, 10000, 0);
 
         setupCombo(mouseButtonCombo, "Left", "Left", "Right", "Middle");
         setupCombo(clickTypeCombo, "Single", "Single", "Double");
@@ -78,18 +85,20 @@ public class MainController {
         setupTab(fixedTimingButton, () -> showTimingPane(fixedPane));
         setupTab(randomCpsButton, () -> showTimingPane(randomCpsPane));
         setupTab(randomIntervalButton, () -> showTimingPane(randomIntervalPane));
-
         setupTab(fixedIntervalButton, this::showFixedIntervalMode);
         setupTab(fixedCpsButton, this::showFixedCpsMode);
     }
 
-    private void initializeProfiles() {
-        profiles.add(new Profile("Default", "Default profile for general use.", "", true));
-        selectProfile(profiles.get(0));
+    private void initIntSpinner(Spinner<Integer> spinner, int min, int max, int initial) {
+        spinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(min, max, initial));
+    }
+
+    private void initDoubleSpinner(Spinner<Double> spinner, double min, double max, double initial) {
+        spinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(min, max, initial, 0.1));
     }
 
     private void setupCombo(ComboBox<String> combo, String selected, String... items) {
-        combo.getItems().addAll(items);
+        combo.getItems().setAll(items);
         combo.setValue(selected);
     }
 
@@ -121,37 +130,45 @@ public class MainController {
                 "Equivalent Interval", "100 ms", "Equivalent delay between clicks.", 1, 100, 10);
     }
 
-    private void configureFixedMode(String valueLabel, String helper, String equivalentTitle,
+    private void configureFixedMode(String label, String helper, String equivalentTitle,
                                     String equivalentValue, String equivalentHelper,
                                     int min, int max, int initial) {
-        fixedValueLabel.setText(valueLabel);
+        fixedValueLabel.setText(label);
         fixedHelperLabel.setText(helper);
         fixedEquivalentTitle.setText(equivalentTitle);
         fixedEquivalentValue.setText(equivalentValue);
         fixedEquivalentHelper.setText(equivalentHelper);
-        fixedValueSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(min, max, initial));
+        initIntSpinner(fixedValueSpinner, min, max, initial);
     }
 
-    // Navigation
+    // NAVIGATION
 
     @FXML private void handleShowClicker() { showPage(clickerPage); }
     @FXML private void handleShowProfiles() { showPage(profilesPage); }
+    @FXML private void handleShowSettings() { showPage(settingsPage); }
 
-    private void showPage(VBox page) {
-        clickerPage.setVisible(page == clickerPage);
-        clickerPage.setManaged(page == clickerPage);
-
-        profilesPage.setVisible(page == profilesPage);
-        profilesPage.setManaged(page == profilesPage);
-
-        clickerNavButton.getStyleClass().removeAll("nav-active", "nav-button");
-        profilesNavButton.getStyleClass().removeAll("nav-active", "nav-button");
-
-        clickerNavButton.getStyleClass().add(page == clickerPage ? "nav-active" : "nav-button");
-        profilesNavButton.getStyleClass().add(page == profilesPage ? "nav-active" : "nav-button");
+    private void showPage(VBox selectedPage) {
+        setPage(clickerPage, clickerNavButton, selectedPage);
+        setPage(profilesPage, profilesNavButton, selectedPage);
+        setPage(settingsPage, settingsNavButton, selectedPage);
     }
 
-    // Profile management (in-memory UI version)
+    private void setPage(VBox page, Button button, VBox selectedPage) {
+        boolean active = page == selectedPage;
+
+        page.setVisible(active);
+        page.setManaged(active);
+
+        button.getStyleClass().removeAll("nav-active", "nav-button");
+        button.getStyleClass().add(active ? "nav-active" : "nav-button");
+    }
+
+    // PROFILES
+
+    private void initializeProfiles() {
+        profiles.add(new Profile("Default", "Default profile for general use.", "", true));
+        selectProfile(profiles.get(0));
+    }
 
     @FXML
     private void handleNewProfile() {
@@ -163,11 +180,9 @@ public class MainController {
 
     private void selectProfile(Profile profile) {
         selectedProfile = profile;
-
         profileNameField.setText(profile.name);
         profileDescriptionField.setText(profile.description);
         profileHotkeyField.setText(profile.hotkey);
-
         deleteProfileButton.setDisable(profile.isDefault);
         refreshProfileList();
     }
@@ -175,65 +190,64 @@ public class MainController {
     private void refreshProfileList() {
         profileList.getChildren().clear();
 
-        for (Profile profile : profiles) {
-            Label icon = new Label("✦");
-            icon.getStyleClass().add("profile-item-icon");
-
-            Label name = new Label(profile.name);
-            name.getStyleClass().add("profile-item-title");
-
-            Label details = new Label("Fixed  •  Single  •  Cursor");
-            details.getStyleClass().add("muted");
-
-            VBox text = new VBox(5, name, details);
-            HBox.setHgrow(text, Priority.ALWAYS);
-
-            Label star = new Label(profile.isDefault ? "★" : "");
-            star.getStyleClass().add("profile-default-star");
-
-            HBox content = new HBox(12, icon, text, star);
-            content.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-
-            Button card = new Button();
-            card.setGraphic(content);
-            card.setMaxWidth(Double.MAX_VALUE);
-            card.getStyleClass().add("profile-list-item");
-
-            if (profile == selectedProfile) card.getStyleClass().add("profile-list-item-selected");
-
-            card.setOnAction(event -> selectProfile(profile));
-            profileList.getChildren().add(card);
-        }
+        for (Profile profile : profiles)
+            profileList.getChildren().add(createProfileCard(profile));
 
         profileCountLabel.setText(profiles.size() + (profiles.size() == 1 ? " profile" : " profiles"));
-
         profileCombo.getItems().setAll(profiles.stream().map(p -> p.name).toList());
+
         if (selectedProfile != null) profileCombo.setValue(selectedProfile.name);
+    }
+
+    private Button createProfileCard(Profile profile) {
+        Label icon = new Label("✦");
+        icon.getStyleClass().add("profile-item-icon");
+
+        Label name = new Label(profile.name);
+        name.getStyleClass().add("profile-item-title");
+
+        Label details = new Label("Fixed  •  Single  •  Cursor");
+        details.getStyleClass().add("muted");
+
+        VBox text = new VBox(5, name, details);
+        HBox.setHgrow(text, Priority.ALWAYS);
+
+        Label star = new Label(profile.isDefault ? "★" : "");
+        star.getStyleClass().add("profile-default-star");
+
+        HBox content = new HBox(12, icon, text, star);
+        content.setAlignment(Pos.CENTER_LEFT);
+
+        Button card = new Button();
+        card.setGraphic(content);
+        card.setMaxWidth(Double.MAX_VALUE);
+        card.getStyleClass().add("profile-list-item");
+
+        if (profile == selectedProfile) card.getStyleClass().add("profile-list-item-selected");
+
+        card.setOnAction(event -> selectProfile(profile));
+        return card;
     }
 
     @FXML
     private void handleSaveProfile() {
         if (selectedProfile == null) return;
 
-        String newName = profileNameField.getText().trim();
+        String name = profileNameField.getText().trim();
 
-        if (newName.isEmpty()) {
+        if (name.isEmpty()) {
             showAlert("Invalid name", "Please enter a profile name.");
             return;
         }
 
-        boolean duplicate = profiles.stream()
-                .anyMatch(p -> p != selectedProfile && p.name.equalsIgnoreCase(newName));
-
-        if (duplicate) {
+        if (profileNameExists(name, selectedProfile)) {
             showAlert("Duplicate name", "A profile with that name already exists.");
             return;
         }
 
-        selectedProfile.name = newName;
+        selectedProfile.name = name;
         selectedProfile.description = profileDescriptionField.getText();
         selectedProfile.hotkey = profileHotkeyField.getText().trim();
-
         refreshProfileList();
     }
 
@@ -245,15 +259,15 @@ public class MainController {
         String name = baseName;
         int number = 2;
 
-        while (profileNameExists(name)) name = baseName + " " + number++;
+        while (profileNameExists(name, null)) name = baseName + " " + number++;
 
         Profile copy = new Profile(name, selectedProfile.description, selectedProfile.hotkey, false);
         profiles.add(copy);
         selectProfile(copy);
     }
 
-    private boolean profileNameExists(String name) {
-        return profiles.stream().anyMatch(p -> p.name.equalsIgnoreCase(name));
+    private boolean profileNameExists(String name, Profile excluded) {
+        return profiles.stream().anyMatch(p -> p != excluded && p.name.equalsIgnoreCase(name));
     }
 
     @FXML
@@ -273,10 +287,7 @@ public class MainController {
         selectProfile(profiles.stream().filter(p -> p.isDefault).findFirst().orElse(profiles.get(0)));
     }
 
-    @FXML
-    private void handleEditConfiguration() {
-        showPage(clickerPage);
-    }
+    @FXML private void handleEditConfiguration() { showPage(clickerPage); }
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING, message, ButtonType.OK);
@@ -285,7 +296,30 @@ public class MainController {
         alert.showAndWait();
     }
 
-    // Existing application controls
+    // SETTINGS
+
+    private void initializeSettings() {
+        setupCombo(languageCombo, "English", "English");
+        setupCombo(uiScaleCombo, "100% (Default)", "100% (Default)", "125%", "150%");
+        setupCombo(updateCombo, "Automatically", "Automatically", "Manually", "Never");
+
+        startHotkeyField.setText("F6");
+        nextProfileHotkeyField.setText("F8");
+
+        for (ToggleButton accent : new ToggleButton[]{
+                greenAccent, blueAccent, purpleAccent,
+                pinkAccent, orangeAccent, yellowAccent
+        }) {
+            setupTab(accent, () -> {});
+        }
+
+        alwaysOnTopCheck.selectedProperty().addListener((obs, oldValue, enabled) -> {
+            Stage stage = (Stage) alwaysOnTopCheck.getScene().getWindow();
+            stage.setAlwaysOnTop(enabled);
+        });
+    }
+
+    // APPLICATION CONTROLS
 
     @FXML private void handleStart() { System.out.println("Start button clicked"); }
     @FXML private void handleMinimize(ActionEvent event) { getStage(event).setIconified(true); }

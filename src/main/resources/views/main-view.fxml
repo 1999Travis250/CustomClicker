@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.travis.customclicker.controller.MainController"
@@ -13,6 +14,7 @@
         <ToggleGroup fx:id="timingGroup"/>
         <ToggleGroup fx:id="fixedGroup"/>
         <ToggleGroup fx:id="targetGroup"/>
+        <ToggleGroup fx:id="accentGroup"/>
     </fx:define>
 
     <!-- SIDEBAR -->
@@ -24,20 +26,18 @@
             <Label text="CustomClicker" styleClass="sidebar-title"/>
             <Region prefHeight="28"/>
 
-            <Button fx:id="clickerNavButton" text="⌂   Clicker"
+            <Button fx:id="clickerNavButton" text="Clicker"
                     onAction="#handleShowClicker" maxWidth="Infinity" styleClass="nav-active"/>
 
-            <Button fx:id="profilesNavButton" text="≡   Profiles"
+            <Button fx:id="profilesNavButton" text="Profiles"
                     onAction="#handleShowProfiles" maxWidth="Infinity" styleClass="nav-button"/>
 
-            <Button text="◉   Recorder" maxWidth="Infinity" styleClass="nav-button"/>
-            <Button text="⚙   Settings" maxWidth="Infinity" styleClass="nav-button"/>
-            <Button text="ⓘ   About" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button fx:id="settingsNavButton" text="Settings"
+                    onAction="#handleShowSettings" maxWidth="Infinity" styleClass="nav-button"/>
+
+            <Button text="About" maxWidth="Infinity" styleClass="nav-button"/>
 
             <Region VBox.vgrow="ALWAYS"/>
-
-            <Label text="Use responsibly. The developer is not responsible for illegal, unauthorized, or grey-area use."
-                   wrapText="true" styleClass="disclaimer"/>
         </VBox>
     </left>
 
@@ -76,7 +76,6 @@
                             <Label text="Control how fast and when to click." styleClass="muted"/>
                         </VBox>
 
-                        <!-- MAIN TIMING TABS -->
                         <HBox alignment="CENTER" styleClass="tab-bar">
                             <ToggleButton fx:id="fixedTimingButton" text="Fixed" selected="true"
                                           toggleGroup="$timingGroup" maxWidth="Infinity"
@@ -95,7 +94,6 @@
                                           HBox.hgrow="ALWAYS" styleClass="tab"/>
                         </HBox>
 
-                        <!-- TIMING CONTENT -->
                         <StackPane prefHeight="135" minHeight="135" maxHeight="135">
 
                             <!-- FIXED -->
@@ -107,15 +105,13 @@
 
                                 <VBox GridPane.columnIndex="0" spacing="8" maxWidth="Infinity">
                                     <HBox styleClass="tab-bar">
-                                        <ToggleButton fx:id="fixedIntervalButton" text="Interval"
-                                                      selected="true" toggleGroup="$fixedGroup"
-                                                      maxWidth="Infinity" HBox.hgrow="ALWAYS"
-                                                      styleClass="tab"/>
+                                        <ToggleButton fx:id="fixedIntervalButton" text="Interval" selected="true"
+                                                      toggleGroup="$fixedGroup" maxWidth="Infinity"
+                                                      HBox.hgrow="ALWAYS" styleClass="tab"/>
 
                                         <ToggleButton fx:id="fixedCpsButton" text="CPS"
-                                                      toggleGroup="$fixedGroup"
-                                                      maxWidth="Infinity" HBox.hgrow="ALWAYS"
-                                                      styleClass="tab"/>
+                                                      toggleGroup="$fixedGroup" maxWidth="Infinity"
+                                                      HBox.hgrow="ALWAYS" styleClass="tab"/>
                                     </HBox>
 
                                     <Label fx:id="fixedValueLabel" text="Interval (ms)" styleClass="field-label"/>
@@ -213,7 +209,6 @@
                             <ColumnConstraints percentWidth="50" hgrow="ALWAYS" minWidth="0"/>
                         </columnConstraints>
 
-                        <!-- CLICK BEHAVIOR -->
                         <VBox GridPane.columnIndex="0" spacing="14"
                               maxWidth="Infinity" styleClass="card, half-card">
 
@@ -238,7 +233,6 @@
                             </HBox>
                         </VBox>
 
-                        <!-- CLICK TARGET -->
                         <VBox GridPane.columnIndex="1" spacing="12"
                               maxWidth="Infinity" styleClass="card, half-card">
 
@@ -250,8 +244,7 @@
                             <RadioButton text="Follow Cursor" selected="true"
                                          toggleGroup="$targetGroup" prefHeight="24"/>
 
-                            <RadioButton text="Fixed Position"
-                                         toggleGroup="$targetGroup" prefHeight="24"/>
+                            <RadioButton text="Fixed Position" toggleGroup="$targetGroup" prefHeight="24"/>
 
                             <HBox spacing="10" alignment="CENTER_LEFT">
                                 <Label text="X" styleClass="field-label"/>
@@ -263,7 +256,7 @@
                                          maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
                             </HBox>
 
-                            <Button text="⌾   Pick from screen"
+                            <Button text="Pick from screen"
                                     maxWidth="Infinity" styleClass="secondary-button"/>
                         </VBox>
                     </GridPane>
@@ -278,8 +271,7 @@
                                 styleClass="secondary-button"/>
                     </HBox>
 
-                    <!-- START -->
-                    <Button fx:id="startButton" text="▶   Start Clicking   F6"
+                    <Button text="▶   Start Clicking   F6"
                             maxWidth="Infinity" prefHeight="68"
                             onAction="#handleStart" styleClass="start-button"/>
 
@@ -292,7 +284,6 @@
                 <VBox fx:id="profilesPage" spacing="14"
                       visible="false" managed="false" maxWidth="Infinity">
 
-                    <!-- PAGE HEADER -->
                     <HBox alignment="CENTER_LEFT" spacing="12">
                         <VBox spacing="3">
                             <Label text="Profiles" styleClass="profiles-heading"/>
@@ -305,7 +296,6 @@
                                 styleClass="profile-primary-button"/>
                     </HBox>
 
-                    <!-- TWO-COLUMN PROFILE LAYOUT -->
                     <GridPane hgap="14" VBox.vgrow="ALWAYS">
                         <columnConstraints>
                             <ColumnConstraints percentWidth="40" hgrow="ALWAYS" minWidth="0"/>
@@ -357,7 +347,6 @@
                                         <TextField fx:id="profileHotkeyField" promptText="Not set"
                                                    styleClass="profile-input"/>
 
-                                        <!-- TIMING SUMMARY -->
                                         <Label text="Timing" styleClass="profile-section-title"/>
 
                                         <HBox spacing="10" alignment="CENTER_LEFT" styleClass="profile-detail-row">
@@ -366,14 +355,11 @@
                                                        styleClass="profile-detail-value"/>
                                                 <Label text="Constant delay between clicks." styleClass="muted"/>
                                             </VBox>
-
                                             <Region HBox.hgrow="ALWAYS"/>
-
                                             <Button text="Edit" onAction="#handleEditConfiguration"
                                                     styleClass="secondary-button"/>
                                         </HBox>
 
-                                        <!-- CLICK BEHAVIOR SUMMARY -->
                                         <Label text="Click Behavior" styleClass="profile-section-title"/>
 
                                         <HBox spacing="10" alignment="CENTER_LEFT" styleClass="profile-detail-row">
@@ -382,14 +368,11 @@
                                                        styleClass="profile-detail-value"/>
                                                 <Label text="Mouse button and repeat settings." styleClass="muted"/>
                                             </VBox>
-
                                             <Region HBox.hgrow="ALWAYS"/>
-
                                             <Button text="Edit" onAction="#handleEditConfiguration"
                                                     styleClass="secondary-button"/>
                                         </HBox>
 
-                                        <!-- CLICK TARGET SUMMARY -->
                                         <Label text="Click Target" styleClass="profile-section-title"/>
 
                                         <HBox spacing="10" alignment="CENTER_LEFT" styleClass="profile-detail-row">
@@ -397,9 +380,7 @@
                                                 <Label text="Follow Cursor" styleClass="profile-detail-value"/>
                                                 <Label text="Click at the current cursor position." styleClass="muted"/>
                                             </VBox>
-
                                             <Region HBox.hgrow="ALWAYS"/>
-
                                             <Button text="Edit" onAction="#handleEditConfiguration"
                                                     styleClass="secondary-button"/>
                                         </HBox>
@@ -408,7 +389,6 @@
                                 </content>
                             </ScrollPane>
 
-                            <!-- PROFILE ACTIONS -->
                             <HBox spacing="8" alignment="CENTER_RIGHT">
                                 <Button text="Duplicate" onAction="#handleDuplicateProfile"
                                         styleClass="secondary-button"/>
@@ -422,11 +402,166 @@
                             </HBox>
 
                             <Button text="Save Changes" maxWidth="Infinity"
-                                    onAction="#handleSaveProfile"
-                                    styleClass="profile-primary-button"/>
+                                    onAction="#handleSaveProfile" styleClass="profile-primary-button"/>
 
                         </VBox>
                     </GridPane>
+                </VBox>
+
+                <!-- SETTINGS PAGE -->
+                <VBox fx:id="settingsPage" spacing="16"
+                      visible="false" managed="false" maxWidth="Infinity">
+
+                    <!-- PAGE HEADER -->
+                    <HBox alignment="CENTER_LEFT" spacing="12">
+                        <VBox spacing="3">
+                            <Label text="Settings" styleClass="profiles-heading"/>
+                            <Label text="Customize the app to fit your workflow." styleClass="muted"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- GENERAL + HOTKEYS -->
+                    <GridPane hgap="16">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50" hgrow="ALWAYS" minWidth="0"/>
+                            <ColumnConstraints percentWidth="50" hgrow="ALWAYS" minWidth="0"/>
+                        </columnConstraints>
+
+                        <!-- GENERAL -->
+                        <VBox GridPane.columnIndex="0" spacing="14"
+                              maxWidth="Infinity" styleClass="card, settings-card">
+
+                            <VBox spacing="3">
+                                <Label text="General" styleClass="card-title"/>
+                                <Label text="Appearance and general application settings." styleClass="muted"/>
+                            </VBox>
+
+                            <!-- ACCENT COLORS -->
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <Label text="Theme Accent" prefWidth="125" styleClass="field-label"/>
+
+                                <HBox spacing="9" alignment="CENTER_LEFT">
+                                    <ToggleButton fx:id="greenAccent" selected="true"
+                                                  toggleGroup="$accentGroup" styleClass="accent-swatch, accent-green"/>
+
+                                    <ToggleButton fx:id="blueAccent"
+                                                  toggleGroup="$accentGroup" styleClass="accent-swatch, accent-blue"/>
+
+                                    <ToggleButton fx:id="purpleAccent"
+                                                  toggleGroup="$accentGroup" styleClass="accent-swatch, accent-purple"/>
+
+                                    <ToggleButton fx:id="pinkAccent"
+                                                  toggleGroup="$accentGroup" styleClass="accent-swatch, accent-pink"/>
+
+                                    <ToggleButton fx:id="orangeAccent"
+                                                  toggleGroup="$accentGroup" styleClass="accent-swatch, accent-orange"/>
+
+                                    <ToggleButton fx:id="yellowAccent"
+                                                  toggleGroup="$accentGroup" styleClass="accent-swatch, accent-yellow"/>
+                                </HBox>
+                            </HBox>
+
+                            <Separator styleClass="settings-separator"/>
+
+                            <!-- LANGUAGE -->
+                            <HBox alignment="CENTER_LEFT" spacing="12">
+                                <Label text="Language" prefWidth="125" styleClass="field-label"/>
+                                <ComboBox fx:id="languageCombo" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                            </HBox>
+
+                            <!-- UI SCALE -->
+                            <HBox alignment="CENTER_LEFT" spacing="12">
+                                <Label text="UI Scale" prefWidth="125" styleClass="field-label"/>
+                                <ComboBox fx:id="uiScaleCombo" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                            </HBox>
+
+                            <!-- UPDATES -->
+                            <HBox alignment="CENTER_LEFT" spacing="12">
+                                <Label text="Check for Updates" prefWidth="125" styleClass="field-label"/>
+                                <ComboBox fx:id="updateCombo" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                            </HBox>
+
+                            <Button text="Check for Updates Now" maxWidth="Infinity"
+                                    disable="true" styleClass="secondary-button"/>
+                        </VBox>
+
+                        <!-- HOTKEYS -->
+                        <VBox GridPane.columnIndex="1" spacing="16"
+                              maxWidth="Infinity" styleClass="card, settings-card">
+
+                            <VBox spacing="3">
+                                <Label text="Hotkeys" styleClass="card-title"/>
+                                <Label text="Set global hotkeys for quick access." styleClass="muted"/>
+                            </VBox>
+
+                            <HBox spacing="12" alignment="CENTER_LEFT">
+                                <Label text="Start/Stop Clicking" prefWidth="150" styleClass="field-label"/>
+
+                                <TextField fx:id="startHotkeyField" editable="false"
+                                           maxWidth="Infinity" HBox.hgrow="ALWAYS"
+                                           styleClass="profile-input"/>
+                            </HBox>
+
+                            <HBox spacing="12" alignment="CENTER_LEFT">
+                                <Label text="Next Profile" prefWidth="150" styleClass="field-label"/>
+
+                                <TextField fx:id="nextProfileHotkeyField" editable="false"
+                                           maxWidth="Infinity" HBox.hgrow="ALWAYS"
+                                           styleClass="profile-input"/>
+                            </HBox>
+
+                            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="settings-info">
+                                <Label text="ⓘ" styleClass="settings-info-icon"/>
+                                <Label text="Hotkeys work globally, even when the app is in the background."
+                                       wrapText="true" styleClass="muted"/>
+                            </HBox>
+                        </VBox>
+                    </GridPane>
+
+
+                    <!-- STARTUP & WINDOW -->
+                    <VBox spacing="14" styleClass="card, settings-card">
+
+                        <VBox spacing="3">
+                            <Label text="Startup &amp; Window" styleClass="card-title"/>
+                            <Label text="Control how the application starts and behaves." styleClass="muted"/>
+                        </VBox>
+
+                        <HBox alignment="CENTER_LEFT" spacing="16">
+                            <VBox spacing="3" HBox.hgrow="ALWAYS">
+                                <Label text="Launch at startup" styleClass="field-label"/>
+                                <Label text="Automatically start CustomClicker with Windows." styleClass="muted"/>
+                            </VBox>
+
+                            <ToggleButton fx:id="launchStartupCheck" styleClass="settings-switch">
+                                <graphic><Circle radius="9" fill="white"/></graphic>
+                            </ToggleButton>
+                        </HBox>
+
+                        <HBox alignment="CENTER_LEFT" spacing="16">
+                            <VBox spacing="3" HBox.hgrow="ALWAYS">
+                                <Label text="Always on top" styleClass="field-label"/>
+                                <Label text="Keep the app window above other windows." styleClass="muted"/>
+                            </VBox>
+
+                            <ToggleButton fx:id="alwaysOnTopCheck" styleClass="settings-switch">
+                                <graphic><Circle radius="9" fill="white"/></graphic>
+                            </ToggleButton>
+                        </HBox>
+
+                        <HBox alignment="CENTER_LEFT" spacing="16">
+                            <VBox spacing="3" HBox.hgrow="ALWAYS">
+                                <Label text="Minimize to tray" styleClass="field-label"/>
+                                <Label text="Close button minimizes to the system tray instead of exiting."
+                                    styleClass="muted"/>
+                            </VBox>
+
+                            <ToggleButton fx:id="minimizeToTrayCheck" styleClass="settings-switch">
+                                <graphic><Circle radius="9" fill="white"/></graphic>
+                            </ToggleButton>
+                        </HBox>
+
+                    </VBox>
 
                 </VBox>
 

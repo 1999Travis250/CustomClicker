@@ -61,14 +61,9 @@
   -fx-text-fill: white;
 }
 
-.disclaimer,
 .muted,
 .summary {
   -fx-text-fill: #91a4ad;
-}
-
-.disclaimer {
-  -fx-font-size: 12px;
 }
 
 /* TITLE BAR */
@@ -551,4 +546,125 @@
 
 .profile-delete-button:disabled {
   -fx-opacity: 0.35;
+}
+
+/* SETTINGS PAGE */
+
+.settings-card {
+  -fx-padding: 20 22;
+}
+
+.settings-separator .line {
+  -fx-border-color: #30484f;
+  -fx-border-width: 1px 0 0 0;
+}
+
+/* Accent selection */
+
+.accent-swatch {
+  -fx-min-width: 30px;
+  -fx-min-height: 30px;
+  -fx-pref-width: 30px;
+  -fx-pref-height: 30px;
+  -fx-max-width: 30px;
+  -fx-max-height: 30px;
+
+  -fx-background-radius: 7px;
+  -fx-border-radius: 9px;
+  -fx-border-width: 2px;
+  -fx-border-color: transparent;
+  -fx-padding: 0;
+  -fx-cursor: hand;
+}
+
+.accent-swatch:selected {
+  -fx-border-color: white;
+  -fx-border-insets: -4px;
+}
+
+.accent-green {
+  -fx-background-color: #17db7a;
+}
+.accent-blue {
+  -fx-background-color: #3688f5;
+}
+.accent-purple {
+  -fx-background-color: #a14de0;
+}
+.accent-pink {
+  -fx-background-color: #f04385;
+}
+.accent-orange {
+  -fx-background-color: #ff863a;
+}
+.accent-yellow {
+  -fx-background-color: #ffcd36;
+}
+
+/* Hotkey information */
+
+.settings-info {
+  -fx-background-color: #172b30;
+  -fx-border-color: #30484f;
+  -fx-border-radius: 9px;
+  -fx-background-radius: 9px;
+  -fx-padding: 13;
+}
+
+.settings-info-icon {
+  -fx-text-fill: #a9d0ff;
+  -fx-font-size: 20px;
+  -fx-font-weight: bold;
+}
+
+/* Toggle switches */
+
+.settings-switch {
+  -fx-background-color: #24383d;
+  -fx-border-color: #49616a;
+  -fx-background-radius: 20px;
+  -fx-border-radius: 20px;
+
+  -fx-min-width: 54px;
+  -fx-pref-width: 54px;
+  -fx-max-width: 54px;
+
+  -fx-min-height: 28px;
+  -fx-pref-height: 28px;
+  -fx-max-height: 28px;
+
+  -fx-padding: 3 4;
+  -fx-alignment: CENTER_LEFT;
+  -fx-content-display: GRAPHIC_ONLY;
+  -fx-cursor: hand;
+}
+
+.settings-switch:selected {
+  -fx-background-color: #17db7a;
+  -fx-border-color: #17db7a;
+  -fx-alignment: CENTER_RIGHT;
+}
+
+.settings-switch:hover {
+  -fx-border-color: #71958d;
+}
+
+.settings-switch:selected:hover {
+  -fx-background-color: #1de987;
+  -fx-border-color: #1de987;
+}
+
+.settings-switch:focused {
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+}
+
+/* General Settings controls */
+
+.settings-card .combo-box {
+  -fx-pref-height: 38px;
+}
+
+.settings-card .secondary-button:disabled {
+  -fx-opacity: 0.45;
 }
