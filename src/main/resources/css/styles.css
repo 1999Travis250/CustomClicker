@@ -388,3 +388,167 @@
 .summary {
   -fx-font-size: 13px;
 }
+
+/* PROFILES PAGE */
+
+.profiles-heading {
+  -fx-text-fill: white;
+  -fx-font-size: 23px;
+  -fx-font-weight: bold;
+}
+
+.profiles-panel {
+  -fx-padding: 16;
+}
+
+.profile-count {
+  -fx-text-fill: #17dc7b;
+  -fx-font-size: 12px;
+}
+
+.profile-scroll,
+.profile-scroll > .viewport,
+.profile-scroll .corner {
+  -fx-background-color: transparent;
+}
+
+.profile-scroll {
+  -fx-background-insets: 0;
+  -fx-padding: 0;
+}
+
+.profile-scroll .scroll-bar:vertical {
+  -fx-background-color: transparent;
+  -fx-pref-width: 7px;
+}
+
+.profile-scroll .scroll-bar:vertical .thumb {
+  -fx-background-color: #36534e;
+  -fx-background-radius: 8px;
+}
+
+.profile-scroll .scroll-bar .increment-button,
+.profile-scroll .scroll-bar .decrement-button {
+  -fx-background-color: transparent;
+  -fx-padding: 0;
+}
+
+.profile-list-item {
+  -fx-background-color: #152a2f;
+  -fx-border-color: #31484f;
+  -fx-border-radius: 10px;
+  -fx-background-radius: 10px;
+  -fx-padding: 12;
+  -fx-alignment: CENTER_LEFT;
+  -fx-min-height: 78px;
+}
+
+.profile-list-item:hover {
+  -fx-background-color: #1b3431;
+  -fx-border-color: #3e6259;
+}
+
+.profile-list-item-selected,
+.profile-list-item-selected:hover {
+  -fx-background-color: #14372c;
+  -fx-border-color: #17dc7b;
+  -fx-border-width: 2px;
+}
+
+.profile-item-icon {
+  -fx-background-color: #174534;
+  -fx-background-radius: 10px;
+  -fx-text-fill: #17dc7b;
+  -fx-font-size: 24px;
+  -fx-alignment: CENTER;
+  -fx-min-width: 48px;
+  -fx-min-height: 48px;
+}
+
+.profile-item-title {
+  -fx-text-fill: white;
+  -fx-font-size: 15px;
+  -fx-font-weight: bold;
+}
+
+.profile-default-star {
+  -fx-text-fill: #17dc7b;
+  -fx-font-size: 19px;
+}
+
+.profile-input,
+.profile-textarea {
+  -fx-background-color: #152a2f;
+  -fx-border-color: #31484f;
+  -fx-border-radius: 8px;
+  -fx-background-radius: 8px;
+  -fx-text-fill: white;
+  -fx-prompt-text-fill: #91a4ad;
+}
+
+.profile-input {
+  -fx-pref-height: 38px;
+  -fx-padding: 8 12;
+}
+
+.profile-textarea {
+  -fx-pref-height: 65px;
+}
+
+.profile-textarea .content {
+  -fx-background-color: #152a2f;
+}
+
+.profile-input:focused,
+.profile-textarea:focused {
+  -fx-border-color: #17dc7b;
+}
+
+.profile-section-title {
+  -fx-text-fill: white;
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+}
+
+.profile-detail-row {
+  -fx-background-color: #172b30;
+  -fx-border-color: #30484f;
+  -fx-border-radius: 9px;
+  -fx-background-radius: 9px;
+  -fx-padding: 10;
+}
+
+.profile-detail-value {
+  -fx-text-fill: #e7eef2;
+  -fx-font-size: 13px;
+  -fx-font-weight: bold;
+}
+
+.profile-primary-button {
+  -fx-background-color: #17db7a;
+  -fx-background-radius: 9px;
+  -fx-text-fill: #04140c;
+  -fx-font-weight: bold;
+  -fx-padding: 11 18;
+}
+
+.profile-primary-button:hover {
+  -fx-background-color: #1de987;
+}
+
+.profile-delete-button {
+  -fx-background-color: #321f24;
+  -fx-border-color: #b94752;
+  -fx-border-radius: 8px;
+  -fx-background-radius: 8px;
+  -fx-text-fill: #ff858e;
+  -fx-padding: 10 16;
+}
+
+.profile-delete-button:hover {
+  -fx-background-color: #4a252d;
+}
+
+.profile-delete-button:disabled {
+  -fx-opacity: 0.35;
+}
