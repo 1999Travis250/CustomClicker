@@ -4,6 +4,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.Circle?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.shape.SVGPath?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.travis.customclicker.controller.MainController"
@@ -22,21 +24,39 @@
         <VBox prefWidth="250" spacing="12" styleClass="sidebar">
             <padding><Insets top="28" right="18" bottom="24" left="18"/></padding>
 
-            <Label text="✦" styleClass="logo"/>
+            <StackPane styleClass="about-app-icon">
+                <FontIcon iconLiteral="fth-mouse-pointer" iconSize="52" iconColor="white"/>
+            </StackPane>
             <Label text="CustomClicker" styleClass="sidebar-title"/>
             <Region prefHeight="28"/>
 
-            <Button fx:id="clickerNavButton" text="Clicker"
-                    onAction="#handleShowClicker" maxWidth="Infinity" styleClass="nav-active"/>
+            <Button fx:id="clickerNavButton" text="Clicker" onAction="#handleShowClicker"
+                    maxWidth="Infinity" graphicTextGap="14" styleClass="nav-active">
+                <graphic>
+                    <FontIcon iconLiteral="fth-home" iconSize="22" iconColor="#17dc7b"/>
+                </graphic>
+            </Button>
 
-            <Button fx:id="profilesNavButton" text="Profiles"
-                    onAction="#handleShowProfiles" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button fx:id="profilesNavButton" text="Profiles" onAction="#handleShowProfiles"
+                    maxWidth="Infinity" graphicTextGap="14" styleClass="nav-button">
+                <graphic>
+                    <FontIcon iconLiteral="fth-layers" iconSize="22" iconColor="#17dc7b"/>
+                </graphic>
+            </Button>
 
-            <Button fx:id="settingsNavButton" text="Settings"
-                    onAction="#handleShowSettings" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button fx:id="settingsNavButton" text="Settings" onAction="#handleShowSettings"
+                    maxWidth="Infinity" graphicTextGap="14" styleClass="nav-button">
+                <graphic>
+                    <FontIcon iconLiteral="fth-settings" iconSize="22" iconColor="#17dc7b"/>
+                </graphic>
+            </Button>
 
             <Button fx:id="aboutNavButton" text="About" onAction="#handleShowAbout"
-                    maxWidth="Infinity" styleClass="nav-button"/>
+                    maxWidth="Infinity" graphicTextGap="14" styleClass="nav-button">
+                <graphic>
+                    <FontIcon iconLiteral="fth-info" iconSize="22" iconColor="#17dc7b"/>
+                </graphic>
+            </Button>
 
             <Region VBox.vgrow="ALWAYS"/>
         </VBox>
@@ -268,13 +288,23 @@
                         <ComboBox fx:id="profileCombo" prefWidth="350"/>
                         <Region HBox.hgrow="ALWAYS"/>
 
-                        <Button text="+   New Profile" onAction="#handleNewProfile"
-                                styleClass="secondary-button"/>
+                        <Button text="New Profile" onAction="#handleNewProfile"
+                                graphicTextGap="8" styleClass="secondary-button">
+                            <graphic>
+                                <FontIcon iconLiteral="fth-plus" iconSize="16" iconColor="#17dc7b"/>
+                            </graphic>
+                        </Button>
                     </HBox>
 
-                    <Button text="▶   Start Clicking   F6"
-                            maxWidth="Infinity" prefHeight="68"
-                            onAction="#handleStart" styleClass="start-button"/>
+                    <Button maxWidth="Infinity" prefHeight="68" onAction="#handleStart" styleClass="start-button">
+                        <graphic>
+                            <HBox alignment="CENTER" spacing="14">
+                                <SVGPath content="M8 5v14l11-7z" fill="white" scaleX="1.4" scaleY="1.4"/>
+                                <Label text="Start Clicking" styleClass="start-button-text"/>
+                                <Label text="F6" styleClass="start-hotkey"/>
+                            </HBox>
+                        </graphic>
+                    </Button>
 
                     <Label text="Left click  •  Fixed 100 ms  •  Follow cursor"
                            maxWidth="Infinity" alignment="CENTER" styleClass="summary"/>
@@ -293,8 +323,12 @@
 
                         <Region HBox.hgrow="ALWAYS"/>
 
-                        <Button text="+  New Profile" onAction="#handleNewProfile"
-                                styleClass="profile-primary-button"/>
+                        <Button text="New Profile" onAction="#handleNewProfile"
+                                graphicTextGap="8" styleClass="profile-primary-button">
+                            <graphic>
+                                <FontIcon iconLiteral="fth-plus" iconSize="16" iconColor="#04140c"/>
+                            </graphic>
+                        </Button>
                     </HBox>
 
                     <GridPane hgap="14" VBox.vgrow="ALWAYS">
@@ -512,7 +546,7 @@
                             </HBox>
 
                             <HBox spacing="10" alignment="CENTER_LEFT" styleClass="settings-info">
-                                <Label text="ⓘ" styleClass="settings-info-icon"/>
+                                <FontIcon iconLiteral="fth-info" iconSize="19" iconColor="#65bfff"/>
                                 <Label text="Hotkeys work globally, even when the app is in the background."
                                        wrapText="true" styleClass="muted"/>
                             </HBox>
@@ -580,7 +614,9 @@
                     <HBox spacing="18" alignment="CENTER_LEFT" styleClass="card, about-hero">
 
                         <!-- APP ICON -->
-                        <Label text="✦" styleClass="about-app-icon"/>
+                        <StackPane styleClass="about-app-icon">
+                            <FontIcon iconLiteral="fth-mouse-pointer" iconSize="52" iconColor="white"/>
+                        </StackPane>
 
                         <!-- APP DETAILS -->
                         <VBox spacing="7" HBox.hgrow="ALWAYS" maxWidth="Infinity">
@@ -598,21 +634,21 @@
                         <HBox spacing="10" alignment="CENTER">
 
                             <VBox spacing="6" alignment="CENTER" styleClass="about-mini-card">
-                                <Label text="X" styleClass="about-mini-icon"/>
+                                <FontIcon iconLiteral="fth-wifi-off" iconSize="27" iconColor="#17dc7b"/>
                                 <Label text="Offline App" styleClass="about-mini-title"/>
                                 <Label text="No internet required" wrapText="true"
                                     alignment="CENTER" textAlignment="CENTER" styleClass="about-mini-description"/>
                             </VBox>
 
                             <VBox spacing="6" alignment="CENTER" styleClass="about-mini-card">
-                                <Label text="X" styleClass="about-mini-icon"/>
+                                <FontIcon iconLiteral="fth-folder" iconSize="27" iconColor="#17dc7b"/>
                                 <Label text="Local Profiles" styleClass="about-mini-title"/>
                                 <Label text="Stored on your device" wrapText="true"
                                     alignment="CENTER" textAlignment="CENTER" styleClass="about-mini-description"/>
                             </VBox>
 
                             <VBox spacing="6" alignment="CENTER" styleClass="about-mini-card">
-                                <Label text="X" styleClass="about-mini-icon"/>
+                                <FontIcon iconLiteral="fth-activity" iconSize="27" iconColor="#17dc7b"/>
                                 <Label text="Low Overhead" styleClass="about-mini-title"/>
                                 <Label text="Lightweight and fast" wrapText="true"
                                     alignment="CENTER" textAlignment="CENTER" styleClass="about-mini-description"/>
@@ -639,7 +675,10 @@
                             </VBox>
 
                             <HBox spacing="13" alignment="CENTER_LEFT">
-                                <Label text="X" styleClass="about-feature-icon"/>
+                                <!-- Flexible Clicking -->
+                                <StackPane styleClass="about-feature-icon">
+                                    <FontIcon iconLiteral="fth-zap" iconSize="25" iconColor="#17dc7b"/>
+                                </StackPane>
                                 <VBox spacing="3">
                                     <Label text="Flexible Clicking" styleClass="about-feature-title"/>
                                     <Label text="Fixed, random CPS, or custom intervals."
@@ -648,7 +687,10 @@
                             </HBox>
 
                             <HBox spacing="13" alignment="CENTER_LEFT">
-                                <Label text="X" styleClass="about-feature-icon"/>
+                                <!-- Customizable Behavior -->
+                                <StackPane styleClass="about-feature-icon">
+                                    <FontIcon iconLiteral="fth-sliders" iconSize="25" iconColor="#17dc7b"/>
+                                </StackPane>
                                 <VBox spacing="3">
                                     <Label text="Customizable Behavior" styleClass="about-feature-title"/>
                                     <Label text="Choose mouse button, click type, and repeat mode."
@@ -657,7 +699,10 @@
                             </HBox>
 
                             <HBox spacing="13" alignment="CENTER_LEFT">
-                                <Label text="X" styleClass="about-feature-icon"/>
+                                <!-- Multiple Click Targets -->
+                                <StackPane styleClass="about-feature-icon">
+                                    <FontIcon iconLiteral="fth-target" iconSize="25" iconColor="#17dc7b"/>
+                                </StackPane>
                                 <VBox spacing="3">
                                     <Label text="Multiple Click Targets" styleClass="about-feature-title"/>
                                     <Label text="Follow cursor or click at a fixed screen position."
@@ -666,7 +711,10 @@
                             </HBox>
 
                             <HBox spacing="13" alignment="CENTER_LEFT">
-                                <Label text="X" styleClass="about-feature-icon"/>
+                                <!-- Profiles -->
+                                <StackPane styleClass="about-feature-icon">
+                                    <FontIcon iconLiteral="fth-layers" iconSize="25" iconColor="#17dc7b"/>
+                                </StackPane>
                                 <VBox spacing="3">
                                     <Label text="Profiles" styleClass="about-feature-title"/>
                                     <Label text="Save and manage multiple configurations."
@@ -689,7 +737,9 @@
 
                                 <HBox spacing="14" alignment="CENTER_LEFT" styleClass="about-platform-row">
 
-                                    <Label text="X" styleClass="about-windows-icon"/>
+                                    <StackPane styleClass="about-windows-icon">
+                                        <FontIcon iconLiteral="fth-monitor" iconSize="32" iconColor="white"/>
+                                    </StackPane>
 
                                     <VBox spacing="4" HBox.hgrow="ALWAYS">
                                         <Label text="Windows" styleClass="about-feature-title"/>
@@ -701,7 +751,7 @@
                                 </HBox>
 
                                 <HBox spacing="9" alignment="CENTER_LEFT">
-                                    <Label text="ⓘ" styleClass="about-info-icon"/>
+                                    <FontIcon iconLiteral="fth-info" iconSize="19" iconColor="#65bfff"/>
                                     <Label text="More platforms may be supported in the future."
                                         wrapText="true" styleClass="muted"/>
                                 </HBox>
@@ -718,7 +768,9 @@
                                 </VBox>
 
                                 <HBox spacing="16" alignment="CENTER_LEFT">
-                                    <Label text="X" styleClass="about-security-icon"/>
+                                    <StackPane styleClass="about-security-icon">
+                                        <FontIcon iconLiteral="fth-shield" iconSize="48" iconColor="#17dc7b"/>
+                                    </StackPane>
 
                                     <Label text="CustomClicker is a lightweight, offline application. It does not collect, store, or transmit any personal data. Your settings and profiles are stored locally on your device."
                                         wrapText="true" maxWidth="Infinity" HBox.hgrow="ALWAYS"
@@ -740,7 +792,9 @@
                         </columnConstraints>
 
                         <!-- WARNING ICON -->
-                        <Label GridPane.columnIndex="0" text="X" styleClass="about-warning-icon"/>
+                        <StackPane GridPane.columnIndex="0" styleClass="about-warning-icon">
+                            <FontIcon iconLiteral="fth-alert-triangle" iconSize="30" iconColor="#ffcc52"/>
+                        </StackPane>
 
                         <!-- DISCLAIMER TEXT -->
                         <VBox GridPane.columnIndex="1" spacing="5" minWidth="0" maxWidth="Infinity">

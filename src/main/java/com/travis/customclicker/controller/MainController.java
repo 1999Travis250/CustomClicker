@@ -8,6 +8,8 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import org.kordamp.ikonli.javafx.FontIcon;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -201,7 +203,11 @@ public class MainController {
     }
 
     private Button createProfileCard(Profile profile) {
-        Label icon = new Label("✦");
+        FontIcon profileIcon = new FontIcon("fth-file-text");
+        profileIcon.setIconSize(24);
+        profileIcon.setIconColor(Color.web("#17dc7b"));
+
+        StackPane icon = new StackPane(profileIcon);
         icon.getStyleClass().add("profile-item-icon");
 
         Label name = new Label(profile.name);
@@ -213,8 +219,11 @@ public class MainController {
         VBox text = new VBox(5, name, details);
         HBox.setHgrow(text, Priority.ALWAYS);
 
-        Label star = new Label(profile.isDefault ? "★" : "");
-        star.getStyleClass().add("profile-default-star");
+        FontIcon star = new FontIcon("fth-star");
+        star.setIconSize(19);
+        star.setIconColor(Color.web("#17dc7b"));
+        star.setVisible(profile.isDefault);
+        star.setManaged(profile.isDefault);
 
         HBox content = new HBox(12, icon, text, star);
         content.setAlignment(Pos.CENTER_LEFT);

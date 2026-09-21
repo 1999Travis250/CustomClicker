@@ -45,6 +45,8 @@
   -fx-font-size: 16px;
   -fx-padding: 13 16;
   -fx-background-radius: 9px;
+  -fx-content-display: LEFT;
+  -fx-graphic-text-gap: 14px;
 }
 
 .nav-button {
@@ -380,6 +382,25 @@
   -fx-background-color: #1de987;
 }
 
+/* Start button content */
+
+.start-button-text {
+  -fx-text-fill: white;
+  -fx-font-size: 21px;
+  -fx-font-weight: bold;
+}
+
+.start-hotkey {
+  -fx-background-color: rgba(0, 0, 0, 0.15);
+  -fx-border-color: rgba(255, 255, 255, 0.5);
+  -fx-border-radius: 5px;
+  -fx-background-radius: 5px;
+  -fx-text-fill: white;
+  -fx-font-size: 15px;
+  -fx-font-weight: bold;
+  -fx-padding: 4 8;
+}
+
 .summary {
   -fx-font-size: 13px;
 }
@@ -464,11 +485,6 @@
   -fx-text-fill: white;
   -fx-font-size: 15px;
   -fx-font-weight: bold;
-}
-
-.profile-default-star {
-  -fx-text-fill: #17dc7b;
-  -fx-font-size: 19px;
 }
 
 .profile-input,
@@ -753,12 +769,10 @@
 }
 
 .about-feature-icon {
-  -fx-text-fill: #17dc7b;
-  -fx-font-size: 27px;
-  -fx-font-weight: bold;
   -fx-alignment: CENTER;
   -fx-min-width: 38px;
   -fx-pref-width: 38px;
+  -fx-max-width: 38px;
 }
 
 .about-feature-title {
@@ -778,10 +792,10 @@
 }
 
 .about-windows-icon {
-  -fx-text-fill: white;
-  -fx-font-size: 34px;
   -fx-alignment: CENTER;
   -fx-min-width: 42px;
+  -fx-pref-width: 42px;
+  -fx-max-width: 42px;
 }
 
 .about-platform-badge {
@@ -802,10 +816,10 @@
 /* Privacy */
 
 .about-security-icon {
-  -fx-text-fill: #17dc7b;
-  -fx-font-size: 55px;
   -fx-alignment: CENTER;
   -fx-min-width: 65px;
+  -fx-pref-width: 65px;
+  -fx-max-width: 65px;
 }
 
 /* Disclaimer */
@@ -821,9 +835,6 @@
 }
 
 .about-warning-icon {
-  -fx-text-fill: #ffcc52;
-  -fx-font-size: 27px;
-  -fx-font-weight: bold;
   -fx-alignment: CENTER;
   -fx-min-width: 40px;
   -fx-pref-width: 40px;
