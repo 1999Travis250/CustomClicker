@@ -35,7 +35,8 @@
             <Button fx:id="settingsNavButton" text="Settings"
                     onAction="#handleShowSettings" maxWidth="Infinity" styleClass="nav-button"/>
 
-            <Button text="About" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button fx:id="aboutNavButton" text="About" onAction="#handleShowAbout"
+                    maxWidth="Infinity" styleClass="nav-button"/>
 
             <Region VBox.vgrow="ALWAYS"/>
         </VBox>
@@ -562,6 +563,204 @@
                         </HBox>
 
                     </VBox>
+
+                </VBox>
+
+                <!-- ABOUT PAGE -->
+                <VBox fx:id="aboutPage" spacing="12" visible="false" managed="false" maxWidth="Infinity">
+
+                    <!-- PAGE HEADER -->
+                    <VBox spacing="3">
+                        <Label text="About" styleClass="profiles-heading"/>
+                        <Label text="Learn more about CustomClicker, its features, and what makes it different."
+                            styleClass="muted"/>
+                    </VBox>
+
+                    <!-- APPLICATION INFORMATION -->
+                    <HBox spacing="18" alignment="CENTER_LEFT" styleClass="card, about-hero">
+
+                        <!-- APP ICON -->
+                        <Label text="✦" styleClass="about-app-icon"/>
+
+                        <!-- APP DETAILS -->
+                        <VBox spacing="7" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                            <Label text="CustomClicker" styleClass="about-app-title"/>
+                            <Label text="Version 1.0.0" styleClass="about-version"/>
+
+                            <Label text="A simple, powerful, and customizable auto clicker for Windows. Built for productivity, gaming, and more."
+                                wrapText="true" styleClass="about-description"/>
+                        </VBox>
+
+                        <!-- DIVIDER -->
+                        <Region styleClass="about-vertical-divider"/>
+
+                        <!-- HIGHLIGHT CARDS -->
+                        <HBox spacing="10" alignment="CENTER">
+
+                            <VBox spacing="6" alignment="CENTER" styleClass="about-mini-card">
+                                <Label text="X" styleClass="about-mini-icon"/>
+                                <Label text="Offline App" styleClass="about-mini-title"/>
+                                <Label text="No internet required" wrapText="true"
+                                    alignment="CENTER" textAlignment="CENTER" styleClass="about-mini-description"/>
+                            </VBox>
+
+                            <VBox spacing="6" alignment="CENTER" styleClass="about-mini-card">
+                                <Label text="X" styleClass="about-mini-icon"/>
+                                <Label text="Local Profiles" styleClass="about-mini-title"/>
+                                <Label text="Stored on your device" wrapText="true"
+                                    alignment="CENTER" textAlignment="CENTER" styleClass="about-mini-description"/>
+                            </VBox>
+
+                            <VBox spacing="6" alignment="CENTER" styleClass="about-mini-card">
+                                <Label text="X" styleClass="about-mini-icon"/>
+                                <Label text="Low Overhead" styleClass="about-mini-title"/>
+                                <Label text="Lightweight and fast" wrapText="true"
+                                    alignment="CENTER" textAlignment="CENTER" styleClass="about-mini-description"/>
+                            </VBox>
+
+                        </HBox>
+                    </HBox>
+
+                    <!-- FEATURES + INFORMATION -->
+                    <GridPane hgap="12">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="44" hgrow="ALWAYS" minWidth="0"/>
+                            <ColumnConstraints percentWidth="56" hgrow="ALWAYS" minWidth="0"/>
+                        </columnConstraints>
+
+                        <!-- FEATURES -->
+                        <VBox GridPane.columnIndex="0" spacing="13" styleClass="card, about-panel"
+                            maxWidth="Infinity">
+
+                            <VBox spacing="3">
+                                <Label text="Features" styleClass="card-title"/>
+                                <Label text="Everything you need for precise and flexible automation."
+                                    wrapText="true" styleClass="muted"/>
+                            </VBox>
+
+                            <HBox spacing="13" alignment="CENTER_LEFT">
+                                <Label text="X" styleClass="about-feature-icon"/>
+                                <VBox spacing="3">
+                                    <Label text="Flexible Clicking" styleClass="about-feature-title"/>
+                                    <Label text="Fixed, random CPS, or custom intervals."
+                                        wrapText="true" styleClass="muted"/>
+                                </VBox>
+                            </HBox>
+
+                            <HBox spacing="13" alignment="CENTER_LEFT">
+                                <Label text="X" styleClass="about-feature-icon"/>
+                                <VBox spacing="3">
+                                    <Label text="Customizable Behavior" styleClass="about-feature-title"/>
+                                    <Label text="Choose mouse button, click type, and repeat mode."
+                                        wrapText="true" styleClass="muted"/>
+                                </VBox>
+                            </HBox>
+
+                            <HBox spacing="13" alignment="CENTER_LEFT">
+                                <Label text="X" styleClass="about-feature-icon"/>
+                                <VBox spacing="3">
+                                    <Label text="Multiple Click Targets" styleClass="about-feature-title"/>
+                                    <Label text="Follow cursor or click at a fixed screen position."
+                                        wrapText="true" styleClass="muted"/>
+                                </VBox>
+                            </HBox>
+
+                            <HBox spacing="13" alignment="CENTER_LEFT">
+                                <Label text="X" styleClass="about-feature-icon"/>
+                                <VBox spacing="3">
+                                    <Label text="Profiles" styleClass="about-feature-title"/>
+                                    <Label text="Save and manage multiple configurations."
+                                        wrapText="true" styleClass="muted"/>
+                                </VBox>
+                            </HBox>
+
+                        </VBox>
+
+                        <!-- RIGHT COLUMN -->
+                        <VBox GridPane.columnIndex="1" spacing="12" maxWidth="Infinity">
+
+                            <!-- SUPPORTED PLATFORMS -->
+                            <VBox spacing="12" styleClass="card, about-panel" maxWidth="Infinity">
+
+                                <VBox spacing="3">
+                                    <Label text="Supported Platforms" styleClass="card-title"/>
+                                    <Label text="Current development target:" styleClass="muted"/>
+                                </VBox>
+
+                                <HBox spacing="14" alignment="CENTER_LEFT" styleClass="about-platform-row">
+
+                                    <Label text="X" styleClass="about-windows-icon"/>
+
+                                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                        <Label text="Windows" styleClass="about-feature-title"/>
+                                        <Label text="Windows 10 (64-bit) and Windows 11 (64-bit)"
+                                            styleClass="muted"/>
+                                    </VBox>
+
+                                    <Label text="Supported" styleClass="about-platform-badge"/>
+                                </HBox>
+
+                                <HBox spacing="9" alignment="CENTER_LEFT">
+                                    <Label text="ⓘ" styleClass="about-info-icon"/>
+                                    <Label text="More platforms may be supported in the future."
+                                        wrapText="true" styleClass="muted"/>
+                                </HBox>
+
+                            </VBox>
+
+                            <!-- PRIVACY & SECURITY -->
+                            <VBox spacing="12" styleClass="card, about-panel" maxWidth="Infinity"
+                                VBox.vgrow="ALWAYS">
+
+                                <VBox spacing="3">
+                                    <Label text="Privacy &amp; Security" styleClass="card-title"/>
+                                    <Label text="Your privacy matters." styleClass="muted"/>
+                                </VBox>
+
+                                <HBox spacing="16" alignment="CENTER_LEFT">
+                                    <Label text="X" styleClass="about-security-icon"/>
+
+                                    <Label text="CustomClicker is a lightweight, offline application. It does not collect, store, or transmit any personal data. Your settings and profiles are stored locally on your device."
+                                        wrapText="true" maxWidth="Infinity" HBox.hgrow="ALWAYS"
+                                        styleClass="about-description"/>
+                                </HBox>
+
+                            </VBox>
+
+                        </VBox>
+                    </GridPane>
+
+                    <!-- DISCLAIMER -->
+                    <GridPane hgap="14" alignment="CENTER_LEFT" styleClass="about-disclaimer">
+                        <columnConstraints>
+                            <ColumnConstraints minWidth="40" prefWidth="40" maxWidth="40"/>
+                            <ColumnConstraints minWidth="0" hgrow="ALWAYS" fillWidth="true"/>
+                            <ColumnConstraints minWidth="1" prefWidth="1" maxWidth="1"/>
+                            <ColumnConstraints minWidth="150" prefWidth="150" maxWidth="150"/>
+                        </columnConstraints>
+
+                        <!-- WARNING ICON -->
+                        <Label GridPane.columnIndex="0" text="X" styleClass="about-warning-icon"/>
+
+                        <!-- DISCLAIMER TEXT -->
+                        <VBox GridPane.columnIndex="1" spacing="5" minWidth="0" maxWidth="Infinity">
+                            <Label text="Disclaimer" styleClass="about-warning-title"/>
+
+                            <Label text="CustomClicker is intended for legitimate use only. The developer is not responsible for any damages, losses, or consequences resulting from the use or misuse of this application, including but not limited to violations of terms of service, game restrictions, or any other illegal and unauthorized use."
+                                wrapText="true" minWidth="0" maxWidth="Infinity"
+                                styleClass="about-disclaimer-text"/>
+                        </VBox>
+
+                        <!-- DIVIDER -->
+                        <Region GridPane.columnIndex="2" styleClass="about-warning-divider"/>
+
+                        <!-- RIGHT MESSAGE -->
+                        <VBox GridPane.columnIndex="3" spacing="5" alignment="CENTER">
+                            <Label text="Use responsibly." styleClass="about-warning-title"/>
+                            <Label text="Click with intention." styleClass="about-warning-subtitle"/>
+                        </VBox>
+
+                    </GridPane>
 
                 </VBox>
 

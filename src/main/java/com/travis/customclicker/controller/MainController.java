@@ -23,8 +23,8 @@ public class MainController {
     @FXML private GridPane fixedPane, randomCpsPane, randomIntervalPane;
 
     // Navigation
-    @FXML private Button clickerNavButton, profilesNavButton, settingsNavButton;
-    @FXML private VBox clickerPage, profilesPage, settingsPage;
+    @FXML private Button clickerNavButton, profilesNavButton, settingsNavButton, aboutNavButton;
+    @FXML private VBox clickerPage, profilesPage, settingsPage, aboutPage;
 
     // Profiles
     @FXML private VBox profileList;
@@ -146,16 +146,17 @@ public class MainController {
     @FXML private void handleShowClicker() { showPage(clickerPage); }
     @FXML private void handleShowProfiles() { showPage(profilesPage); }
     @FXML private void handleShowSettings() { showPage(settingsPage); }
+    @FXML private void handleShowAbout() { showPage(aboutPage); }
 
     private void showPage(VBox selectedPage) {
         setPage(clickerPage, clickerNavButton, selectedPage);
         setPage(profilesPage, profilesNavButton, selectedPage);
         setPage(settingsPage, settingsNavButton, selectedPage);
+        setPage(aboutPage, aboutNavButton, selectedPage);
     }
 
     private void setPage(VBox page, Button button, VBox selectedPage) {
         boolean active = page == selectedPage;
-
         page.setVisible(active);
         page.setManaged(active);
 

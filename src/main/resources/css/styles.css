@@ -668,3 +668,189 @@
 .settings-card .secondary-button:disabled {
   -fx-opacity: 0.45;
 }
+
+/* ABOUT PAGE */
+
+/* Application information */
+
+.about-hero {
+  -fx-padding: 18 20;
+  -fx-min-height: 138px;
+}
+
+.about-app-icon {
+  -fx-background-color: #13d378;
+  -fx-background-radius: 22px;
+  -fx-text-fill: white;
+  -fx-font-size: 52px;
+  -fx-alignment: CENTER;
+  -fx-min-width: 105px;
+  -fx-min-height: 105px;
+  -fx-max-width: 105px;
+  -fx-max-height: 105px;
+}
+
+.about-app-title {
+  -fx-text-fill: white;
+  -fx-font-size: 26px;
+  -fx-font-weight: bold;
+}
+
+.about-version {
+  -fx-text-fill: #b8c9d1;
+  -fx-font-size: 14px;
+}
+
+.about-description {
+  -fx-text-fill: #c2ced5;
+  -fx-font-size: 13px;
+  -fx-line-spacing: 3px;
+}
+
+.about-vertical-divider {
+  -fx-background-color: #30484f;
+  -fx-min-width: 1px;
+  -fx-pref-width: 1px;
+  -fx-max-width: 1px;
+  -fx-min-height: 92px;
+}
+
+/* Highlight cards */
+
+.about-mini-card {
+  -fx-background-color: #142a2d;
+  -fx-border-color: #31514f;
+  -fx-background-radius: 10px;
+  -fx-border-radius: 10px;
+  -fx-padding: 11 7;
+  -fx-pref-width: 100px;
+  -fx-min-width: 100px;
+  -fx-max-width: 100px;
+  -fx-min-height: 104px;
+}
+
+.about-mini-icon {
+  -fx-text-fill: #17dc7b;
+  -fx-font-size: 27px;
+  -fx-font-weight: bold;
+}
+
+.about-mini-title {
+  -fx-text-fill: white;
+  -fx-font-size: 11px;
+  -fx-font-weight: bold;
+}
+
+.about-mini-description {
+  -fx-text-fill: #aabec7;
+  -fx-font-size: 10px;
+}
+
+/* Main information panels */
+
+.about-panel {
+  -fx-padding: 16;
+}
+
+.about-feature-icon {
+  -fx-text-fill: #17dc7b;
+  -fx-font-size: 27px;
+  -fx-font-weight: bold;
+  -fx-alignment: CENTER;
+  -fx-min-width: 38px;
+  -fx-pref-width: 38px;
+}
+
+.about-feature-title {
+  -fx-text-fill: white;
+  -fx-font-size: 13px;
+  -fx-font-weight: bold;
+}
+
+/* Supported platforms */
+
+.about-platform-row {
+  -fx-background-color: #172b30;
+  -fx-border-color: #30484f;
+  -fx-background-radius: 9px;
+  -fx-border-radius: 9px;
+  -fx-padding: 12;
+}
+
+.about-windows-icon {
+  -fx-text-fill: white;
+  -fx-font-size: 34px;
+  -fx-alignment: CENTER;
+  -fx-min-width: 42px;
+}
+
+.about-platform-badge {
+  -fx-background-color: #134c33;
+  -fx-background-radius: 20px;
+  -fx-text-fill: #17dc7b;
+  -fx-font-weight: bold;
+  -fx-font-size: 11px;
+  -fx-padding: 7 10;
+}
+
+.about-info-icon {
+  -fx-text-fill: #65bfff;
+  -fx-font-size: 19px;
+  -fx-font-weight: bold;
+}
+
+/* Privacy */
+
+.about-security-icon {
+  -fx-text-fill: #17dc7b;
+  -fx-font-size: 55px;
+  -fx-alignment: CENTER;
+  -fx-min-width: 65px;
+}
+
+/* Disclaimer */
+
+.about-disclaimer {
+  -fx-background-color: #24271f;
+  -fx-border-color: #b68020;
+  -fx-border-width: 1px;
+  -fx-background-radius: 12px;
+  -fx-border-radius: 12px;
+  -fx-padding: 15 18;
+  -fx-min-height: 105px;
+}
+
+.about-warning-icon {
+  -fx-text-fill: #ffcc52;
+  -fx-font-size: 27px;
+  -fx-font-weight: bold;
+  -fx-alignment: CENTER;
+  -fx-min-width: 40px;
+  -fx-pref-width: 40px;
+  -fx-max-width: 40px;
+}
+
+.about-warning-title {
+  -fx-text-fill: #ffcc52;
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+}
+
+.about-disclaimer-text {
+  -fx-text-fill: #d7dce0;
+  -fx-font-size: 12px;
+  -fx-line-spacing: 2px;
+}
+
+.about-warning-divider {
+  -fx-background-color: #715621;
+  -fx-min-width: 1px;
+  -fx-pref-width: 1px;
+  -fx-max-width: 1px;
+  -fx-min-height: 65px;
+}
+
+.about-warning-subtitle {
+  -fx-text-fill: #ffcc52;
+  -fx-font-size: 12px;
+}
