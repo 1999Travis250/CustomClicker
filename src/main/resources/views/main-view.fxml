@@ -252,6 +252,11 @@
                                 <Label text="Repeat" prefWidth="125" styleClass="field-label"/>
                                 <ComboBox fx:id="repeatCombo" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
                             </HBox>
+
+                            <HBox fx:id="repeatAmountRow" alignment="CENTER_LEFT" visible="false" managed="false">
+                                <Label text="Click Amount" prefWidth="125" styleClass="field-label"/>
+                                <Spinner fx:id="repeatAmountSpinner" editable="true" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                            </HBox>
                         </VBox>
 
                         <VBox GridPane.columnIndex="1" spacing="12"
@@ -262,10 +267,11 @@
                                 <Label text="Where to click on the screen." styleClass="muted"/>
                             </VBox>
 
-                            <RadioButton text="Follow Cursor" selected="true"
-                                         toggleGroup="$targetGroup" prefHeight="24"/>
+                            <RadioButton fx:id="followCursorButton" text="Follow Cursor" selected="true"
+                                toggleGroup="$targetGroup" prefHeight="24"/>
 
-                            <RadioButton text="Fixed Position" toggleGroup="$targetGroup" prefHeight="24"/>
+                            <RadioButton fx:id="fixedPositionButton" text="Fixed Position"
+                                toggleGroup="$targetGroup" prefHeight="24"/>
 
                             <HBox spacing="10" alignment="CENTER_LEFT">
                                 <Label text="X" styleClass="field-label"/>

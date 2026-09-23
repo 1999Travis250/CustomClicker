@@ -11,18 +11,22 @@ import javafx.stage.Stage;
 import org.kordamp.ikonli.javafx.FontIcon;
 import javafx.scene.paint.Color;
 
+import com.travis.customclicker.model.ClickSettings;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainController {
 
     // Clicker
-    @FXML private Spinner<Integer> fixedValueSpinner, minIntervalSpinner, maxIntervalSpinner, xSpinner, ySpinner;
+    @FXML private Spinner<Integer> fixedValueSpinner, minIntervalSpinner, maxIntervalSpinner, xSpinner, ySpinner, repeatAmountSpinner;
     @FXML private Spinner<Double> minCpsSpinner, maxCpsSpinner;
     @FXML private ComboBox<String> mouseButtonCombo, clickTypeCombo, repeatCombo, profileCombo;
     @FXML private ToggleButton fixedTimingButton, randomCpsButton, randomIntervalButton, fixedIntervalButton, fixedCpsButton;
     @FXML private Label fixedValueLabel, fixedHelperLabel, fixedEquivalentTitle, fixedEquivalentValue, fixedEquivalentHelper;
     @FXML private GridPane fixedPane, randomCpsPane, randomIntervalPane;
+    @FXML private RadioButton followCursorButton, fixedPositionButton;
+    @FXML private HBox repeatAmountRow;
 
     // Navigation
     @FXML private Button clickerNavButton, profilesNavButton, settingsNavButton, aboutNavButton;
@@ -79,10 +83,25 @@ public class MainController {
         initIntSpinner(maxIntervalSpinner, 1, 60000, 300);
         initIntSpinner(xSpinner, 0, 10000, 0);
         initIntSpinner(ySpinner, 0, 10000, 0);
+        initIntSpinner(repeatAmountSpinner, 1, 1000000, 10);
 
         setupCombo(mouseButtonCombo, "Left", "Left", "Right", "Middle");
         setupCombo(clickTypeCombo, "Single", "Single", "Double");
         setupCombo(repeatCombo, "Until stopped", "Until stopped", "Fixed amount");
+
+        repeatCombo.valueProperty().addListener((obs, oldValue, value) -> {
+            boolean fixedAmount = "Fixed amount".equals(value);
+            repeatAmountRow.setVisible(fixedAmount);
+            repeatAmountRow.setManaged(fixedAmount);
+        });
+
+        fixedPositionButton.selectedProperty().addListener((obs, oldValue, selected) -> {
+            xSpinner.setDisable(!selected);
+            ySpinner.setDisable(!selected);
+        });
+
+        xSpinner.setDisable(true);
+        ySpinner.setDisable(true);
 
         setupTab(fixedTimingButton, () -> showTimingPane(fixedPane));
         setupTab(randomCpsButton, () -> showTimingPane(randomCpsPane));
@@ -141,6 +160,71 @@ public class MainController {
         fixedEquivalentValue.setText(equivalentValue);
         fixedEquivalentHelper.setText(equivalentHelper);
         initIntSpinner(fixedValueSpinner, min, max, initial);
+    }
+
+    private ClickSettings readClickSettings() {
+        ClickSettings settings = new ClickSettings();
+
+        if (randomCpsButton.isSelected())
+            settings.setTimingMode(ClickSettings.TimingMode.RANDOM_CPS);
+        else if (randomIntervalButton.isSelected())
+            settings.setTimingMode(ClickSettings.TimingMode.RANDOM_INTERVAL);
+        else if (fixedCpsButton.isSelected())
+            settings.setTimingMode(ClickSettings.TimingMode.FIXED_CPS);
+        else
+            settings.setTimingMode(ClickSettings.TimingMode.FIXED_INTERVAL);
+
+        settings.setFixedValue(fixedValueSpinner.getValue());
+        settings.setMinCps(minCpsSpinner.getValue());
+        settings.setMaxCps(maxCpsSpinner.getValue());
+        settings.setMinInterval(minIntervalSpinner.getValue());
+        settings.setMaxInterval(maxIntervalSpinner.getValue());
+
+        settings.setMouseButton(switch (mouseButtonCombo.getValue()) {
+            case "Right" -> ClickSettings.MouseButton.RIGHT;
+            case "Middle" -> ClickSettings.MouseButton.MIDDLE;
+            default -> ClickSettings.MouseButton.LEFT;
+        });
+
+        settings.setClickType(
+                "Double".equals(clickTypeCombo.getValue())
+                        ? ClickSettings.ClickType.DOUBLE
+                        : ClickSettings.ClickType.SINGLE
+        );
+
+        settings.setRepeatMode(
+                "Fixed amount".equals(repeatCombo.getValue())
+                        ? ClickSettings.RepeatMode.FIXED_AMOUNT
+                        : ClickSettings.RepeatMode.UNTIL_STOPPED
+        );
+
+        settings.setTargetMode(
+                fixedPositionButton.isSelected()
+                        ? ClickSettings.TargetMode.FIXED_POSITION
+                        : ClickSettings.TargetMode.FOLLOW_CURSOR
+        );
+
+        settings.setX(xSpinner.getValue());
+        settings.setY(ySpinner.getValue());
+        settings.setRepeatAmount(repeatAmountSpinner.getValue());
+
+        return settings;
+    }
+
+    private boolean validateSettings(ClickSettings settings) {
+        if (settings.getTimingMode() == ClickSettings.TimingMode.RANDOM_CPS &&
+                settings.getMinCps() > settings.getMaxCps()) {
+            showAlert("Invalid CPS range", "Minimum CPS cannot be greater than maximum CPS.");
+            return false;
+        }
+
+        if (settings.getTimingMode() == ClickSettings.TimingMode.RANDOM_INTERVAL &&
+                settings.getMinInterval() > settings.getMaxInterval()) {
+            showAlert("Invalid interval range", "Minimum interval cannot be greater than maximum interval.");
+            return false;
+        }
+
+        return true;
     }
 
     // NAVIGATION
@@ -331,7 +415,12 @@ public class MainController {
 
     // APPLICATION CONTROLS
 
-    @FXML private void handleStart() { System.out.println("Start button clicked"); }
+    @FXML
+    private void handleStart() {
+        ClickSettings settings = readClickSettings();
+        if (!validateSettings(settings)) return;
+        System.out.println(settings);
+    }
     @FXML private void handleMinimize(ActionEvent event) { getStage(event).setIconified(true); }
     @FXML private void handleClose(ActionEvent event) { getStage(event).close(); }
 
