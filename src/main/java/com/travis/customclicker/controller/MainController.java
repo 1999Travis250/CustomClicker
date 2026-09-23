@@ -19,11 +19,10 @@ import java.util.List;
 public class MainController {
 
     // Clicker
-    @FXML private Spinner<Integer> fixedValueSpinner, minIntervalSpinner, maxIntervalSpinner, xSpinner, ySpinner, repeatAmountSpinner;
-    @FXML private Spinner<Double> minCpsSpinner, maxCpsSpinner;
+    @FXML private Spinner<Integer> fixedValueSpinner, minCpsSpinner, maxCpsSpinner, minIntervalSpinner, maxIntervalSpinner, xSpinner, ySpinner, repeatAmountSpinner;
     @FXML private ComboBox<String> mouseButtonCombo, clickTypeCombo, repeatCombo, profileCombo;
     @FXML private ToggleButton fixedTimingButton, randomCpsButton, randomIntervalButton, fixedIntervalButton, fixedCpsButton;
-    @FXML private Label fixedValueLabel, fixedHelperLabel, fixedEquivalentTitle, fixedEquivalentValue, fixedEquivalentHelper;
+    @FXML private Label fixedValueLabel, fixedHelperLabel, fixedEquivalentTitle, fixedEquivalentValue, fixedEquivalentHelper, randomCpsEquivalentValue, randomIntervalEquivalentValue;
     @FXML private GridPane fixedPane, randomCpsPane, randomIntervalPane;
     @FXML private RadioButton followCursorButton, fixedPositionButton;
     @FXML private HBox repeatAmountRow;
@@ -76,14 +75,22 @@ public class MainController {
     private void initializeClicker() {
         showFixedIntervalMode();
 
-        initDoubleSpinner(minCpsSpinner, 0.1, 100, 0.5);
-        initDoubleSpinner(maxCpsSpinner, 0.1, 100, 1.5);
+        initIntSpinner(minCpsSpinner, 1, 1000, 5);
+        initIntSpinner(maxCpsSpinner, 1, 1000, 10);
+        initIntSpinner(minIntervalSpinner, 1, 300000, 100);
+        initIntSpinner(maxIntervalSpinner, 1, 300000, 200);
+        initIntSpinner(xSpinner, 0, 50000, 0);
+        initIntSpinner(ySpinner, 0, 50000, 0);
+        initIntSpinner(repeatAmountSpinner, 1, 100000000, 10);
 
-        initIntSpinner(minIntervalSpinner, 1, 60000, 100);
-        initIntSpinner(maxIntervalSpinner, 1, 60000, 300);
-        initIntSpinner(xSpinner, 0, 10000, 0);
-        initIntSpinner(ySpinner, 0, 10000, 0);
-        initIntSpinner(repeatAmountSpinner, 1, 1000000, 10);
+        restrictNumericInput(fixedValueSpinner);
+        restrictNumericInput(minCpsSpinner);
+        restrictNumericInput(maxCpsSpinner);
+        restrictNumericInput(minIntervalSpinner);
+        restrictNumericInput(maxIntervalSpinner);
+        restrictNumericInput(xSpinner);
+        restrictNumericInput(ySpinner);
+        restrictNumericInput(repeatAmountSpinner);
 
         setupCombo(mouseButtonCombo, "Left", "Left", "Right", "Middle");
         setupCombo(clickTypeCombo, "Single", "Single", "Double");
@@ -108,14 +115,18 @@ public class MainController {
         setupTab(randomIntervalButton, () -> showTimingPane(randomIntervalPane));
         setupTab(fixedIntervalButton, this::showFixedIntervalMode);
         setupTab(fixedCpsButton, this::showFixedCpsMode);
+
+        setupTimingConversions();
     }
 
     private void initIntSpinner(Spinner<Integer> spinner, int min, int max, int initial) {
         spinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(min, max, initial));
     }
 
-    private void initDoubleSpinner(Spinner<Double> spinner, double min, double max, double initial) {
-        spinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(min, max, initial, 0.1));
+    private void restrictNumericInput(Spinner<Integer> spinner) {
+        spinner.getEditor().setTextFormatter(new TextFormatter<String>(change ->
+                change.getControlNewText().matches("\\d*") ? change : null
+        ));
     }
 
     private void setupCombo(ComboBox<String> combo, String selected, String... items) {
@@ -129,6 +140,7 @@ public class MainController {
                 button.setSelected(true);
                 return;
             }
+
             action.run();
         });
     }
@@ -144,11 +156,15 @@ public class MainController {
     private void showFixedIntervalMode() {
         configureFixedMode("Interval (ms)", "Use a constant delay between clicks.",
                 "Equivalent Speed", "10 CPS", "Equivalent clicking speed.", 1, 60000, 100);
+
+        if (fixedValueSpinner.getValueFactory() != null) updateFixedEquivalent();
     }
 
     private void showFixedCpsMode() {
         configureFixedMode("Clicks per second (CPS)", "Use a constant number of clicks per second.",
                 "Equivalent Interval", "100 ms", "Equivalent delay between clicks.", 1, 100, 10);
+
+        if (fixedValueSpinner.getValueFactory() != null) updateFixedEquivalent();
     }
 
     private void configureFixedMode(String label, String helper, String equivalentTitle,
@@ -160,6 +176,107 @@ public class MainController {
         fixedEquivalentValue.setText(equivalentValue);
         fixedEquivalentHelper.setText(equivalentHelper);
         initIntSpinner(fixedValueSpinner, min, max, initial);
+    }
+
+    private void setupTimingConversions() {
+        fixedValueSpinner.valueProperty().addListener((obs, oldValue, newValue) -> updateFixedEquivalent());
+        fixedValueSpinner.getEditor().textProperty().addListener((obs, oldValue, newValue) -> updateFixedEquivalent());
+
+        minCpsSpinner.valueProperty().addListener((obs, oldValue, newValue) -> updateRandomCpsEquivalent());
+        maxCpsSpinner.valueProperty().addListener((obs, oldValue, newValue) -> updateRandomCpsEquivalent());
+        minCpsSpinner.getEditor().textProperty().addListener((obs, oldValue, newValue) -> updateRandomCpsEquivalent());
+        maxCpsSpinner.getEditor().textProperty().addListener((obs, oldValue, newValue) -> updateRandomCpsEquivalent());
+
+        minIntervalSpinner.valueProperty().addListener((obs, oldValue, newValue) -> updateRandomIntervalEquivalent());
+        maxIntervalSpinner.valueProperty().addListener((obs, oldValue, newValue) -> updateRandomIntervalEquivalent());
+        minIntervalSpinner.getEditor().textProperty().addListener((obs, oldValue, newValue) -> updateRandomIntervalEquivalent());
+        maxIntervalSpinner.getEditor().textProperty().addListener((obs, oldValue, newValue) -> updateRandomIntervalEquivalent());
+
+        updateFixedEquivalent();
+        updateRandomCpsEquivalent();
+        updateRandomIntervalEquivalent();
+    }
+
+    private int getSpinnerInput(Spinner<Integer> spinner) {
+        String text = spinner.getEditor().getText().trim();
+
+        if (text.isEmpty()) return 0;
+
+        try {
+            return Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    private void updateFixedEquivalent() {
+        int value = getSpinnerInput(fixedValueSpinner);
+
+        if (value <= 0) {
+            fixedEquivalentValue.setText(fixedCpsButton.isSelected() ? "0 ms" : "0 CPS");
+            return;
+        }
+
+        if (fixedCpsButton.isSelected()) {
+            double interval = 1000.0 / value;
+            fixedEquivalentValue.setText(formatNumber(interval) + " ms");
+        } else {
+            double cps = 1000.0 / value;
+            fixedEquivalentValue.setText(formatNumber(cps) + " CPS");
+        }
+    }
+
+    private void updateRandomCpsEquivalent() {
+        int minCps = getSpinnerInput(minCpsSpinner);
+        int maxCps = getSpinnerInput(maxCpsSpinner);
+
+        if (minCps <= 0 || maxCps <= 0) {
+            randomCpsEquivalentValue.setText("≈ 0 ms");
+            return;
+        }
+
+        if (minCps > maxCps) {
+            randomCpsEquivalentValue.setText("Invalid range");
+            return;
+        }
+
+        double minInterval = 1000.0 / maxCps;
+        double maxInterval = 1000.0 / minCps;
+
+        randomCpsEquivalentValue.setText(
+                "≈ " + formatNumber(minInterval) + " – " + formatNumber(maxInterval) + " ms"
+        );
+    }
+
+    private void updateRandomIntervalEquivalent() {
+        int minInterval = getSpinnerInput(minIntervalSpinner);
+        int maxInterval = getSpinnerInput(maxIntervalSpinner);
+
+        if (minInterval <= 0 || maxInterval <= 0) {
+            randomIntervalEquivalentValue.setText("≈ 0 CPS");
+            return;
+        }
+
+        if (minInterval > maxInterval) {
+            randomIntervalEquivalentValue.setText("Invalid range");
+            return;
+        }
+
+        double minCps = 1000.0 / maxInterval;
+        double maxCps = 1000.0 / minInterval;
+
+        randomIntervalEquivalentValue.setText(
+                "≈ " + formatNumber(minCps) + " – " + formatNumber(maxCps) + " CPS"
+        );
+    }
+
+    private String formatNumber(double value) {
+        if (Math.abs(value - Math.round(value)) < 0.001)
+            return String.valueOf(Math.round(value));
+
+        return String.format("%.2f", value)
+                .replaceAll("0+$", "")
+                .replaceAll("\\.$", "");
     }
 
     private ClickSettings readClickSettings() {
@@ -174,11 +291,11 @@ public class MainController {
         else
             settings.setTimingMode(ClickSettings.TimingMode.FIXED_INTERVAL);
 
-        settings.setFixedValue(fixedValueSpinner.getValue());
-        settings.setMinCps(minCpsSpinner.getValue());
-        settings.setMaxCps(maxCpsSpinner.getValue());
-        settings.setMinInterval(minIntervalSpinner.getValue());
-        settings.setMaxInterval(maxIntervalSpinner.getValue());
+        settings.setFixedValue(getSpinnerInput(fixedValueSpinner));
+        settings.setMinCps(getSpinnerInput(minCpsSpinner));
+        settings.setMaxCps(getSpinnerInput(maxCpsSpinner));
+        settings.setMinInterval(getSpinnerInput(minIntervalSpinner));
+        settings.setMaxInterval(getSpinnerInput(maxIntervalSpinner));
 
         settings.setMouseButton(switch (mouseButtonCombo.getValue()) {
             case "Right" -> ClickSettings.MouseButton.RIGHT;
@@ -204,9 +321,9 @@ public class MainController {
                         : ClickSettings.TargetMode.FOLLOW_CURSOR
         );
 
-        settings.setX(xSpinner.getValue());
-        settings.setY(ySpinner.getValue());
-        settings.setRepeatAmount(repeatAmountSpinner.getValue());
+        settings.setX(getSpinnerInput(xSpinner));
+        settings.setY(getSpinnerInput(ySpinner));
+        settings.setRepeatAmount(getSpinnerInput(repeatAmountSpinner));
 
         return settings;
     }
@@ -418,9 +535,12 @@ public class MainController {
     @FXML
     private void handleStart() {
         ClickSettings settings = readClickSettings();
+
         if (!validateSettings(settings)) return;
+
         System.out.println(settings);
     }
+
     @FXML private void handleMinimize(ActionEvent event) { getStage(event).setIconified(true); }
     @FXML private void handleClose(ActionEvent event) { getStage(event).close(); }
 

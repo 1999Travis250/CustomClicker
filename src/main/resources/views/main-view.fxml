@@ -180,8 +180,8 @@
 
                                 <VBox GridPane.columnIndex="1" spacing="8" maxWidth="Infinity">
                                     <Label text="Equivalent Interval" styleClass="field-label"/>
-                                    <Label text="≈ 667 – 2000 ms" maxWidth="Infinity"
-                                           styleClass="display-field"/>
+                                    <Label fx:id="randomCpsEquivalentValue" text="≈ 667 – 2000 ms"
+                                        maxWidth="Infinity" styleClass="display-field"/>
                                     <Label text="Equivalent delay range between clicks." styleClass="muted"/>
                                 </VBox>
                             </GridPane>
@@ -213,8 +213,8 @@
 
                                 <VBox GridPane.columnIndex="1" spacing="8" maxWidth="Infinity">
                                     <Label text="Equivalent Speed" styleClass="field-label"/>
-                                    <Label text="≈ 3.3 – 10 CPS" maxWidth="Infinity"
-                                           styleClass="display-field"/>
+                                    <Label fx:id="randomIntervalEquivalentValue" text="≈ 3.3 – 10 CPS"
+                                        maxWidth="Infinity" styleClass="display-field"/>
                                     <Label text="Equivalent clicking speed for this interval range."
                                            styleClass="muted"/>
                                 </VBox>
