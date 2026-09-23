@@ -2,15 +2,27 @@
   -fx-font-family: "Segoe UI";
 }
 
-.app-root,
+.window-border {
+  -fx-background-color: #233438;
+  -fx-background-radius: 15px;
+  -fx-padding: 1px;
+}
+
+.app-root {
+  -fx-background-color: #081316;
+  -fx-background-radius: 14px;
+}
+
 .main-content {
   -fx-background-color: #081316;
+  -fx-background-radius: 0 14px 14px 0;
 }
 
 /* SIDEBAR */
 
 .sidebar {
   -fx-background-color: #0c191c;
+  -fx-background-radius: 14px 0 0 14px;
   -fx-border-color: transparent #193033 transparent transparent;
 }
 
