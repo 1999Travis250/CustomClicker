@@ -17,6 +17,7 @@ import javafx.util.Duration;
 
 import com.travis.customclicker.model.ClickSettings;
 import com.travis.customclicker.service.AutoClickService;
+import com.travis.customclicker.service.GlobalHotkeyService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,7 @@ public class MainController {
     private AutoClickService autoClickService;
     private boolean clickerRunning = false;
     private FadeTransition statusPulse;
+    private GlobalHotkeyService globalHotkeyService;
 
     // Navigation
     @FXML private Button clickerNavButton, profilesNavButton, settingsNavButton, aboutNavButton;
@@ -86,6 +88,16 @@ public class MainController {
             autoClickService = new AutoClickService();
         } catch (Exception e) {
             showAlert("Click engine error", "Unable to initialize the mouse click engine.");
+        }
+
+        try {
+            globalHotkeyService = new GlobalHotkeyService();
+
+            globalHotkeyService.start(() ->
+                    Platform.runLater(this::handleStart)
+            );
+        } catch (Exception e) {
+            showAlert("Hotkey error", "Unable to initialize the global hotkey.");
         }
     }
 
@@ -583,16 +595,28 @@ public class MainController {
             startButtonText.setText("Stop Clicking");
             startIcon.setContent("M6 6h12v12H6z");
 
+            if (!startButton.getStyleClass().contains("start-button-running"))
+                startButton.getStyleClass().add("start-button-running");
+
             statusText.setText("Clicking");
-            statusDot.getStyleClass().add("status-dot-running");
+
+            if (!statusDot.getStyleClass().contains("status-dot-running"))
+                statusDot.getStyleClass().add("status-dot-running");
+
+            if (!statusPill.getStyleClass().contains("status-pill-running"))
+                statusPill.getStyleClass().add("status-pill-running");
 
             startStatusPulse();
+
         } else {
             startButtonText.setText("Start Clicking");
             startIcon.setContent("M8 5v14l11-7z");
 
+            startButton.getStyleClass().remove("start-button-running");
+
             statusText.setText("Idle");
             statusDot.getStyleClass().remove("status-dot-running");
+            statusPill.getStyleClass().remove("status-pill-running");
 
             stopStatusPulse();
         }
@@ -619,7 +643,17 @@ public class MainController {
     }
 
     @FXML private void handleMinimize(ActionEvent event) { getStage(event).setIconified(true); }
-    @FXML private void handleClose(ActionEvent event) { getStage(event).close(); }
+
+    @FXML
+    private void handleClose(ActionEvent event) {
+        if (autoClickService != null)
+            autoClickService.stop();
+
+        if (globalHotkeyService != null)
+            globalHotkeyService.stop();
+
+        getStage(event).close();
+    }
 
     @FXML
     private void handleWindowPressed(MouseEvent event) {

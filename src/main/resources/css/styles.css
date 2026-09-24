@@ -90,6 +90,10 @@
   -fx-padding: 8 18;
 }
 
+.status-pill-running {
+  -fx-border-color: #17dc7b;
+}
+
 .status-dot {
   -fx-text-fill: #a9d0ff;
   -fx-font-size: 18px;
@@ -396,6 +400,15 @@
 
 .start-button:hover {
   -fx-background-color: #1de987;
+}
+
+.start-button-running {
+  -fx-background-color: #d94b55;
+  -fx-effect: dropshadow(gaussian, rgba(255, 75, 85, 0.2), 14, 0.2, 0, 0);
+}
+
+.start-button-running:hover {
+  -fx-background-color: #e85a64;
 }
 
 /* Start button content */
