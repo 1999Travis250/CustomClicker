@@ -76,9 +76,9 @@
                     <Label text="CustomClicker" styleClass="page-title"/>
                     <Region prefWidth="16"/>
 
-                    <HBox alignment="CENTER" spacing="6" styleClass="status-pill">
-                        <Label text="●" styleClass="status-dot"/>
-                        <Label text="Idle" styleClass="status-text"/>
+                    <HBox fx:id="statusPill" alignment="CENTER" spacing="6" styleClass="status-pill">
+                        <Label fx:id="statusDot" text="●" styleClass="status-dot"/>
+                        <Label fx:id="statusText" text="Idle" styleClass="status-text"/>
                     </HBox>
 
                     <Region HBox.hgrow="ALWAYS"/>
@@ -304,12 +304,24 @@
                             </Button>
                         </HBox>
 
-                        <Button maxWidth="Infinity" prefHeight="68" onAction="#handleStart" styleClass="start-button">
+                        <Button fx:id="startButton" maxWidth="Infinity" prefHeight="68"
+                                onAction="#handleStart" styleClass="start-button">
+
                             <graphic>
                                 <HBox alignment="CENTER" spacing="14">
-                                    <SVGPath content="M8 5v14l11-7z" fill="white" scaleX="1.4" scaleY="1.4"/>
-                                    <Label text="Start Clicking" styleClass="start-button-text"/>
+
+                                    <SVGPath fx:id="startIcon"
+                                            content="M8 5v14l11-7z"
+                                            fill="white"
+                                            scaleX="1.4"
+                                            scaleY="1.4"/>
+
+                                    <Label fx:id="startButtonText"
+                                        text="Start Clicking"
+                                        styleClass="start-button-text"/>
+
                                     <Label text="F6" styleClass="start-hotkey"/>
+
                                 </HBox>
                             </graphic>
                         </Button>

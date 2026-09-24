@@ -10,8 +10,13 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.kordamp.ikonli.javafx.FontIcon;
 import javafx.scene.paint.Color;
+import javafx.animation.FadeTransition;
+import javafx.application.Platform;
+import javafx.scene.shape.SVGPath;
+import javafx.util.Duration;
 
 import com.travis.customclicker.model.ClickSettings;
+import com.travis.customclicker.service.AutoClickService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +31,14 @@ public class MainController {
     @FXML private GridPane fixedPane, randomCpsPane, randomIntervalPane;
     @FXML private RadioButton followCursorButton, fixedPositionButton;
     @FXML private HBox repeatAmountRow;
+    @FXML private Button startButton;
+    @FXML private Label startButtonText, statusText, statusDot;
+    @FXML private HBox statusPill;
+    @FXML private SVGPath startIcon;
+
+    private AutoClickService autoClickService;
+    private boolean clickerRunning = false;
+    private FadeTransition statusPulse;
 
     // Navigation
     @FXML private Button clickerNavButton, profilesNavButton, settingsNavButton, aboutNavButton;
@@ -68,6 +81,12 @@ public class MainController {
         initializeProfiles();
         initializeSettings();
         showPage(clickerPage);
+
+        try {
+            autoClickService = new AutoClickService();
+        } catch (Exception e) {
+            showAlert("Click engine error", "Unable to initialize the mouse click engine.");
+        }
     }
 
     // CLICKER
@@ -534,11 +553,69 @@ public class MainController {
 
     @FXML
     private void handleStart() {
+        if (autoClickService == null) {
+            showAlert("Click engine error", "The click engine is not available.");
+            return;
+        }
+
+        if (clickerRunning) {
+            autoClickService.stop();
+            return;
+        }
+
         ClickSettings settings = readClickSettings();
 
         if (!validateSettings(settings)) return;
 
-        System.out.println(settings);
+        clickerRunning = true;
+        updateClickerUi(true);
+
+        autoClickService.start(settings, () ->
+                Platform.runLater(() -> {
+                    clickerRunning = false;
+                    updateClickerUi(false);
+                })
+        );
+    }
+
+    private void updateClickerUi(boolean running) {
+        if (running) {
+            startButtonText.setText("Stop Clicking");
+            startIcon.setContent("M6 6h12v12H6z");
+
+            statusText.setText("Clicking");
+            statusDot.getStyleClass().add("status-dot-running");
+
+            startStatusPulse();
+        } else {
+            startButtonText.setText("Start Clicking");
+            startIcon.setContent("M8 5v14l11-7z");
+
+            statusText.setText("Idle");
+            statusDot.getStyleClass().remove("status-dot-running");
+
+            stopStatusPulse();
+        }
+    }
+
+    private void startStatusPulse() {
+        stopStatusPulse();
+
+        statusPulse = new FadeTransition(Duration.millis(700), statusDot);
+        statusPulse.setFromValue(1.0);
+        statusPulse.setToValue(0.3);
+        statusPulse.setCycleCount(FadeTransition.INDEFINITE);
+        statusPulse.setAutoReverse(true);
+        statusPulse.play();
+    }
+
+    private void stopStatusPulse() {
+        if (statusPulse != null) {
+            statusPulse.stop();
+            statusPulse = null;
+        }
+
+        statusDot.setOpacity(1.0);
     }
 
     @FXML private void handleMinimize(ActionEvent event) { getStage(event).setIconified(true); }

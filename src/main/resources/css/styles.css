@@ -95,6 +95,10 @@
   -fx-font-size: 18px;
 }
 
+.status-dot-running {
+  -fx-text-fill: #17dc7b;
+}
+
 .status-text {
   -fx-text-fill: #e4ebef;
   -fx-font-size: 14px;
