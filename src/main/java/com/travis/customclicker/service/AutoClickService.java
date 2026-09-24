@@ -68,17 +68,26 @@ public class AutoClickService {
                 break;
             }
 
+            long cycleStart = System.nanoTime();
+
             performClick(settings);
             completedClicks++;
 
             if (!running.get()) break;
 
-            long delay = calculateDelay(settings);
+            long targetDelayNanos = calculateDelay(settings) * 1_000_000L;
+            long elapsedNanos = System.nanoTime() - cycleStart;
+            long remainingNanos = targetDelayNanos - elapsedNanos;
 
-            try {
-                Thread.sleep(delay);
-            } catch (InterruptedException e) {
-                break;
+            if (remainingNanos > 0) {
+                try {
+                    long millis = remainingNanos / 1_000_000L;
+                    int nanos = (int) (remainingNanos % 1_000_000L);
+
+                    Thread.sleep(millis, nanos);
+                } catch (InterruptedException e) {
+                    break;
+                }
             }
         }
     }
