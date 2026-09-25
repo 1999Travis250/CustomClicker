@@ -16,6 +16,7 @@
     <fx:define>
         <ToggleGroup fx:id="timingGroup"/>
         <ToggleGroup fx:id="fixedGroup"/>
+        <ToggleGroup fx:id="randomGroup"/>
         <ToggleGroup fx:id="targetGroup"/>
         <ToggleGroup fx:id="accentGroup"/>
     </fx:define>
@@ -111,6 +112,7 @@
                                 </VBox>
                             </HBox>
 
+                            <!-- FIXED / RANDOM -->
                             <HBox alignment="CENTER" styleClass="tab-bar">
                                 <ToggleButton fx:id="fixedTimingButton" text="Fixed" selected="true"
                                             toggleGroup="$timingGroup" maxWidth="Infinity"
@@ -118,52 +120,78 @@
 
                                 <Region styleClass="tab-divider"/>
 
-                                <ToggleButton fx:id="randomCpsButton" text="Random CPS"
-                                            toggleGroup="$timingGroup" maxWidth="Infinity"
-                                            HBox.hgrow="ALWAYS" styleClass="tab"/>
-
-                                <Region styleClass="tab-divider"/>
-
-                                <ToggleButton fx:id="randomIntervalButton" text="Random Interval"
+                                <ToggleButton fx:id="randomTimingButton" text="Random"
                                             toggleGroup="$timingGroup" maxWidth="Infinity"
                                             HBox.hgrow="ALWAYS" styleClass="tab"/>
                             </HBox>
 
-                            <StackPane prefHeight="135" minHeight="135" maxHeight="135">
+                            <StackPane prefHeight="145"
+                                    minHeight="145"
+                                    maxHeight="145">
 
                                 <!-- FIXED -->
                                 <GridPane fx:id="fixedPane" hgap="28" maxWidth="Infinity">
+
                                     <columnConstraints>
                                         <ColumnConstraints percentWidth="49" hgrow="ALWAYS"/>
                                         <ColumnConstraints minWidth="1" prefWidth="1" maxWidth="1"/>
                                         <ColumnConstraints percentWidth="49" hgrow="ALWAYS"/>
                                     </columnConstraints>
 
-                                    <VBox GridPane.columnIndex="0" spacing="8" maxWidth="Infinity">
-                                        <HBox styleClass="tab-bar">
-                                            <ToggleButton fx:id="fixedIntervalButton" text="Interval" selected="true"
-                                                        toggleGroup="$fixedGroup" maxWidth="Infinity"
-                                                        HBox.hgrow="ALWAYS" styleClass="tab"/>
+                                    <!-- LEFT SIDE -->
+                                    <VBox GridPane.columnIndex="0"
+                                        spacing="8"
+                                        maxWidth="Infinity">
 
-                                            <ToggleButton fx:id="fixedCpsButton" text="CPS"
-                                                        toggleGroup="$fixedGroup" maxWidth="Infinity"
-                                                        HBox.hgrow="ALWAYS" styleClass="tab"/>
-                                        </HBox>
+                                        <GridPane styleClass="tab-bar">
+                                            <columnConstraints>
+                                                <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                                                <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                                            </columnConstraints>
 
-                                        <Label fx:id="fixedValueLabel" text="Interval (ms)" styleClass="field-label"/>
-                                        <Spinner fx:id="fixedValueSpinner" editable="true" maxWidth="Infinity"/>
+                                            <ToggleButton fx:id="fixedCpsButton"
+                                                        text="CPS"
+                                                        selected="true"
+                                                        toggleGroup="$fixedGroup"
+                                                        maxWidth="Infinity"
+                                                        GridPane.columnIndex="0"
+                                                        styleClass="tab"/>
+
+                                            <ToggleButton fx:id="fixedIntervalButton"
+                                                        text="Interval"
+                                                        toggleGroup="$fixedGroup"
+                                                        maxWidth="Infinity"
+                                                        GridPane.columnIndex="1"
+                                                        styleClass="tab"/>
+                                        </GridPane>
+
+                                        <Label fx:id="fixedValueLabel"
+                                            text="Interval (ms)"
+                                            styleClass="field-label"/>
+
+                                        <Spinner fx:id="fixedValueSpinner"
+                                                editable="true"
+                                                maxWidth="Infinity"/>
+
                                         <Label fx:id="fixedHelperLabel"
-                                            text="Use a constant delay between clicks." styleClass="muted"/>
+                                            text="Use a constant delay between clicks."
+                                            styleClass="muted"/>
                                     </VBox>
 
+                                    <!-- DIVIDER -->
                                     <Region GridPane.columnIndex="1"
-                                        styleClass="timing-vertical-divider"/>
+                                            styleClass="timing-vertical-divider"/>
 
-                                    <VBox GridPane.columnIndex="2" spacing="8" maxWidth="Infinity">
+                                    <!-- RIGHT SIDE -->
+                                    <VBox GridPane.columnIndex="2"
+                                        spacing="8"
+                                        maxWidth="Infinity">
 
                                         <HBox spacing="10" alignment="CENTER_LEFT">
                                             <StackPane styleClass="section-icon-small">
-                                                <FontIcon iconLiteral="fth-activity" iconSize="25" iconColor="#17dc7b"/>
+                                                <FontIcon iconLiteral="fth-activity"
+                                                        iconSize="25"
+                                                        iconColor="#17dc7b"/>
                                             </StackPane>
 
                                             <Label fx:id="fixedEquivalentTitle"
@@ -180,11 +208,15 @@
                                             text="Equivalent clicking speed."
                                             styleClass="muted"/>
                                     </VBox>
+
                                 </GridPane>
 
-                                <!-- RANDOM CPS -->
-                                <GridPane fx:id="randomCpsPane" hgap="28" maxWidth="Infinity"
-                                        visible="false" managed="false">
+                                <!-- RANDOM -->
+                                <GridPane fx:id="randomPane"
+                                        hgap="28"
+                                        maxWidth="Infinity"
+                                        visible="false"
+                                        managed="false">
 
                                     <columnConstraints>
                                         <ColumnConstraints percentWidth="49" hgrow="ALWAYS"/>
@@ -193,21 +225,102 @@
                                     </columnConstraints>
 
                                     <!-- LEFT SIDE -->
-                                    <VBox GridPane.columnIndex="0" spacing="8" maxWidth="Infinity">
-                                        <HBox spacing="12">
-                                            <VBox spacing="6" HBox.hgrow="ALWAYS">
-                                                <Label text="Minimum CPS" styleClass="field-label"/>
-                                                <Spinner fx:id="minCpsSpinner" editable="true" maxWidth="Infinity"/>
+                                    <VBox GridPane.columnIndex="0"
+                                        spacing="8"
+                                        maxWidth="Infinity">
+
+                                        <!-- CPS / INTERVAL -->
+                                        <GridPane styleClass="tab-bar">
+                                            <columnConstraints>
+                                                <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                                                <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                                            </columnConstraints>
+
+                                            <ToggleButton fx:id="randomCpsButton"
+                                                        text="CPS"
+                                                        selected="true"
+                                                        toggleGroup="$randomGroup"
+                                                        maxWidth="Infinity"
+                                                        GridPane.columnIndex="0"
+                                                        styleClass="tab"/>
+
+                                            <ToggleButton fx:id="randomIntervalButton"
+                                                        text="Interval"
+                                                        toggleGroup="$randomGroup"
+                                                        maxWidth="Infinity"
+                                                        GridPane.columnIndex="1"
+                                                        styleClass="tab"/>
+                                        </GridPane>
+
+                                        <!-- RANDOM INPUT CONTENT -->
+                                        <StackPane maxWidth="Infinity">
+
+                                            <!-- RANDOM CPS INPUTS -->
+                                            <VBox fx:id="randomCpsInputPane"
+                                                spacing="8"
+                                                maxWidth="Infinity">
+
+                                                <HBox spacing="12">
+
+                                                    <VBox spacing="8" HBox.hgrow="ALWAYS">
+                                                        <Label text="Minimum CPS"
+                                                            styleClass="field-label"/>
+
+                                                        <Spinner fx:id="minCpsSpinner"
+                                                                editable="true"
+                                                                maxWidth="Infinity"/>
+                                                    </VBox>
+
+                                                    <VBox spacing="8" HBox.hgrow="ALWAYS">
+                                                        <Label text="Maximum CPS"
+                                                            styleClass="field-label"/>
+
+                                                        <Spinner fx:id="maxCpsSpinner"
+                                                                editable="true"
+                                                                maxWidth="Infinity"/>
+                                                    </VBox>
+
+                                                </HBox>
+
+                                                <Label text="Clicks are randomly chosen within this CPS range."
+                                                    styleClass="muted"/>
                                             </VBox>
 
-                                            <VBox spacing="6" HBox.hgrow="ALWAYS">
-                                                <Label text="Maximum CPS" styleClass="field-label"/>
-                                                <Spinner fx:id="maxCpsSpinner" editable="true" maxWidth="Infinity"/>
-                                            </VBox>
-                                        </HBox>
+                                            <!-- RANDOM INTERVAL INPUTS -->
+                                            <VBox fx:id="randomIntervalInputPane"
+                                                spacing="8"
+                                                maxWidth="Infinity"
+                                                visible="false"
+                                                managed="false">
 
-                                        <Label text="Clicks are randomly chosen within this CPS range."
-                                            styleClass="muted"/>
+                                                <HBox spacing="12">
+
+                                                    <VBox spacing="8" HBox.hgrow="ALWAYS">
+                                                        <Label text="Minimum Interval (ms)"
+                                                            styleClass="field-label"/>
+
+                                                        <Spinner fx:id="minIntervalSpinner"
+                                                                editable="true"
+                                                                maxWidth="Infinity"/>
+                                                    </VBox>
+
+                                                    <VBox spacing="8" HBox.hgrow="ALWAYS">
+                                                        <Label text="Maximum Interval (ms)"
+                                                            styleClass="field-label"/>
+
+                                                        <Spinner fx:id="maxIntervalSpinner"
+                                                                editable="true"
+                                                                maxWidth="Infinity"/>
+                                                    </VBox>
+
+                                                </HBox>
+
+                                                <Label text="Each delay is randomly chosen within this interval range."
+                                                    styleClass="muted"/>
+                                            </VBox>
+
+                                        </StackPane>
+
                                     </VBox>
 
                                     <!-- DIVIDER -->
@@ -215,73 +328,67 @@
                                             styleClass="timing-vertical-divider"/>
 
                                     <!-- RIGHT SIDE -->
-                                    <VBox GridPane.columnIndex="2" spacing="8" maxWidth="Infinity">
+                                    <StackPane GridPane.columnIndex="2"
+                                            maxWidth="Infinity">
 
-                                        <HBox spacing="10" alignment="CENTER_LEFT">
-                                            <StackPane styleClass="section-icon-small">
-                                                <FontIcon iconLiteral="fth-activity" iconSize="25" iconColor="#17dc7b"/>
-                                            </StackPane>
+                                        <!-- RANDOM CPS EQUIVALENT -->
+                                        <VBox fx:id="randomCpsEquivalentPane"
+                                            spacing="8"
+                                            maxWidth="Infinity">
 
-                                            <Label text="Equivalent Interval" styleClass="field-label"/>
-                                        </HBox>
+                                            <HBox spacing="10"
+                                                alignment="CENTER_LEFT">
 
-                                        <Label fx:id="randomCpsEquivalentValue"
-                                            text="≈ 100 – 200 ms"
+                                                <StackPane styleClass="section-icon-small">
+                                                    <FontIcon iconLiteral="fth-activity"
+                                                            iconSize="25"
+                                                            iconColor="#17dc7b"/>
+                                                </StackPane>
+
+                                                <Label text="Equivalent Interval"
+                                                    styleClass="field-label"/>
+                                            </HBox>
+
+                                            <Label fx:id="randomCpsEquivalentValue"
+                                                text="≈ 100 – 200 ms"
+                                                maxWidth="Infinity"
+                                                styleClass="display-field"/>
+
+                                            <Label text="Equivalent delay range between clicks."
+                                                styleClass="muted"/>
+                                        </VBox>
+
+                                        <!-- RANDOM INTERVAL EQUIVALENT -->
+                                        <VBox fx:id="randomIntervalEquivalentPane"
+                                            spacing="8"
                                             maxWidth="Infinity"
-                                            styleClass="display-field"/>
+                                            visible="false"
+                                            managed="false">
 
-                                        <Label text="Equivalent delay range between clicks."
-                                            styleClass="muted"/>
-                                    </VBox>
-                                </GridPane>
+                                            <HBox spacing="10"
+                                                alignment="CENTER_LEFT">
 
-                                <!-- RANDOM INTERVAL -->
-                                <GridPane fx:id="randomIntervalPane" hgap="28" maxWidth="Infinity"
-                                        visible="false" managed="false">
-                                    <columnConstraints>
-                                        <ColumnConstraints percentWidth="49" hgrow="ALWAYS"/>
-                                        <ColumnConstraints minWidth="1" prefWidth="1" maxWidth="1"/>
-                                        <ColumnConstraints percentWidth="49" hgrow="ALWAYS"/>
-                                    </columnConstraints>
+                                                <StackPane styleClass="section-icon-small">
+                                                    <FontIcon iconLiteral="fth-activity"
+                                                            iconSize="25"
+                                                            iconColor="#17dc7b"/>
+                                                </StackPane>
 
-                                    <VBox GridPane.columnIndex="0" spacing="8" maxWidth="Infinity">
-                                        <HBox spacing="12">
-                                            <VBox spacing="6" HBox.hgrow="ALWAYS">
-                                                <Label text="Minimum Interval (ms)" styleClass="field-label"/>
-                                                <Spinner fx:id="minIntervalSpinner" editable="true" maxWidth="Infinity"/>
-                                            </VBox>
+                                                <Label text="Equivalent Speed"
+                                                    styleClass="field-label"/>
+                                            </HBox>
 
-                                            <VBox spacing="6" HBox.hgrow="ALWAYS">
-                                                <Label text="Maximum Interval (ms)" styleClass="field-label"/>
-                                                <Spinner fx:id="maxIntervalSpinner" editable="true" maxWidth="Infinity"/>
-                                            </VBox>
-                                        </HBox>
+                                            <Label fx:id="randomIntervalEquivalentValue"
+                                                text="≈ 5 – 10 CPS"
+                                                maxWidth="Infinity"
+                                                styleClass="display-field"/>
 
-                                        <Label text="Each delay is randomly chosen within this interval range."
-                                            styleClass="muted"/>
-                                    </VBox>
+                                            <Label text="Equivalent clicking speed for this interval range."
+                                                styleClass="muted"/>
+                                        </VBox>
 
-                                    <Region GridPane.columnIndex="1"
-                                        styleClass="timing-vertical-divider"/>
+                                    </StackPane>
 
-                                    <VBox GridPane.columnIndex="2" spacing="8" maxWidth="Infinity">
-
-                                        <HBox spacing="10" alignment="CENTER_LEFT">
-                                            <StackPane styleClass="section-icon-small">
-                                                <FontIcon iconLiteral="fth-activity" iconSize="25" iconColor="#17dc7b"/>
-                                            </StackPane>
-
-                                            <Label text="Equivalent Speed" styleClass="field-label"/>
-                                        </HBox>
-
-                                        <Label fx:id="randomIntervalEquivalentValue"
-                                            text="≈ 5 – 10 CPS"
-                                            maxWidth="Infinity"
-                                            styleClass="display-field"/>
-
-                                        <Label text="Equivalent clicking speed for this interval range."
-                                            styleClass="muted"/>
-                                    </VBox>
                                 </GridPane>
 
                             </StackPane>

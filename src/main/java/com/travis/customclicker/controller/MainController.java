@@ -27,9 +27,10 @@ public class MainController {
     // Clicker
     @FXML private Spinner<Integer> fixedValueSpinner, minCpsSpinner, maxCpsSpinner, minIntervalSpinner, maxIntervalSpinner, xSpinner, ySpinner, repeatAmountSpinner;
     @FXML private ComboBox<String> mouseButtonCombo, clickTypeCombo, repeatCombo, profileCombo;
-    @FXML private ToggleButton fixedTimingButton, randomCpsButton, randomIntervalButton, fixedIntervalButton, fixedCpsButton;
+    @FXML private ToggleButton fixedTimingButton, randomTimingButton, fixedIntervalButton, fixedCpsButton, randomCpsButton, randomIntervalButton;
     @FXML private Label fixedValueLabel, fixedHelperLabel, fixedEquivalentTitle, fixedEquivalentValue, fixedEquivalentHelper, randomCpsEquivalentValue, randomIntervalEquivalentValue;
-    @FXML private GridPane fixedPane, randomCpsPane, randomIntervalPane;
+    @FXML private GridPane fixedPane, randomPane;
+    @FXML private VBox randomCpsInputPane, randomIntervalInputPane, randomCpsEquivalentPane, randomIntervalEquivalentPane;
     @FXML private RadioButton followCursorButton, fixedPositionButton;
     @FXML private HBox repeatAmountRow;
     @FXML private Button startButton;
@@ -102,9 +103,8 @@ public class MainController {
     }
 
     // CLICKER
-
     private void initializeClicker() {
-        showFixedIntervalMode();
+        showFixedCpsMode();
 
         initIntSpinner(minCpsSpinner, 1, 1000, 5);
         initIntSpinner(maxCpsSpinner, 1, 1000, 10);
@@ -141,11 +141,17 @@ public class MainController {
         xSpinner.setDisable(true);
         ySpinner.setDisable(true);
 
-        setupTab(fixedTimingButton, () -> showTimingPane(fixedPane));
-        setupTab(randomCpsButton, () -> showTimingPane(randomCpsPane));
-        setupTab(randomIntervalButton, () -> showTimingPane(randomIntervalPane));
+        // Fixed / Random
+        setupTab(fixedTimingButton, () -> showTimingMode(true));
+        setupTab(randomTimingButton, () -> showTimingMode(false));
+
+        // Fixed Interval / CPS
         setupTab(fixedIntervalButton, this::showFixedIntervalMode);
         setupTab(fixedCpsButton, this::showFixedCpsMode);
+
+        // Random CPS / Interval
+        setupTab(randomCpsButton, this::showRandomCpsMode);
+        setupTab(randomIntervalButton, this::showRandomIntervalMode);
 
         setupTimingConversions();
     }
@@ -176,24 +182,52 @@ public class MainController {
         });
     }
 
-    private void showTimingPane(GridPane selectedPane) {
-        for (GridPane pane : new GridPane[]{fixedPane, randomCpsPane, randomIntervalPane}) {
-            boolean active = pane == selectedPane;
-            pane.setVisible(active);
-            pane.setManaged(active);
-        }
+    private void showTimingMode(boolean fixed) {
+        fixedPane.setVisible(fixed);
+        fixedPane.setManaged(fixed);
+
+        randomPane.setVisible(!fixed);
+        randomPane.setManaged(!fixed);
+    }
+
+    private void showRandomCpsMode() {
+        randomCpsInputPane.setVisible(true);
+        randomCpsInputPane.setManaged(true);
+
+        randomIntervalInputPane.setVisible(false);
+        randomIntervalInputPane.setManaged(false);
+
+        randomCpsEquivalentPane.setVisible(true);
+        randomCpsEquivalentPane.setManaged(true);
+
+        randomIntervalEquivalentPane.setVisible(false);
+        randomIntervalEquivalentPane.setManaged(false);
+    }
+
+    private void showRandomIntervalMode() {
+        randomCpsInputPane.setVisible(false);
+        randomCpsInputPane.setManaged(false);
+
+        randomIntervalInputPane.setVisible(true);
+        randomIntervalInputPane.setManaged(true);
+
+        randomCpsEquivalentPane.setVisible(false);
+        randomCpsEquivalentPane.setManaged(false);
+
+        randomIntervalEquivalentPane.setVisible(true);
+        randomIntervalEquivalentPane.setManaged(true);
     }
 
     private void showFixedIntervalMode() {
         configureFixedMode("Interval (ms)", "Use a constant delay between clicks.",
-                "Equivalent Speed", "10 CPS", "Equivalent clicking speed.", 1, 60000, 100);
+                "Equivalent Speed", "10 CPS", "Equivalent clicking speed.", 1, 300000, 100);
 
         if (fixedValueSpinner.getValueFactory() != null) updateFixedEquivalent();
     }
 
     private void showFixedCpsMode() {
         configureFixedMode("Clicks per second (CPS)", "Use a constant number of clicks per second.",
-                "Equivalent Interval", "100 ms", "Equivalent delay between clicks.", 1, 100, 10);
+                "Equivalent Interval", "100 ms", "Equivalent delay between clicks.", 1, 1000, 10);
 
         if (fixedValueSpinner.getValueFactory() != null) updateFixedEquivalent();
     }
@@ -313,14 +347,17 @@ public class MainController {
     private ClickSettings readClickSettings() {
         ClickSettings settings = new ClickSettings();
 
-        if (randomCpsButton.isSelected())
-            settings.setTimingMode(ClickSettings.TimingMode.RANDOM_CPS);
-        else if (randomIntervalButton.isSelected())
-            settings.setTimingMode(ClickSettings.TimingMode.RANDOM_INTERVAL);
-        else if (fixedCpsButton.isSelected())
-            settings.setTimingMode(ClickSettings.TimingMode.FIXED_CPS);
-        else
-            settings.setTimingMode(ClickSettings.TimingMode.FIXED_INTERVAL);
+        if (randomTimingButton.isSelected()) {
+            if (randomIntervalButton.isSelected())
+                settings.setTimingMode(ClickSettings.TimingMode.RANDOM_INTERVAL);
+            else
+                settings.setTimingMode(ClickSettings.TimingMode.RANDOM_CPS);
+        } else {
+            if (fixedCpsButton.isSelected())
+                settings.setTimingMode(ClickSettings.TimingMode.FIXED_CPS);
+            else
+                settings.setTimingMode(ClickSettings.TimingMode.FIXED_INTERVAL);
+        }
 
         settings.setFixedValue(getSpinnerInput(fixedValueSpinner));
         settings.setMinCps(getSpinnerInput(minCpsSpinner));
