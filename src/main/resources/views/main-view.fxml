@@ -504,8 +504,7 @@
                                         text="Start Clicking"
                                         styleClass="start-button-text"/>
 
-                                    <Label text="F6" styleClass="start-hotkey"/>
-
+                                    <Label fx:id="startHotkeyBadge" text="F6" styleClass="start-hotkey"/>
                                 </HBox>
                             </graphic>
                         </Button>

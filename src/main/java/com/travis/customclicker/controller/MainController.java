@@ -22,6 +22,7 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Screen;
 import javafx.stage.StageStyle;
 
+import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.travis.customclicker.model.ClickSettings;
 import com.travis.customclicker.service.AutoClickService;
 import com.travis.customclicker.service.GlobalHotkeyService;
@@ -41,7 +42,7 @@ public class MainController {
     @FXML private RadioButton followCursorButton, fixedPositionButton;
     @FXML private HBox repeatAmountRow;
     @FXML private Button startButton;
-    @FXML private Label startButtonText, statusText;
+    @FXML private Label startButtonText, statusText, startHotkeyBadge;
     @FXML private Circle statusDot;
     @FXML private HBox statusPill;
     @FXML private SVGPath startIcon;
@@ -50,6 +51,8 @@ public class MainController {
     private boolean clickerRunning = false;
     private FadeTransition statusPulse;
     private GlobalHotkeyService globalHotkeyService;
+    private String previousStartHotkey = "F6";
+    private String previousNextProfileHotkey = "F7";
     private boolean pickingPosition = false;
 
     // Navigation
@@ -103,11 +106,16 @@ public class MainController {
         try {
             globalHotkeyService = new GlobalHotkeyService();
 
-            globalHotkeyService.start(() ->
-                    Platform.runLater(() -> {
-                        if (!pickingPosition)
-                            handleStart();
-                    })
+            globalHotkeyService.start(
+                () -> Platform.runLater(() -> {
+                    if (!pickingPosition)
+                        handleStart();
+                }),
+
+                () -> Platform.runLater(() -> {
+                    if (!pickingPosition)
+                        selectNextProfile();
+                })
             );
         } catch (Exception e) {
             showAlert("Hotkey error", "Unable to initialize the global hotkey.");
@@ -566,6 +574,16 @@ public class MainController {
         refreshProfileList();
     }
 
+    private void selectNextProfile() {
+        if (profiles.isEmpty())
+            return;
+
+        int currentIndex = profiles.indexOf(selectedProfile);
+        int nextIndex = (currentIndex + 1) % profiles.size();
+
+        selectProfile(profiles.get(nextIndex));
+    }
+
     private void refreshProfileList() {
         profileList.getChildren().clear();
 
@@ -690,7 +708,13 @@ public class MainController {
         setupCombo(updateCombo, "Automatically", "Automatically", "Manually", "Never");
 
         startHotkeyField.setText("F6");
-        nextProfileHotkeyField.setText("F8");
+        startHotkeyField.setEditable(false);
+
+        nextProfileHotkeyField.setText("F7");
+        nextProfileHotkeyField.setEditable(false);
+
+        startHotkeyField.setOnMouseClicked(event -> beginStartHotkeyCapture());
+        nextProfileHotkeyField.setOnMouseClicked(event -> beginNextProfileHotkeyCapture());
 
         for (ToggleButton accent : new ToggleButton[]{
                 greenAccent, blueAccent, purpleAccent,
@@ -703,6 +727,100 @@ public class MainController {
             Stage stage = (Stage) alwaysOnTopCheck.getScene().getWindow();
             stage.setAlwaysOnTop(enabled);
         });
+    }
+
+    private boolean isFunctionKey(int keyCode) {
+        return keyCode >= NativeKeyEvent.VC_F1 &&
+            keyCode <= NativeKeyEvent.VC_F12;
+    }
+
+    private void beginStartHotkeyCapture() {
+        if (globalHotkeyService == null)
+            return;
+
+        previousStartHotkey = startHotkeyField.getText();
+
+        startHotkeyField.setText("Press a key (F1-F12)...");
+        startHotkeyField.requestFocus();
+
+        globalHotkeyService.captureNextKey(keyCode ->
+                Platform.runLater(() -> {
+
+                    if (keyCode == NativeKeyEvent.VC_ESCAPE) {
+                        startHotkeyField.setText(previousStartHotkey);
+                        return;
+                    }
+
+                    if (!isFunctionKey(keyCode)) {
+                        startHotkeyField.setText(previousStartHotkey);
+                        showAlert(
+                                "Invalid hotkey",
+                                "Please choose a function key between F1 and F12."
+                        );
+                        return;
+                    }
+
+                    if (keyCode == globalHotkeyService.getNextProfileHotkeyCode()) {
+                        startHotkeyField.setText(previousStartHotkey);
+                        showAlert(
+                                "Hotkey already in use",
+                                NativeKeyEvent.getKeyText(keyCode) +
+                                        " is already assigned to Next Profile."
+                        );
+                        return;
+                    }
+
+                    String keyName = NativeKeyEvent.getKeyText(keyCode);
+
+                    globalHotkeyService.setHotkeyCode(keyCode);
+                    startHotkeyField.setText(keyName);
+                    startHotkeyBadge.setText(keyName);
+                })
+        );
+    }
+
+    private void beginNextProfileHotkeyCapture() {
+        if (globalHotkeyService == null)
+            return;
+
+        previousNextProfileHotkey = nextProfileHotkeyField.getText();
+
+        nextProfileHotkeyField.setText("Press a key (F1-F12)...");
+        nextProfileHotkeyField.requestFocus();
+
+        globalHotkeyService.captureNextKey(keyCode ->
+                Platform.runLater(() -> {
+
+                    if (keyCode == NativeKeyEvent.VC_ESCAPE) {
+                        nextProfileHotkeyField.setText(previousNextProfileHotkey);
+                        return;
+                    }
+
+                    if (!isFunctionKey(keyCode)) {
+                        nextProfileHotkeyField.setText(previousNextProfileHotkey);
+                        showAlert(
+                                "Invalid hotkey",
+                                "Please choose a function key between F1 and F12."
+                        );
+                        return;
+                    }
+
+                    if (keyCode == globalHotkeyService.getHotkeyCode()) {
+                        nextProfileHotkeyField.setText(previousNextProfileHotkey);
+                        showAlert(
+                                "Hotkey already in use",
+                                NativeKeyEvent.getKeyText(keyCode) +
+                                        " is already assigned to Start / Stop."
+                        );
+                        return;
+                    }
+
+                    String keyName = NativeKeyEvent.getKeyText(keyCode);
+
+                    globalHotkeyService.setNextProfileHotkeyCode(keyCode);
+                    nextProfileHotkeyField.setText(keyName);
+                })
+        );
     }
 
     // APPLICATION CONTROLS
