@@ -25,7 +25,7 @@
         <!-- SIDEBAR -->
         <left>
             <VBox prefWidth="250" spacing="12" styleClass="sidebar">
-                <padding><Insets top="28" right="18" bottom="24" left="18"/></padding>
+                <padding><Insets right="18" top="28" bottom="24" left="18"/></padding>
 
                 <StackPane styleClass="about-app-icon">
                     <FontIcon iconLiteral="fth-mouse-pointer" iconSize="52" iconColor="white"/>
@@ -84,7 +84,7 @@
                     <Region prefWidth="16"/>
 
                     <HBox fx:id="statusPill" alignment="CENTER" spacing="6" styleClass="status-pill">
-                        <Label fx:id="statusDot" text="●" styleClass="status-dot"/>
+                        <Circle fx:id="statusDot" radius="4" styleClass="status-dot"/>
                         <Label fx:id="statusText" text="Idle" styleClass="status-text"/>
                     </HBox>
 

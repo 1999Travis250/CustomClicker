@@ -12,6 +12,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import javafx.scene.paint.Color;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
 
@@ -34,7 +35,8 @@ public class MainController {
     @FXML private RadioButton followCursorButton, fixedPositionButton;
     @FXML private HBox repeatAmountRow;
     @FXML private Button startButton;
-    @FXML private Label startButtonText, statusText, statusDot;
+    @FXML private Label startButtonText, statusText;
+    @FXML private Circle statusDot;
     @FXML private HBox statusPill;
     @FXML private SVGPath startIcon;
 
