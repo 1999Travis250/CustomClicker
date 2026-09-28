@@ -15,6 +15,12 @@ import javafx.application.Platform;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Cursor;
+import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.stage.Screen;
+import javafx.stage.StageStyle;
 
 import com.travis.customclicker.model.ClickSettings;
 import com.travis.customclicker.service.AutoClickService;
@@ -44,6 +50,7 @@ public class MainController {
     private boolean clickerRunning = false;
     private FadeTransition statusPulse;
     private GlobalHotkeyService globalHotkeyService;
+    private boolean pickingPosition = false;
 
     // Navigation
     @FXML private Button clickerNavButton, profilesNavButton, settingsNavButton, aboutNavButton;
@@ -97,7 +104,10 @@ public class MainController {
             globalHotkeyService = new GlobalHotkeyService();
 
             globalHotkeyService.start(() ->
-                    Platform.runLater(this::handleStart)
+                    Platform.runLater(() -> {
+                        if (!pickingPosition)
+                            handleStart();
+                    })
             );
         } catch (Exception e) {
             showAlert("Hotkey error", "Unable to initialize the global hotkey.");
@@ -112,8 +122,8 @@ public class MainController {
         initIntSpinner(maxCpsSpinner, 1, 1000, 10);
         initIntSpinner(minIntervalSpinner, 1, 300000, 100);
         initIntSpinner(maxIntervalSpinner, 1, 300000, 200);
-        initIntSpinner(xSpinner, 0, 50000, 0);
-        initIntSpinner(ySpinner, 0, 50000, 0);
+        initIntSpinner(xSpinner, -50000, 50000, 0);
+        initIntSpinner(ySpinner, -50000, 50000, 0);
         initIntSpinner(repeatAmountSpinner, 1, 100000000, 10);
 
         restrictNumericInput(fixedValueSpinner);
@@ -121,8 +131,8 @@ public class MainController {
         restrictNumericInput(maxCpsSpinner);
         restrictNumericInput(minIntervalSpinner);
         restrictNumericInput(maxIntervalSpinner);
-        restrictNumericInput(xSpinner);
-        restrictNumericInput(ySpinner);
+        restrictSignedNumericInput(xSpinner);
+        restrictSignedNumericInput(ySpinner);
         restrictNumericInput(repeatAmountSpinner);
 
         setupCombo(mouseButtonCombo, "Left", "Left", "Right", "Middle");
@@ -165,6 +175,12 @@ public class MainController {
     private void restrictNumericInput(Spinner<Integer> spinner) {
         spinner.getEditor().setTextFormatter(new TextFormatter<String>(change ->
                 change.getControlNewText().matches("\\d*") ? change : null
+        ));
+    }
+
+    private void restrictSignedNumericInput(Spinner<Integer> spinner) {
+        spinner.getEditor().setTextFormatter(new TextFormatter<String>(change ->
+                change.getControlNewText().matches("-?\\d*") ? change : null
         ));
     }
 
@@ -412,6 +428,95 @@ public class MainController {
         }
 
         return true;
+    }
+
+    @FXML
+    private void handlePickFromScreen() {
+        if (pickingPosition || clickerRunning) return;
+
+        pickingPosition = true;
+
+        Stage mainStage = (Stage) xSpinner.getScene().getWindow();
+
+        Rectangle2D virtualBounds = getVirtualScreenBounds();
+
+        Pane overlay = new Pane();
+        overlay.setStyle("-fx-background-color: rgba(0,0,0,0.20);");
+
+        Scene pickerScene = new Scene(
+                overlay,
+                virtualBounds.getWidth(),
+                virtualBounds.getHeight()
+        );
+
+        pickerScene.setFill(Color.TRANSPARENT);
+        pickerScene.setCursor(Cursor.CROSSHAIR);
+
+        Stage pickerStage = new Stage();
+        pickerStage.initStyle(StageStyle.TRANSPARENT);
+        pickerStage.setAlwaysOnTop(true);
+        pickerStage.setX(virtualBounds.getMinX());
+        pickerStage.setY(virtualBounds.getMinY());
+        pickerStage.setWidth(virtualBounds.getWidth());
+        pickerStage.setHeight(virtualBounds.getHeight());
+        pickerStage.setScene(pickerScene);
+
+        Runnable cancelPicker = () -> {
+            pickingPosition = false;
+            pickerStage.close();
+            mainStage.show();
+            mainStage.toFront();
+        };
+
+        overlay.setOnMouseClicked(event -> {
+            int x = (int) Math.round(event.getScreenX());
+            int y = (int) Math.round(event.getScreenY());
+
+            xSpinner.getValueFactory().setValue(x);
+            ySpinner.getValueFactory().setValue(y);
+
+            fixedPositionButton.setSelected(true);
+            xSpinner.setDisable(false);
+            ySpinner.setDisable(false);
+
+            pickingPosition = false;
+
+            pickerStage.close();
+            mainStage.show();
+            mainStage.toFront();
+        });
+
+        pickerScene.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ESCAPE)
+                cancelPicker.run();
+        });
+
+        mainStage.hide();
+        pickerStage.show();
+        pickerStage.requestFocus();
+    }
+
+    private Rectangle2D getVirtualScreenBounds() {
+        double minX = Double.MAX_VALUE;
+        double minY = Double.MAX_VALUE;
+        double maxX = -Double.MAX_VALUE;
+        double maxY = -Double.MAX_VALUE;
+
+        for (Screen screen : Screen.getScreens()) {
+            Rectangle2D bounds = screen.getBounds();
+
+            minX = Math.min(minX, bounds.getMinX());
+            minY = Math.min(minY, bounds.getMinY());
+            maxX = Math.max(maxX, bounds.getMaxX());
+            maxY = Math.max(maxY, bounds.getMaxY());
+        }
+
+        return new Rectangle2D(
+                minX,
+                minY,
+                maxX - minX,
+                maxY - minY
+        );
     }
 
     // NAVIGATION

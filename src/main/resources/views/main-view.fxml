@@ -466,8 +466,7 @@
                                             maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
                                 </HBox>
 
-                                <Button text="Pick from screen"
-                                        maxWidth="Infinity" styleClass="secondary-button"/>
+                                <Button text="Pick from screen" onAction="#handlePickFromScreen" maxWidth="Infinity" styleClass="secondary-button"/>
                             </VBox>
                         </GridPane>
 
