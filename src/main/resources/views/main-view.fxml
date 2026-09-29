@@ -589,8 +589,7 @@
 
                                             <HBox spacing="10" alignment="CENTER_LEFT" styleClass="profile-detail-row">
                                                 <VBox spacing="3">
-                                                    <Label text="Fixed  •  100 ms (10 CPS)"
-                                                        styleClass="profile-detail-value"/>
+                                                    <Label fx:id="profileTimingValue" text="Fixed  •  100 ms (10 CPS)" styleClass="profile-detail-value"/>
                                                     <Label text="Constant delay between clicks." styleClass="muted"/>
                                                 </VBox>
                                                 <Region HBox.hgrow="ALWAYS"/>
@@ -602,8 +601,7 @@
 
                                             <HBox spacing="10" alignment="CENTER_LEFT" styleClass="profile-detail-row">
                                                 <VBox spacing="3">
-                                                    <Label text="Left  •  Single  •  Until stopped"
-                                                        styleClass="profile-detail-value"/>
+                                                    <Label fx:id="profileBehaviorValue" text="Left  •  Single  •  Until stopped" styleClass="profile-detail-value"/>
                                                     <Label text="Mouse button and repeat settings." styleClass="muted"/>
                                                 </VBox>
                                                 <Region HBox.hgrow="ALWAYS"/>
@@ -615,7 +613,7 @@
 
                                             <HBox spacing="10" alignment="CENTER_LEFT" styleClass="profile-detail-row">
                                                 <VBox spacing="3">
-                                                    <Label text="Follow Cursor" styleClass="profile-detail-value"/>
+                                                    <Label fx:id="profileTargetValue" text="Follow Cursor" styleClass="profile-detail-value"/>
                                                     <Label text="Click at the current cursor position." styleClass="muted"/>
                                                 </VBox>
                                                 <Region HBox.hgrow="ALWAYS"/>

@@ -58,6 +58,28 @@ public class ClickSettings {
     public int getY() { return y; }
     public void setY(int y) { this.y = y; }
 
+    public ClickSettings copy() {
+        ClickSettings copy = new ClickSettings();
+
+        copy.setTimingMode(timingMode);
+        copy.setMouseButton(mouseButton);
+        copy.setClickType(clickType);
+        copy.setRepeatMode(repeatMode);
+        copy.setTargetMode(targetMode);
+
+        copy.setMinCps(minCps);
+        copy.setMaxCps(maxCps);
+        copy.setFixedValue(fixedValue);
+        copy.setMinInterval(minInterval);
+        copy.setMaxInterval(maxInterval);
+
+        copy.setX(x);
+        copy.setY(y);
+        copy.setRepeatAmount(repeatAmount);
+
+        return copy;
+    }
+    
     @Override
     public String toString() {
         return "ClickSettings{" +

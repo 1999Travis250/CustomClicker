@@ -63,7 +63,7 @@ public class MainController {
     @FXML private VBox profileList;
     @FXML private TextField profileNameField, profileHotkeyField;
     @FXML private TextArea profileDescriptionField;
-    @FXML private Label profileCountLabel;
+    @FXML private Label profileCountLabel, profileTimingValue, profileBehaviorValue, profileTargetValue;
     @FXML private Button deleteProfileButton;
 
     private final List<Profile> profiles = new ArrayList<>();
@@ -81,12 +81,14 @@ public class MainController {
     private static class Profile {
         String name, description, hotkey;
         boolean isDefault;
+        ClickSettings settings;
 
-        Profile(String name, String description, String hotkey, boolean isDefault) {
+        Profile(String name, String description, String hotkey, boolean isDefault, ClickSettings settings) {
             this.name = name;
             this.description = description;
             this.hotkey = hotkey;
             this.isDefault = isDefault;
+            this.settings = settings;
         }
     }
 
@@ -422,6 +424,77 @@ public class MainController {
         return settings;
     }
 
+    private void loadClickSettings(ClickSettings settings) {
+        if (settings == null)
+            return;
+
+        // Timing
+        switch (settings.getTimingMode()) {
+            case FIXED_CPS -> {
+                fixedTimingButton.setSelected(true);
+                fixedCpsButton.setSelected(true);
+
+                showTimingMode(true);
+                showFixedCpsMode();
+
+                fixedValueSpinner.getValueFactory().setValue(settings.getFixedValue());
+            }
+
+            case FIXED_INTERVAL -> {
+                fixedTimingButton.setSelected(true);
+                fixedIntervalButton.setSelected(true);
+
+                showTimingMode(true);
+                showFixedIntervalMode();
+
+                fixedValueSpinner.getValueFactory().setValue(settings.getFixedValue());
+            }
+
+            case RANDOM_CPS -> {
+                randomTimingButton.setSelected(true);
+                randomCpsButton.setSelected(true);
+
+                showTimingMode(false);
+                showRandomCpsMode();
+            }
+
+            case RANDOM_INTERVAL -> {
+                randomTimingButton.setSelected(true);
+                randomIntervalButton.setSelected(true);
+
+                showTimingMode(false);
+                showRandomIntervalMode();
+            }
+        }
+
+        // Random timing values
+        minCpsSpinner.getValueFactory().setValue((int) Math.round(settings.getMinCps()));
+        maxCpsSpinner.getValueFactory().setValue((int) Math.round(settings.getMaxCps()));
+
+        minIntervalSpinner.getValueFactory().setValue(settings.getMinInterval());
+        maxIntervalSpinner.getValueFactory().setValue(settings.getMaxInterval());
+
+        // Click behavior
+        mouseButtonCombo.setValue(switch (settings.getMouseButton()) {
+            case RIGHT -> "Right";
+            case MIDDLE -> "Middle";
+            default -> "Left";
+        });
+
+        clickTypeCombo.setValue(settings.getClickType() == ClickSettings.ClickType.DOUBLE ? "Double" : "Single");
+        repeatCombo.setValue(settings.getRepeatMode() == ClickSettings.RepeatMode.FIXED_AMOUNT ? "Fixed amount" : "Until stopped");
+        repeatAmountSpinner.getValueFactory().setValue(settings.getRepeatAmount());
+
+        // Click target
+        if (settings.getTargetMode() == ClickSettings.TargetMode.FIXED_POSITION)
+            fixedPositionButton.setSelected(true);
+        else
+            followCursorButton.setSelected(true);
+
+        xSpinner.getValueFactory().setValue(settings.getX());
+        ySpinner.getValueFactory().setValue(settings.getY());
+    }
+
     private boolean validateSettings(ClickSettings settings) {
         if (settings.getTimingMode() == ClickSettings.TimingMode.RANDOM_CPS &&
                 settings.getMinCps() > settings.getMaxCps()) {
@@ -553,13 +626,30 @@ public class MainController {
     // PROFILES
 
     private void initializeProfiles() {
-        profiles.add(new Profile("Default", "Default profile for general use.", "", true));
+        profiles.add(new Profile("Default", "Default profile for general use.", "", true, readClickSettings()));
+
+        profileCombo.setOnAction(event -> {
+            String selectedName = profileCombo.getValue();
+
+            if (selectedName == null || selectedProfile == null)
+                return;
+
+            if (selectedName.equals(selectedProfile.name))
+                return;
+
+            profiles.stream()
+                    .filter(profile -> profile.name.equals(selectedName))
+                    .findFirst()
+                    .ifPresent(this::selectProfile);
+        });
+
         selectProfile(profiles.get(0));
     }
 
     @FXML
     private void handleNewProfile() {
-        Profile profile = new Profile("New Profile " + nextProfileNumber++, "", "", false);
+        Profile profile = new Profile("New Profile " + nextProfileNumber++, "", "", false, readClickSettings());
+
         profiles.add(profile);
         selectProfile(profile);
         showPage(profilesPage);
@@ -567,10 +657,15 @@ public class MainController {
 
     private void selectProfile(Profile profile) {
         selectedProfile = profile;
+
         profileNameField.setText(profile.name);
         profileDescriptionField.setText(profile.description);
         profileHotkeyField.setText(profile.hotkey);
         deleteProfileButton.setDisable(profile.isDefault);
+
+        loadClickSettings(profile.settings);
+        updateProfileDetails(profile);
+
         refreshProfileList();
     }
 
@@ -582,6 +677,69 @@ public class MainController {
         int nextIndex = (currentIndex + 1) % profiles.size();
 
         selectProfile(profiles.get(nextIndex));
+    }
+
+    private String getProfileCardSummary(ClickSettings settings) {
+        String timing = switch (settings.getTimingMode()) {
+            case FIXED_CPS -> "Fixed CPS";
+            case FIXED_INTERVAL -> "Fixed Interval";
+            case RANDOM_CPS -> "Random CPS";
+            case RANDOM_INTERVAL -> "Random Interval";
+        };
+
+        String clickType = settings.getClickType() == ClickSettings.ClickType.DOUBLE ? "Double" : "Single";
+        String target = settings.getTargetMode() == ClickSettings.TargetMode.FIXED_POSITION ? "Fixed" : "Cursor";
+        return timing + "  •  " + clickType + "  •  " + target;
+    }
+
+    private String getTimingSummary(ClickSettings settings) {
+        return switch (settings.getTimingMode()) {
+            case FIXED_CPS ->
+                    "Fixed  •  " + settings.getFixedValue() + " CPS";
+
+            case FIXED_INTERVAL ->
+                    "Fixed  •  " + settings.getFixedValue() + " ms";
+
+            case RANDOM_CPS ->
+                    "Random  •  " +
+                            formatNumber(settings.getMinCps()) + " – " +
+                            formatNumber(settings.getMaxCps()) + " CPS";
+
+            case RANDOM_INTERVAL ->
+                    "Random  •  " +
+                            settings.getMinInterval() + " – " +
+                            settings.getMaxInterval() + " ms";
+        };
+    }
+
+    private String getBehaviorSummary(ClickSettings settings) {
+        String button = switch (settings.getMouseButton()) {
+            case RIGHT -> "Right";
+            case MIDDLE -> "Middle";
+            default -> "Left";
+        };
+
+        String clickType = settings.getClickType() == ClickSettings.ClickType.DOUBLE ? "Double" : "Single";
+        String repeat = settings.getRepeatMode() == ClickSettings.RepeatMode.FIXED_AMOUNT ? settings.getRepeatAmount() + " clicks" : "Until stopped";
+
+        return button + "  •  " + clickType + "  •  " + repeat;
+    }
+
+    private String getTargetSummary(ClickSettings settings) {
+        if (settings.getTargetMode() == ClickSettings.TargetMode.FIXED_POSITION)
+            return "Fixed Position  •  X: " + settings.getX() +
+                    "  •  Y: " + settings.getY();
+
+        return "Follow Cursor";
+    }
+
+    private void updateProfileDetails(Profile profile) {
+        if (profile == null || profile.settings == null)
+            return;
+
+        profileTimingValue.setText(getTimingSummary(profile.settings));
+        profileBehaviorValue.setText(getBehaviorSummary(profile.settings));
+        profileTargetValue.setText(getTargetSummary(profile.settings));
     }
 
     private void refreshProfileList() {
@@ -607,7 +765,7 @@ public class MainController {
         Label name = new Label(profile.name);
         name.getStyleClass().add("profile-item-title");
 
-        Label details = new Label("Fixed  •  Single  •  Cursor");
+        Label details = new Label(getProfileCardSummary(profile.settings));
         details.getStyleClass().add("muted");
 
         VBox text = new VBox(5, name, details);
@@ -652,6 +810,9 @@ public class MainController {
         selectedProfile.name = name;
         selectedProfile.description = profileDescriptionField.getText();
         selectedProfile.hotkey = profileHotkeyField.getText().trim();
+        selectedProfile.settings = readClickSettings();
+        updateProfileDetails(selectedProfile);
+
         refreshProfileList();
     }
 
@@ -663,9 +824,11 @@ public class MainController {
         String name = baseName;
         int number = 2;
 
-        while (profileNameExists(name, null)) name = baseName + " " + number++;
+        while (profileNameExists(name, null))
+            name = baseName + " " + number++;
 
-        Profile copy = new Profile(name, selectedProfile.description, selectedProfile.hotkey, false);
+        Profile copy = new Profile(name, selectedProfile.description, selectedProfile.hotkey, false, selectedProfile.settings.copy());
+
         profiles.add(copy);
         selectProfile(copy);
     }
