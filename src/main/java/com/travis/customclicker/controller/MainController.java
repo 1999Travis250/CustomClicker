@@ -14,6 +14,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -22,6 +23,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
+import javafx.scene.transform.Scale;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -54,6 +56,8 @@ public class MainController {
     private int startHotkeyCode = NativeKeyEvent.VC_F6;
     private int nextProfileHotkeyCode = NativeKeyEvent.VC_F7;
     private PersistenceService persistenceService;
+    private static final double BASE_WIDTH = 1200;
+    private static final double BASE_HEIGHT = 800;
 
     /* Navigation */
     @FXML private Button clickerNavButton, profilesNavButton, settingsNavButton, aboutNavButton;
@@ -76,6 +80,9 @@ public class MainController {
     @FXML private ToggleButton launchStartupCheck, alwaysOnTopCheck, minimizeToTrayCheck;
     @FXML private TextField startHotkeyField, nextProfileHotkeyField;
     private double xOffset, yOffset;
+    private double uiScale = 1.0, normalScale = 1.0;
+    private boolean normalFullscreen = false;
+    private boolean windowSnapped = false;
 
     @FXML
     private void initialize() {
@@ -731,7 +738,17 @@ public class MainController {
     /* SETTINGS */
     private void initializeSettings() {
         setupCombo(languageCombo, "English", "English");
-        setupCombo(uiScaleCombo, "100% (Default)", "100% (Default)", "125%", "150%");
+        setupCombo(uiScaleCombo, "100% (Default)", "75%", "100% (Default)", "Fill Window");
+        uiScaleCombo.setOnAction(event -> {
+            String value = uiScaleCombo.getValue();
+
+            if ("75%".equals(value))
+                applyUiScale(0.75, false);
+            else if ("Fill Window".equals(value))
+                applyUiScale(1.0, true);
+            else
+                applyUiScale(1.0, false);
+        });
         setupCombo(updateCombo, "Automatically", "Automatically", "Manually", "Never");
         startHotkeyField.setText(NativeKeyEvent.getKeyText(startHotkeyCode));
         nextProfileHotkeyField.setText(NativeKeyEvent.getKeyText(nextProfileHotkeyCode));
@@ -752,6 +769,40 @@ public class MainController {
             Stage stage = (Stage) alwaysOnTopCheck.getScene().getWindow();
             stage.setAlwaysOnTop(enabled);
         });
+    }
+
+    public void applyInitialUiScale() {
+        String value = uiScaleCombo.getValue();
+
+        if ("75%".equals(value))
+            applyUiScale(0.75, false);
+        else if ("Fill Window".equals(value))
+            applyUiScale(1.0, true);
+        else
+            applyUiScale(1.0, false);
+    }
+
+    private void applyUiScale(double scale, boolean fullscreen) {
+        Stage stage = (Stage) appRoot.getScene().getWindow();
+        Parent content = appRoot.getParent();
+
+        if (fullscreen) {
+            Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+            double scaleX = bounds.getWidth() / BASE_WIDTH;
+            double scaleY = bounds.getHeight() / BASE_HEIGHT;
+
+            content.getTransforms().setAll(new Scale(scaleX, scaleY));
+            stage.setX(bounds.getMinX());
+            stage.setY(bounds.getMinY());
+            stage.setWidth(bounds.getWidth());
+            stage.setHeight(bounds.getHeight());
+        } else {
+            content.getTransforms().setAll(new Scale(scale, scale));
+            stage.setWidth(BASE_WIDTH * scale);
+            stage.setHeight(BASE_HEIGHT * scale);
+            stage.centerOnScreen();
+        }
+        uiScale = scale;
     }
 
     private void applyAccent(String accent) {
@@ -905,6 +956,21 @@ public class MainController {
 
     @FXML
     private void handleWindowPressed(MouseEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+        if (windowSnapped) {
+            if (normalFullscreen)
+                applyUiScale(1.0, true);
+            else
+                applyUiScale(normalScale, false);
+
+            if (!normalFullscreen) {
+                stage.setX(event.getScreenX() - stage.getWidth() / 2);
+                stage.setY(event.getScreenY() - 20);
+            }
+
+            windowSnapped = false;
+        }
         xOffset = event.getSceneX();
         yOffset = event.getSceneY();
     }
@@ -912,8 +978,22 @@ public class MainController {
     @FXML
     private void handleWindowDragged(MouseEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setX(event.getScreenX() - xOffset);
-        stage.setY(event.getScreenY() - yOffset);
+
+        if (windowSnapped) return;
+
+        double newX = event.getScreenX() - xOffset;
+        double newY = event.getScreenY() - yOffset;
+
+        if (event.getScreenY() <= 20) {
+            normalScale = uiScale;
+            normalFullscreen = "Fill Window".equals(uiScaleCombo.getValue());
+
+            applyUiScale(1.0, true);
+            windowSnapped = true;
+            return;
+        }
+        stage.setX(newX);
+        stage.setY(newY);
     }
     
     private Stage getStage(ActionEvent event) {
