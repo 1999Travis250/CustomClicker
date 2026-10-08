@@ -84,6 +84,7 @@ public class MainController {
     private boolean normalFullscreen = false;
     private boolean windowSnapped = false;
     private String savedUiScale = "100% (Default)";
+    private boolean savedAlwaysOnTop = false;
 
     @FXML
     private void initialize() {
@@ -507,6 +508,7 @@ public class MainController {
             nextProfileHotkeyCode = data.getNextProfileHotkeyCode();
         if (data.getUiScale() != null)
             savedUiScale = data.getUiScale();
+        savedAlwaysOnTop = data.isAlwaysOnTop();
         if (data.getProfiles() != null)
             profiles.addAll(data.getProfiles());
         if (profiles.isEmpty()) {
@@ -657,7 +659,7 @@ public class MainController {
     private void saveProfiles() {
         try {
             String selectedName = selectedProfile != null ? selectedProfile.getName() : null;
-            persistenceService.saveData(new AppData(profiles, selectedName, startHotkeyCode, nextProfileHotkeyCode, savedUiScale));
+            persistenceService.saveData(new AppData(profiles, selectedName, startHotkeyCode, nextProfileHotkeyCode, savedUiScale, savedAlwaysOnTop));
         } catch (Exception e) {
             showAlert("Save error", "Unable to save application data.");
             System.err.println("Unable to save application data: " + e.getMessage());
@@ -771,9 +773,15 @@ public class MainController {
         setupTab(orangeAccent, () -> applyAccent("orange"));
         setupTab(yellowAccent, () -> applyAccent("yellow"));
         applyAccent("green");
+        alwaysOnTopCheck.setSelected(savedAlwaysOnTop);
         alwaysOnTopCheck.selectedProperty().addListener((obs, oldValue, enabled) -> {
             Stage stage = (Stage) alwaysOnTopCheck.getScene().getWindow();
-            stage.setAlwaysOnTop(enabled);
+
+            if (stage != null)
+                stage.setAlwaysOnTop(enabled);
+
+            savedAlwaysOnTop = enabled;
+            saveProfiles();
         });
     }
 
@@ -786,6 +794,11 @@ public class MainController {
             applyUiScale(1.0, true);
         else
             applyUiScale(1.0, false);
+    }
+
+    public void applyInitialAlwaysOnTop() {
+        Stage stage = (Stage) alwaysOnTopCheck.getScene().getWindow();
+        stage.setAlwaysOnTop(savedAlwaysOnTop);
     }
 
     private void applyUiScale(double scale, boolean fullscreen) {

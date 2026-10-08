@@ -10,16 +10,18 @@ public class AppData {
     private Integer startHotkeyCode;
     private Integer nextProfileHotkeyCode;
     private String uiScale;
+    private boolean alwaysOnTop;
 
     public AppData() {
     }
 
-    public AppData(List<Profile> profiles, String selectedProfileName, Integer startHotkeyCode, Integer nextProfileHotkeyCode, String uiScale) {
+    public AppData(List<Profile> profiles, String selectedProfileName, Integer startHotkeyCode, Integer nextProfileHotkeyCode, String uiScale, boolean alwaysOnTop) {
         this.profiles = profiles;
         this.selectedProfileName = selectedProfileName;
         this.startHotkeyCode = startHotkeyCode;
         this.nextProfileHotkeyCode = nextProfileHotkeyCode;
         this.uiScale = uiScale;
+        this.alwaysOnTop = alwaysOnTop;
     }
 
     public List<Profile> getProfiles() { return profiles; }
@@ -36,4 +38,7 @@ public class AppData {
 
     public String getUiScale() { return uiScale; }
     public void setUiScale(String uiScale) { this.uiScale = uiScale; }
+
+    public boolean isAlwaysOnTop() { return alwaysOnTop; }
+    public void setAlwaysOnTop(boolean alwaysOnTop) { this.alwaysOnTop = alwaysOnTop; }
 }

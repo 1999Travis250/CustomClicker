@@ -28,6 +28,7 @@ public class App extends Application {
 
         MainController controller = loader.getController();
         controller.applyInitialUiScale();
+        controller.applyInitialAlwaysOnTop();
 
         stage.centerOnScreen();
     }
