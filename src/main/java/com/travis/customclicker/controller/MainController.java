@@ -83,6 +83,7 @@ public class MainController {
     private double uiScale = 1.0, normalScale = 1.0;
     private boolean normalFullscreen = false;
     private boolean windowSnapped = false;
+    private String savedUiScale = "100% (Default)";
 
     @FXML
     private void initialize() {
@@ -504,6 +505,8 @@ public class MainController {
             startHotkeyCode = data.getStartHotkeyCode();
         if (data.getNextProfileHotkeyCode() != null)
             nextProfileHotkeyCode = data.getNextProfileHotkeyCode();
+        if (data.getUiScale() != null)
+            savedUiScale = data.getUiScale();
         if (data.getProfiles() != null)
             profiles.addAll(data.getProfiles());
         if (profiles.isEmpty()) {
@@ -654,7 +657,7 @@ public class MainController {
     private void saveProfiles() {
         try {
             String selectedName = selectedProfile != null ? selectedProfile.getName() : null;
-            persistenceService.saveData(new AppData(profiles, selectedName, startHotkeyCode, nextProfileHotkeyCode));
+            persistenceService.saveData(new AppData(profiles, selectedName, startHotkeyCode, nextProfileHotkeyCode, savedUiScale));
         } catch (Exception e) {
             showAlert("Save error", "Unable to save application data.");
             System.err.println("Unable to save application data: " + e.getMessage());
@@ -738,7 +741,7 @@ public class MainController {
     /* SETTINGS */
     private void initializeSettings() {
         setupCombo(languageCombo, "English", "English");
-        setupCombo(uiScaleCombo, "100% (Default)", "75%", "100% (Default)", "Fill Window");
+        setupCombo(uiScaleCombo, savedUiScale, "75%", "100% (Default)", "Fill Window");
         uiScaleCombo.setOnAction(event -> {
             String value = uiScaleCombo.getValue();
 
@@ -748,6 +751,9 @@ public class MainController {
                 applyUiScale(1.0, true);
             else
                 applyUiScale(1.0, false);
+
+            savedUiScale = value;
+            saveProfiles();
         });
         setupCombo(updateCombo, "Automatically", "Automatically", "Manually", "Never");
         startHotkeyField.setText(NativeKeyEvent.getKeyText(startHotkeyCode));

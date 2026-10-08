@@ -9,15 +9,17 @@ public class AppData {
     private String selectedProfileName;
     private Integer startHotkeyCode;
     private Integer nextProfileHotkeyCode;
+    private String uiScale;
 
     public AppData() {
     }
 
-    public AppData(List<Profile> profiles, String selectedProfileName, Integer startHotkeyCode, Integer nextProfileHotkeyCode) {
+    public AppData(List<Profile> profiles, String selectedProfileName, Integer startHotkeyCode, Integer nextProfileHotkeyCode, String uiScale) {
         this.profiles = profiles;
         this.selectedProfileName = selectedProfileName;
         this.startHotkeyCode = startHotkeyCode;
         this.nextProfileHotkeyCode = nextProfileHotkeyCode;
+        this.uiScale = uiScale;
     }
 
     public List<Profile> getProfiles() { return profiles; }
@@ -31,4 +33,7 @@ public class AppData {
 
     public Integer getNextProfileHotkeyCode() { return nextProfileHotkeyCode; }
     public void setNextProfileHotkeyCode(Integer nextProfileHotkeyCode) { this.nextProfileHotkeyCode = nextProfileHotkeyCode; }
+
+    public String getUiScale() { return uiScale; }
+    public void setUiScale(String uiScale) { this.uiScale = uiScale; }
 }
