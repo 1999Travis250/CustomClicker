@@ -9,17 +9,19 @@ public class AppData {
     private String selectedProfileName;
     private Integer startHotkeyCode;
     private Integer nextProfileHotkeyCode;
+    private String themeAccent;
     private String uiScale;
     private boolean alwaysOnTop;
 
     public AppData() {
     }
 
-    public AppData(List<Profile> profiles, String selectedProfileName, Integer startHotkeyCode, Integer nextProfileHotkeyCode, String uiScale, boolean alwaysOnTop) {
+    public AppData(List<Profile> profiles, String selectedProfileName, Integer startHotkeyCode, Integer nextProfileHotkeyCode, String themeAccent, String uiScale, boolean alwaysOnTop) {
         this.profiles = profiles;
         this.selectedProfileName = selectedProfileName;
         this.startHotkeyCode = startHotkeyCode;
         this.nextProfileHotkeyCode = nextProfileHotkeyCode;
+        this.themeAccent = themeAccent;
         this.uiScale = uiScale;
         this.alwaysOnTop = alwaysOnTop;
     }
@@ -35,6 +37,9 @@ public class AppData {
 
     public Integer getNextProfileHotkeyCode() { return nextProfileHotkeyCode; }
     public void setNextProfileHotkeyCode(Integer nextProfileHotkeyCode) { this.nextProfileHotkeyCode = nextProfileHotkeyCode; }
+
+    public String getThemeAccent() { return themeAccent; }
+    public void setThemeAccent(String themeAccent) { this.themeAccent = themeAccent; }
 
     public String getUiScale() { return uiScale; }
     public void setUiScale(String uiScale) { this.uiScale = uiScale; }

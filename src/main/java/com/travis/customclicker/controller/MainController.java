@@ -83,6 +83,7 @@ public class MainController {
     private double uiScale = 1.0, normalScale = 1.0;
     private boolean normalFullscreen = false;
     private boolean windowSnapped = false;
+    private String savedThemeAccent = "green";
     private String savedUiScale = "100% (Default)";
     private boolean savedAlwaysOnTop = false;
 
@@ -506,6 +507,8 @@ public class MainController {
             startHotkeyCode = data.getStartHotkeyCode();
         if (data.getNextProfileHotkeyCode() != null)
             nextProfileHotkeyCode = data.getNextProfileHotkeyCode();
+        if (data.getThemeAccent() != null)
+            savedThemeAccent = data.getThemeAccent();
         if (data.getUiScale() != null)
             savedUiScale = data.getUiScale();
         savedAlwaysOnTop = data.isAlwaysOnTop();
@@ -659,7 +662,7 @@ public class MainController {
     private void saveProfiles() {
         try {
             String selectedName = selectedProfile != null ? selectedProfile.getName() : null;
-            persistenceService.saveData(new AppData(profiles, selectedName, startHotkeyCode, nextProfileHotkeyCode, savedUiScale, savedAlwaysOnTop));
+            persistenceService.saveData(new AppData(profiles, selectedName, startHotkeyCode, nextProfileHotkeyCode, savedThemeAccent, savedUiScale, savedAlwaysOnTop));
         } catch (Exception e) {
             showAlert("Save error", "Unable to save application data.");
             System.err.println("Unable to save application data: " + e.getMessage());
@@ -766,13 +769,31 @@ public class MainController {
         nextProfileHotkeyField.setEditable(false);
         startHotkeyField.setOnMouseClicked(event -> beginStartHotkeyCapture());
         nextProfileHotkeyField.setOnMouseClicked(event -> beginNextProfileHotkeyCapture());
-        setupTab(greenAccent, () -> applyAccent("green"));
-        setupTab(blueAccent, () -> applyAccent("blue"));
-        setupTab(purpleAccent, () -> applyAccent("purple"));
-        setupTab(pinkAccent, () -> applyAccent("pink"));
-        setupTab(orangeAccent, () -> applyAccent("orange"));
-        setupTab(yellowAccent, () -> applyAccent("yellow"));
-        applyAccent("green");
+        setupTab(greenAccent, () -> {
+            selectAccent("green");
+            saveProfiles();
+        });
+        setupTab(blueAccent, () -> {
+            selectAccent("blue");
+            saveProfiles();
+        });
+        setupTab(purpleAccent, () -> {
+            selectAccent("purple");
+            saveProfiles();
+        });
+        setupTab(pinkAccent, () -> {
+            selectAccent("pink");
+            saveProfiles();
+        });
+        setupTab(orangeAccent, () -> {
+            selectAccent("orange");
+            saveProfiles();
+        });
+        setupTab(yellowAccent, () -> {
+            selectAccent("yellow");
+            saveProfiles();
+        });
+        selectAccent(savedThemeAccent);
         alwaysOnTopCheck.setSelected(savedAlwaysOnTop);
         alwaysOnTopCheck.selectedProperty().addListener((obs, oldValue, enabled) -> {
             Stage stage = (Stage) alwaysOnTopCheck.getScene().getWindow();
@@ -783,6 +804,17 @@ public class MainController {
             savedAlwaysOnTop = enabled;
             saveProfiles();
         });
+    }
+
+    private void selectAccent(String accent) {
+        savedThemeAccent = accent;
+        greenAccent.setSelected("green".equals(accent));
+        blueAccent.setSelected("blue".equals(accent));
+        purpleAccent.setSelected("purple".equals(accent));
+        pinkAccent.setSelected("pink".equals(accent));
+        orangeAccent.setSelected("orange".equals(accent));
+        yellowAccent.setSelected("yellow".equals(accent));
+        applyAccent(accent);
     }
 
     public void applyInitialUiScale() {
