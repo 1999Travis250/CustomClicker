@@ -79,6 +79,7 @@
                     </HBox>
                     <Region HBox.hgrow="ALWAYS"/>
                     <Button text="−" onAction="#handleMinimize" styleClass="window-button"/>
+                    <Button fx:id="maximizeButton" text="□" onAction="#handleMaximize" styleClass="window-button"/>
                     <Button text="×" onAction="#handleClose" styleClass="window-close"/>
                 </HBox>
 

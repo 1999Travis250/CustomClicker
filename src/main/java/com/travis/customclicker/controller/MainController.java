@@ -76,6 +76,7 @@ public class MainController {
     /* Settings */
     @FXML private ComboBox<String> languageCombo, uiScaleCombo, updateCombo;
     @FXML private BorderPane appRoot;
+    @FXML private Button maximizeButton;
     @FXML private ToggleButton greenAccent, blueAccent, purpleAccent, pinkAccent, orangeAccent, yellowAccent;
     @FXML private ToggleButton launchStartupCheck, alwaysOnTopCheck, minimizeToTrayCheck;
     @FXML private TextField startHotkeyField, nextProfileHotkeyField;
@@ -83,6 +84,7 @@ public class MainController {
     private double uiScale = 1.0, normalScale = 1.0;
     private boolean normalFullscreen = false;
     private boolean windowSnapped = false;
+    private String lastNormalUiScale = "100% (Default)";
     private String savedThemeAccent = "green";
     private String savedUiScale = "100% (Default)";
     private boolean savedAlwaysOnTop = false;
@@ -798,9 +800,13 @@ public class MainController {
     private void initializeSettings() {
         setupCombo(languageCombo, "English", "English");
         setupCombo(uiScaleCombo, savedUiScale, "75%", "100% (Default)", "Fill Window");
-        uiScaleCombo.setOnAction(event -> {
-            String value = uiScaleCombo.getValue();
+        if (!"Fill Window".equals(savedUiScale))
+            lastNormalUiScale = savedUiScale;
 
+        uiScaleCombo.valueProperty().addListener((obs, oldValue, value) -> {
+            if (value == null) return;
+            if (!"Fill Window".equals(value))
+                lastNormalUiScale = value;
             if ("75%".equals(value))
                 applyUiScale(0.75, false);
             else if ("Fill Window".equals(value))
@@ -808,6 +814,7 @@ public class MainController {
             else
                 applyUiScale(1.0, false);
 
+            windowSnapped = false;
             savedUiScale = value;
             saveProfiles();
         });
@@ -905,6 +912,20 @@ public class MainController {
             stage.centerOnScreen();
         }
         uiScale = scale;
+    }
+
+    private boolean isWindowButton(MouseEvent event) {
+        if (!(event.getTarget() instanceof Node node))
+            return false;
+
+        while (node != null) {
+            if (node instanceof Button)
+                return true;
+
+            node = node.getParent();
+        }
+
+        return false;
     }
 
     private void applyAccent(String accent) {
@@ -1050,6 +1071,20 @@ public class MainController {
     }
 
     @FXML
+    private void handleMaximize(ActionEvent event) {
+        if ("Fill Window".equals(uiScaleCombo.getValue())) {
+            uiScaleCombo.setValue(lastNormalUiScale);
+            windowSnapped = false;
+        } else {
+            normalScale = uiScale;
+            normalFullscreen = false;
+
+            uiScaleCombo.setValue("Fill Window");
+            windowSnapped = true;
+        }
+    }
+
+    @FXML
     private void handleClose(ActionEvent event) {
         if (autoClickService != null) autoClickService.stop();
         if (globalHotkeyService != null) globalHotkeyService.stop();
@@ -1058,6 +1093,7 @@ public class MainController {
 
     @FXML
     private void handleWindowPressed(MouseEvent event) {
+        if (isWindowButton(event)) return;
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
         if (windowSnapped) {
@@ -1079,6 +1115,7 @@ public class MainController {
 
     @FXML
     private void handleWindowDragged(MouseEvent event) {
+        if (isWindowButton(event)) return;
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
         if (windowSnapped) return;

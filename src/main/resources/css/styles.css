@@ -159,6 +159,8 @@
 
 .window-button,
 .window-close {
+  -fx-alignment: CENTER;
+  -fx-padding: 0;
   -fx-background-color: transparent;
   -fx-text-fill: #c8d0d5;
   -fx-font-size: 22px;
