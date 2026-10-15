@@ -13,11 +13,12 @@ public class AppData {
     private String uiScale;
     private boolean alwaysOnTop;
     private boolean launchAtStartup;
+    private boolean minimizeToTray;
 
     public AppData() {
     }
 
-    public AppData(List<Profile> profiles, String selectedProfileName, Integer startHotkeyCode, Integer nextProfileHotkeyCode, String themeAccent, String uiScale, boolean alwaysOnTop, boolean launchAtStartup) {
+    public AppData(List<Profile> profiles, String selectedProfileName, Integer startHotkeyCode, Integer nextProfileHotkeyCode, String themeAccent, String uiScale, boolean alwaysOnTop, boolean launchAtStartup, boolean minimizeToTray) {
         this.profiles = profiles;
         this.selectedProfileName = selectedProfileName;
         this.startHotkeyCode = startHotkeyCode;
@@ -26,6 +27,7 @@ public class AppData {
         this.uiScale = uiScale;
         this.alwaysOnTop = alwaysOnTop;
         this.launchAtStartup = launchAtStartup;
+        this.minimizeToTray = minimizeToTray;
     }
 
     public List<Profile> getProfiles() { return profiles; }
@@ -51,4 +53,7 @@ public class AppData {
 
     public boolean isLaunchAtStartup() { return launchAtStartup; }
     public void setLaunchAtStartup(boolean launchAtStartup) { this.launchAtStartup = launchAtStartup; }
+
+    public boolean isMinimizeToTray() { return minimizeToTray; }
+    public void setMinimizeToTray(boolean minimizeToTray) { this.minimizeToTray = minimizeToTray; }
 }

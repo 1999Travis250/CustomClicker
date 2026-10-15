@@ -7,6 +7,8 @@ import com.travis.customclicker.service.GlobalHotkeyService;
 import com.travis.customclicker.service.PersistenceService;
 import com.travis.customclicker.model.AppData;
 import com.travis.customclicker.service.WindowsStartupService;
+import com.travis.customclicker.service.TrayService;
+import java.awt.AWTException;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -90,6 +92,8 @@ public class MainController {
     private String savedUiScale = "100% (Default)";
     private boolean savedAlwaysOnTop = false;
     private boolean savedLaunchAtStartup = false;
+    private boolean savedMinimizeToTray = false;
+    private final TrayService trayService = new TrayService();
     private final WindowsStartupService startupService = new WindowsStartupService();
 
     @FXML
@@ -570,6 +574,7 @@ public class MainController {
             savedUiScale = data.getUiScale();
         savedAlwaysOnTop = data.isAlwaysOnTop();
         savedLaunchAtStartup = data.isLaunchAtStartup();
+        savedMinimizeToTray = data.isMinimizeToTray();
         if (data.getProfiles() != null)
             profiles.addAll(data.getProfiles());
         if (profiles.isEmpty()) {
@@ -721,7 +726,7 @@ public class MainController {
     private void saveProfiles() {
         try {
             String selectedName = selectedProfile != null ? selectedProfile.getName() : null;
-            persistenceService.saveData(new AppData(profiles, selectedName, startHotkeyCode, nextProfileHotkeyCode, savedThemeAccent, savedUiScale, savedAlwaysOnTop, savedLaunchAtStartup));
+            persistenceService.saveData(new AppData(profiles, selectedName, startHotkeyCode, nextProfileHotkeyCode, savedThemeAccent, savedUiScale, savedAlwaysOnTop, savedLaunchAtStartup, savedMinimizeToTray));
         } catch (Exception e) {
             showAlert("Save error", "Unable to save application data.");
             System.err.println("Unable to save application data: " + e.getMessage());
@@ -881,6 +886,21 @@ public class MainController {
             }
         });
 
+        // Minimize to tray
+        minimizeToTrayCheck.setSelected(savedMinimizeToTray);
+        minimizeToTrayCheck.setOnAction(event -> {
+            boolean enabled = minimizeToTrayCheck.isSelected();
+            if (enabled && !installTray()) {
+                minimizeToTrayCheck.setSelected(false);
+                return;
+            }
+            if (!enabled)
+                trayService.remove();
+
+            savedMinimizeToTray = enabled;
+            saveProfiles();
+        });
+
         // Always on top
         alwaysOnTopCheck.setSelected(savedAlwaysOnTop);
         alwaysOnTopCheck.selectedProperty().addListener((obs, oldValue, enabled) -> {
@@ -919,6 +939,39 @@ public class MainController {
     public void applyInitialAlwaysOnTop() {
         Stage stage = (Stage) alwaysOnTopCheck.getScene().getWindow();
         stage.setAlwaysOnTop(savedAlwaysOnTop);
+    }
+
+
+    private boolean installTray() {
+        try {
+            trayService.install(
+                    () -> Platform.runLater(this::restoreFromTray),
+                    () -> Platform.runLater(this::exitApplication)
+            );
+            return true;
+        } catch (AWTException e) {
+            showAlert("System tray error", e.getMessage());
+            return false;
+        }
+    }
+
+    private void restoreFromTray() {
+        Stage stage = (Stage) appRoot.getScene().getWindow();
+        stage.show();
+        stage.setIconified(false);
+        stage.toFront();
+        stage.requestFocus();
+    }
+
+    private void exitApplication() {
+        if (autoClickService != null)
+            autoClickService.stop();
+
+        if (globalHotkeyService != null)
+            globalHotkeyService.stop();
+
+        trayService.remove();
+        Platform.exit();
     }
 
     private void applyUiScale(double scale, boolean fullscreen) {
@@ -1114,13 +1167,28 @@ public class MainController {
         }
     }
 
-    @FXML
-    private void handleClose(ActionEvent event) {
-        if (autoClickService != null) autoClickService.stop();
-        if (globalHotkeyService != null) globalHotkeyService.stop();
-        getStage(event).close();
+    public void handleWindowCloseRequest() {
+        if (savedMinimizeToTray && trayService.isInstalled()) {
+            Stage stage = (Stage) appRoot.getScene().getWindow();
+            stage.hide();
+        } else {
+            exitApplication();
+        }
     }
 
+    @FXML
+    private void handleClose(ActionEvent event) {
+        handleWindowCloseRequest();
+    }
+
+    public void initializeTray() {
+        if (savedMinimizeToTray && !installTray()) {
+            savedMinimizeToTray = false;
+            minimizeToTrayCheck.setSelected(false);
+            saveProfiles();
+        }
+    }
+    
     @FXML
     private void handleWindowPressed(MouseEvent event) {
         if (isWindowButton(event)) return;
