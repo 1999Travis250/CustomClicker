@@ -427,7 +427,8 @@
                                 </HBox>
                             </graphic>
                         </Button>
-                        <Label text="Left click  •  Fixed 100 ms  •  Follow cursor"
+                        <Label fx:id="clickerSummary"
+                            text="Left click  •  Fixed 10 CPS  •  Follow cursor  •  Until stopped"
                             maxWidth="Infinity" alignment="CENTER" styleClass="summary"/>
                     </VBox>
 

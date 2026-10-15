@@ -44,7 +44,7 @@ public class MainController {
     @FXML private RadioButton followCursorButton, fixedPositionButton;
     @FXML private HBox repeatAmountRow, statusPill;
     @FXML private Button startButton;
-    @FXML private Label startButtonText, statusText, startHotkeyBadge;
+    @FXML private Label startButtonText, statusText, startHotkeyBadge, clickerSummary;
     @FXML private Circle statusDot;
     @FXML private SVGPath startIcon;
 
@@ -90,6 +90,7 @@ public class MainController {
     @FXML
     private void initialize() {
         initializeClicker();
+        setupClickerSummary();
         persistenceService = new PersistenceService();
         initializeProfiles();
         initializeSettings();
@@ -155,6 +156,56 @@ public class MainController {
         setupTimingConversions();
     }
 
+    private void setupClickerSummary() {
+        for (Spinner<Integer> spinner : List.of(fixedValueSpinner, minCpsSpinner,
+                maxCpsSpinner, minIntervalSpinner, maxIntervalSpinner,
+                xSpinner, ySpinner, repeatAmountSpinner)) {
+            spinner.valueProperty().addListener((obs, oldValue, value) -> updateClickerSummary());
+            spinner.getEditor().textProperty().addListener((obs, oldValue, value) -> updateClickerSummary());
+        }
+
+        for (ComboBox<String> combo : List.of(mouseButtonCombo, clickTypeCombo, repeatCombo)) {
+            combo.valueProperty().addListener((obs, oldValue, value) -> updateClickerSummary());
+        }
+
+        followCursorButton.selectedProperty().addListener((obs, oldValue, value) -> updateClickerSummary());
+        fixedPositionButton.selectedProperty().addListener((obs, oldValue, value) -> updateClickerSummary());
+    }
+
+    private void updateClickerSummary() {
+        if (clickerSummary == null) return;
+
+        ClickSettings settings = readClickSettings();
+
+        String button = switch (settings.getMouseButton()) {
+            case RIGHT -> "Right";
+            case MIDDLE -> "Middle";
+            default -> "Left";
+        };
+
+        String type = settings.getClickType() == ClickSettings.ClickType.DOUBLE
+                ? "double click" : "click";
+
+        String timing = switch (settings.getTimingMode()) {
+            case FIXED_CPS -> "Fixed " + settings.getFixedValue() + " CPS";
+            case FIXED_INTERVAL -> "Fixed " + settings.getFixedValue() + " ms";
+            case RANDOM_CPS -> "Random " + formatNumber(settings.getMinCps()) + "–" +
+                    formatNumber(settings.getMaxCps()) + " CPS";
+            case RANDOM_INTERVAL -> "Random " + settings.getMinInterval() + "–" +
+                    settings.getMaxInterval() + " ms";
+        };
+
+        String target = settings.getTargetMode() == ClickSettings.TargetMode.FIXED_POSITION
+                ? "X: " + settings.getX() + ", Y: " + settings.getY()
+                : "Follow cursor";
+
+        String repeat = settings.getRepeatMode() == ClickSettings.RepeatMode.FIXED_AMOUNT
+                ? settings.getRepeatAmount() + " clicks" : "Until stopped";
+
+        clickerSummary.setText(button + " " + type + "  •  " + timing +
+                "  •  " + target + "  •  " + repeat);
+    }
+
     private void initIntSpinner(Spinner<Integer> spinner, int min, int max, int initial) {
         spinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(min, max, initial));
     }
@@ -181,6 +232,7 @@ public class MainController {
                 return;
             }
             action.run();
+            updateClickerSummary();
         });
     }
 
@@ -542,6 +594,7 @@ public class MainController {
                     .orElse(profiles.get(0));
         }
         selectProfile(profileToSelect);
+        updateClickerSummary();
     }
 
     @FXML
@@ -550,6 +603,7 @@ public class MainController {
         profiles.add(profile);
         selectProfile(profile);
         saveProfiles();
+        updateClickerSummary();
         showPage(profilesPage);
     }
 
