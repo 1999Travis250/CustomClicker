@@ -571,17 +571,19 @@
                                     <Label text="Theme Accent" prefWidth="125" styleClass="field-label"/>
                                     <HBox spacing="9" alignment="CENTER_LEFT">
                                         <ToggleButton fx:id="greenAccent" selected="true"
-                                                    toggleGroup="$accentGroup" styleClass="accent-swatch, accent-green"/>
+                                            toggleGroup="$accentGroup" styleClass="accent-swatch, accent-green"/>
                                         <ToggleButton fx:id="blueAccent"
-                                                    toggleGroup="$accentGroup" styleClass="accent-swatch, accent-blue"/>
+                                            toggleGroup="$accentGroup" styleClass="accent-swatch, accent-blue"/>
                                         <ToggleButton fx:id="purpleAccent"
-                                                    toggleGroup="$accentGroup" styleClass="accent-swatch, accent-purple"/>
+                                            toggleGroup="$accentGroup" styleClass="accent-swatch, accent-purple"/>
                                         <ToggleButton fx:id="pinkAccent"
-                                                    toggleGroup="$accentGroup" styleClass="accent-swatch, accent-pink"/>
+                                            toggleGroup="$accentGroup" styleClass="accent-swatch, accent-pink"/>
                                         <ToggleButton fx:id="orangeAccent"
-                                                    toggleGroup="$accentGroup" styleClass="accent-swatch, accent-orange"/>
+                                            toggleGroup="$accentGroup" styleClass="accent-swatch, accent-orange"/>
                                         <ToggleButton fx:id="yellowAccent"
-                                                    toggleGroup="$accentGroup" styleClass="accent-swatch, accent-yellow"/>
+                                            toggleGroup="$accentGroup" styleClass="accent-swatch, accent-yellow"/>
+                                        <ToggleButton fx:id="cyanAccent"
+                                            toggleGroup="$accentGroup" styleClass="accent-swatch, accent-cyan"/>
                                     </HBox>
                                 </HBox>
                                 <Separator styleClass="settings-separator"/>
@@ -694,7 +696,11 @@
                                 <Label text="CustomClicker" styleClass="about-app-title"/>
                                 <Label text="Version 1.0.0" styleClass="about-version"/>
                                 <Label text="A simple, powerful, and customizable auto clicker for Windows. Built for productivity, gaming, and more."
-                                    wrapText="true" styleClass="about-description"/>
+                                    wrapText="true"
+                                    minWidth="0"
+                                    prefWidth="320"
+                                    maxWidth="Infinity"
+                                    styleClass="about-description"/>
                             </VBox>
 
                             <!-- DIVIDER -->
@@ -706,19 +712,22 @@
                                     <FontIcon iconLiteral="fth-wifi-off" iconSize="27"/>
                                     <Label text="Offline App" styleClass="about-mini-title"/>
                                     <Label text="No internet required" wrapText="true"
-                                        alignment="CENTER" textAlignment="CENTER" styleClass="about-mini-description"/>
+                                        alignment="CENTER" textAlignment="CENTER"
+                                        styleClass="about-mini-description"/>
                                 </VBox>
                                 <VBox spacing="6" alignment="CENTER" styleClass="about-mini-card">
                                     <FontIcon iconLiteral="fth-folder" iconSize="27"/>
                                     <Label text="Local Profiles" styleClass="about-mini-title"/>
                                     <Label text="Stored on your device" wrapText="true"
-                                        alignment="CENTER" textAlignment="CENTER" styleClass="about-mini-description"/>
+                                        alignment="CENTER" textAlignment="CENTER"
+                                        styleClass="about-mini-description"/>
                                 </VBox>
                                 <VBox spacing="6" alignment="CENTER" styleClass="about-mini-card">
                                     <FontIcon iconLiteral="fth-activity" iconSize="27"/>
                                     <Label text="Low Overhead" styleClass="about-mini-title"/>
                                     <Label text="Lightweight and fast" wrapText="true"
-                                        alignment="CENTER" textAlignment="CENTER" styleClass="about-mini-description"/>
+                                        alignment="CENTER" textAlignment="CENTER"
+                                        styleClass="about-mini-description"/>
                                 </VBox>
                             </HBox>
                         </HBox>
@@ -738,9 +747,8 @@
                                     <Label text="Everything you need for precise and flexible automation."
                                         wrapText="true" styleClass="muted"/>
                                 </VBox>
+                                <!-- Flexible Clicking -->
                                 <HBox spacing="13" alignment="CENTER_LEFT">
-
-                                    <!-- Flexible Clicking -->
                                     <StackPane styleClass="about-feature-icon">
                                         <FontIcon iconLiteral="fth-zap" iconSize="25"/>
                                     </StackPane>
@@ -750,9 +758,8 @@
                                             wrapText="true" styleClass="muted"/>
                                     </VBox>
                                 </HBox>
+                                <!-- Customizable Behavior -->
                                 <HBox spacing="13" alignment="CENTER_LEFT">
-
-                                    <!-- Customizable Behavior -->
                                     <StackPane styleClass="about-feature-icon">
                                         <FontIcon iconLiteral="fth-sliders" iconSize="25"/>
                                     </StackPane>
@@ -762,9 +769,8 @@
                                             wrapText="true" styleClass="muted"/>
                                     </VBox>
                                 </HBox>
+                                <!-- Multiple Click Targets -->
                                 <HBox spacing="13" alignment="CENTER_LEFT">
-
-                                    <!-- Multiple Click Targets -->
                                     <StackPane styleClass="about-feature-icon">
                                         <FontIcon iconLiteral="fth-target" iconSize="25"/>
                                     </StackPane>
@@ -774,15 +780,25 @@
                                             wrapText="true" styleClass="muted"/>
                                     </VBox>
                                 </HBox>
+                                <!-- Profiles -->
                                 <HBox spacing="13" alignment="CENTER_LEFT">
-
-                                    <!-- Profiles -->
                                     <StackPane styleClass="about-feature-icon">
                                         <FontIcon iconLiteral="fth-layers" iconSize="25"/>
                                     </StackPane>
                                     <VBox spacing="3">
                                         <Label text="Profiles" styleClass="about-feature-title"/>
                                         <Label text="Save and manage multiple configurations."
+                                            wrapText="true" styleClass="muted"/>
+                                    </VBox>
+                                </HBox>
+                                <!-- Background Operation -->
+                                <HBox spacing="13" alignment="CENTER_LEFT">
+                                    <StackPane styleClass="about-feature-icon">
+                                        <FontIcon iconLiteral="fth-monitor" iconSize="25"/>
+                                    </StackPane>
+                                    <VBox spacing="3">
+                                        <Label text="Background Operation" styleClass="about-feature-title"/>
+                                        <Label text="Run in the system tray with global hotkey control."
                                             wrapText="true" styleClass="muted"/>
                                     </VBox>
                                 </HBox>
@@ -826,8 +842,12 @@
                                         <StackPane styleClass="about-security-icon">
                                             <FontIcon iconLiteral="fth-shield" iconSize="48"/>
                                         </StackPane>
-                                        <Label text="CustomClicker is a lightweight, offline application. It does not collect, store, or transmit any personal data. Your settings and profiles are stored locally on your device."
-                                            wrapText="true" maxWidth="Infinity" HBox.hgrow="ALWAYS"
+                                        <Label text="CustomClicker is a lightweight, offline application. It does not collect, store, or transmit any personal data."
+                                            wrapText="true"
+                                            minWidth="0"
+                                            prefWidth="350"
+                                            maxWidth="Infinity"
+                                            HBox.hgrow="ALWAYS"
                                             styleClass="about-description"/>
                                     </HBox>
                                 </VBox>

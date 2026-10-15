@@ -80,7 +80,7 @@ public class MainController {
     @FXML private ComboBox<String> languageCombo, uiScaleCombo, updateCombo;
     @FXML private BorderPane appRoot;
     @FXML private Button maximizeButton;
-    @FXML private ToggleButton greenAccent, blueAccent, purpleAccent, pinkAccent, orangeAccent, yellowAccent;
+    @FXML private ToggleButton greenAccent, blueAccent, purpleAccent, pinkAccent, orangeAccent, yellowAccent, cyanAccent;
     @FXML private ToggleButton launchStartupCheck, alwaysOnTopCheck, minimizeToTrayCheck;
     @FXML private TextField startHotkeyField, nextProfileHotkeyField;
     private double xOffset, yOffset;
@@ -868,6 +868,10 @@ public class MainController {
             selectAccent("yellow");
             saveProfiles();
         });
+        setupTab(cyanAccent, () -> {
+            selectAccent("cyan");
+            saveProfiles();
+        });
 
         selectAccent(savedThemeAccent);
 
@@ -922,6 +926,7 @@ public class MainController {
         pinkAccent.setSelected("pink".equals(accent));
         orangeAccent.setSelected("orange".equals(accent));
         yellowAccent.setSelected("yellow".equals(accent));
+        cyanAccent.setSelected("cyan".equals(accent));
         applyAccent(accent);
     }
 
@@ -1018,6 +1023,7 @@ public class MainController {
             case "pink" -> "#f04385";
             case "orange" -> "#ff863a";
             case "yellow" -> "#ffcd36";
+            case "cyan" -> "#00d9e9";
             default -> "#16e889";
         };
         appRoot.setStyle("-fx-accent: " + color + ";");
@@ -1188,7 +1194,7 @@ public class MainController {
             saveProfiles();
         }
     }
-    
+
     @FXML
     private void handleWindowPressed(MouseEvent event) {
         if (isWindowButton(event)) return;
