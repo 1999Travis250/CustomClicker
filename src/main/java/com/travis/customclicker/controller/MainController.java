@@ -65,7 +65,7 @@ public class MainController {
 
     /* Profiles */
     @FXML private VBox profileList;
-    @FXML private TextField profileNameField, profileHotkeyField;
+    @FXML private TextField profileNameField;
     @FXML private TextArea profileDescriptionField;
     @FXML private Label profileCountLabel, profileTimingValue, profileBehaviorValue, profileTargetValue;
     @FXML private Button deleteProfileButton;
@@ -567,7 +567,7 @@ public class MainController {
         if (data.getProfiles() != null)
             profiles.addAll(data.getProfiles());
         if (profiles.isEmpty()) {
-            profiles.add(new Profile("Default", "Default profile for general use.", "", true, readClickSettings()));
+            profiles.add(new Profile("Default", "Default profile for general use.", true, readClickSettings()));
         }
         profileCombo.setOnAction(event -> {
             String selectedName = profileCombo.getValue();
@@ -599,7 +599,7 @@ public class MainController {
 
     @FXML
     private void handleNewProfile() {
-        Profile profile = new Profile("New Profile " + nextProfileNumber++, "", "", false, readClickSettings());
+        Profile profile = new Profile("New Profile " + nextProfileNumber++, "", false, readClickSettings());
         profiles.add(profile);
         selectProfile(profile);
         saveProfiles();
@@ -611,7 +611,6 @@ public class MainController {
         selectedProfile = profile;
         profileNameField.setText(profile.getName());
         profileDescriptionField.setText(profile.getDescription());
-        profileHotkeyField.setText(profile.getHotkey());
         deleteProfileButton.setDisable(profile.isDefault());
         loadClickSettings(profile.getSettings());
         updateProfileDetails(profile);
@@ -737,7 +736,6 @@ public class MainController {
         }
         selectedProfile.setName(name);
         selectedProfile.setDescription(profileDescriptionField.getText());
-        selectedProfile.setHotkey(profileHotkeyField.getText().trim());
         selectedProfile.setSettings(readClickSettings());
         updateProfileDetails(selectedProfile);
         refreshProfileList();
@@ -753,11 +751,10 @@ public class MainController {
         while (profileNameExists(name, null))
             name = baseName + " " + number++;
         Profile copy = new Profile(
-                name,
-                selectedProfile.getDescription(),
-                selectedProfile.getHotkey(),
-                false,
-                selectedProfile.getSettings().copy()
+            name,
+            selectedProfile.getDescription(),
+            false,
+            selectedProfile.getSettings().copy()
         );
         profiles.add(copy);
         selectProfile(copy);

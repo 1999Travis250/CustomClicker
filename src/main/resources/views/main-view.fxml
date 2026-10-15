@@ -487,9 +487,6 @@
                                             <TextArea fx:id="profileDescriptionField"
                                                     prefRowCount="2" wrapText="true"
                                                     styleClass="profile-textarea"/>
-                                            <Label text="Hotkey (optional)" styleClass="field-label"/>
-                                            <TextField fx:id="profileHotkeyField" promptText="Not set"
-                                                    styleClass="profile-input"/>
                                             <Label text="Timing" styleClass="profile-section-title"/>
                                             <HBox spacing="10" alignment="CENTER_LEFT" styleClass="profile-detail-row">
                                                 <VBox spacing="3">

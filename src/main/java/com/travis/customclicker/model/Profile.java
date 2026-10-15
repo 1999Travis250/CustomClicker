@@ -4,17 +4,15 @@ public class Profile {
 
     private String name;
     private String description;
-    private String hotkey;
     private boolean isDefault;
     private ClickSettings settings;
 
     public Profile() {
     }
 
-    public Profile(String name, String description, String hotkey, boolean isDefault, ClickSettings settings) {
+    public Profile(String name, String description, boolean isDefault, ClickSettings settings) {
         this.name = name;
         this.description = description;
-        this.hotkey = hotkey;
         this.isDefault = isDefault;
         this.settings = settings;
     }
@@ -33,14 +31,6 @@ public class Profile {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getHotkey() {
-        return hotkey;
-    }
-
-    public void setHotkey(String hotkey) {
-        this.hotkey = hotkey;
     }
 
     public boolean isDefault() {
