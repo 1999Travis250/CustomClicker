@@ -12,11 +12,12 @@ public class AppData {
     private String themeAccent;
     private String uiScale;
     private boolean alwaysOnTop;
+    private boolean launchAtStartup;
 
     public AppData() {
     }
 
-    public AppData(List<Profile> profiles, String selectedProfileName, Integer startHotkeyCode, Integer nextProfileHotkeyCode, String themeAccent, String uiScale, boolean alwaysOnTop) {
+    public AppData(List<Profile> profiles, String selectedProfileName, Integer startHotkeyCode, Integer nextProfileHotkeyCode, String themeAccent, String uiScale, boolean alwaysOnTop, boolean launchAtStartup) {
         this.profiles = profiles;
         this.selectedProfileName = selectedProfileName;
         this.startHotkeyCode = startHotkeyCode;
@@ -24,6 +25,7 @@ public class AppData {
         this.themeAccent = themeAccent;
         this.uiScale = uiScale;
         this.alwaysOnTop = alwaysOnTop;
+        this.launchAtStartup = launchAtStartup;
     }
 
     public List<Profile> getProfiles() { return profiles; }
@@ -46,4 +48,7 @@ public class AppData {
 
     public boolean isAlwaysOnTop() { return alwaysOnTop; }
     public void setAlwaysOnTop(boolean alwaysOnTop) { this.alwaysOnTop = alwaysOnTop; }
+
+    public boolean isLaunchAtStartup() { return launchAtStartup; }
+    public void setLaunchAtStartup(boolean launchAtStartup) { this.launchAtStartup = launchAtStartup; }
 }

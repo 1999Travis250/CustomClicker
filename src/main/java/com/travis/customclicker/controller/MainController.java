@@ -6,6 +6,7 @@ import com.travis.customclicker.service.AutoClickService;
 import com.travis.customclicker.service.GlobalHotkeyService;
 import com.travis.customclicker.service.PersistenceService;
 import com.travis.customclicker.model.AppData;
+import com.travis.customclicker.service.WindowsStartupService;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -88,6 +89,8 @@ public class MainController {
     private String savedThemeAccent = "green";
     private String savedUiScale = "100% (Default)";
     private boolean savedAlwaysOnTop = false;
+    private boolean savedLaunchAtStartup = false;
+    private final WindowsStartupService startupService = new WindowsStartupService();
 
     @FXML
     private void initialize() {
@@ -566,6 +569,7 @@ public class MainController {
         if (data.getUiScale() != null)
             savedUiScale = data.getUiScale();
         savedAlwaysOnTop = data.isAlwaysOnTop();
+        savedLaunchAtStartup = data.isLaunchAtStartup();
         if (data.getProfiles() != null)
             profiles.addAll(data.getProfiles());
         if (profiles.isEmpty()) {
@@ -717,7 +721,7 @@ public class MainController {
     private void saveProfiles() {
         try {
             String selectedName = selectedProfile != null ? selectedProfile.getName() : null;
-            persistenceService.saveData(new AppData(profiles, selectedName, startHotkeyCode, nextProfileHotkeyCode, savedThemeAccent, savedUiScale, savedAlwaysOnTop));
+            persistenceService.saveData(new AppData(profiles, selectedName, startHotkeyCode, nextProfileHotkeyCode, savedThemeAccent, savedUiScale, savedAlwaysOnTop, savedLaunchAtStartup));
         } catch (Exception e) {
             showAlert("Save error", "Unable to save application data.");
             System.err.println("Unable to save application data: " + e.getMessage());
@@ -796,17 +800,21 @@ public class MainController {
         alert.showAndWait();
     }
 
+    
     /* SETTINGS */
     private void initializeSettings() {
         setupCombo(languageCombo, "English", "English");
         setupCombo(uiScaleCombo, savedUiScale, "75%", "100% (Default)", "Fill Window");
+
         if (!"Fill Window".equals(savedUiScale))
             lastNormalUiScale = savedUiScale;
 
         uiScaleCombo.valueProperty().addListener((obs, oldValue, value) -> {
             if (value == null) return;
+
             if (!"Fill Window".equals(value))
                 lastNormalUiScale = value;
+
             if ("75%".equals(value))
                 applyUiScale(0.75, false);
             else if ("Fill Window".equals(value))
@@ -818,15 +826,19 @@ public class MainController {
             savedUiScale = value;
             saveProfiles();
         });
+
         setupCombo(updateCombo, "Automatically", "Automatically", "Manually", "Never");
+
+        // Global hotkeys
         startHotkeyField.setText(NativeKeyEvent.getKeyText(startHotkeyCode));
-        nextProfileHotkeyField.setText(NativeKeyEvent.getKeyText(nextProfileHotkeyCode));
         startHotkeyField.setEditable(false);
-        startHotkeyField.setText(NativeKeyEvent.getKeyText(startHotkeyCode));
         nextProfileHotkeyField.setText(NativeKeyEvent.getKeyText(nextProfileHotkeyCode));
         nextProfileHotkeyField.setEditable(false);
+
         startHotkeyField.setOnMouseClicked(event -> beginStartHotkeyCapture());
         nextProfileHotkeyField.setOnMouseClicked(event -> beginNextProfileHotkeyCapture());
+
+        // Theme accents
         setupTab(greenAccent, () -> {
             selectAccent("green");
             saveProfiles();
@@ -851,7 +863,25 @@ public class MainController {
             selectAccent("yellow");
             saveProfiles();
         });
+
         selectAccent(savedThemeAccent);
+
+        // Launch at startup
+        launchStartupCheck.setSelected(savedLaunchAtStartup);
+        launchStartupCheck.setOnAction(event -> {
+            boolean enabled = launchStartupCheck.isSelected();
+
+            try {
+                startupService.setLaunchAtStartup(enabled);
+                savedLaunchAtStartup = enabled;
+                saveProfiles();
+            } catch (Exception e) {
+                launchStartupCheck.setSelected(savedLaunchAtStartup);
+                showAlert("Startup error", e.getMessage());
+            }
+        });
+
+        // Always on top
         alwaysOnTopCheck.setSelected(savedAlwaysOnTop);
         alwaysOnTopCheck.selectedProperty().addListener((obs, oldValue, enabled) -> {
             Stage stage = (Stage) alwaysOnTopCheck.getScene().getWindow();
