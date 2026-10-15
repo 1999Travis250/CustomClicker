@@ -120,9 +120,13 @@
 
 /* Supporting text */
 
-.muted,
+.muted {
+  -fx-text-fill: #929da5;
+}
+
 .summary {
   -fx-text-fill: #929da5;
+  -fx-translate-y: 3px;
 }
 
 /* TITLE BAR / STATUS */
@@ -523,7 +527,7 @@
   -fx-text-fill: white;
   -fx-font-size: 21px;
   -fx-font-weight: bold;
-  -fx-effect: dropshadow(gaussian, -fx-accent, 18, 0.25, 0, 2);
+  -fx-effect: dropshadow(gaussian, -fx-accent, 12, 0.15, 0, 1);
 }
 
 .start-button:hover {
@@ -533,19 +537,19 @@
     -fx-accent,
     derive(-fx-accent, -12%)
   );
-  -fx-effect: dropshadow(gaussian, -fx-accent, 21, 0.28, 0, 2);
+  -fx-effect: dropshadow(gaussian, -fx-accent, 14, 0.18, 0, 1);
 }
 
 .start-button-running {
   -fx-background-color: linear-gradient(to bottom, #ed646d, #d94b55, #c73e48);
   -fx-border-color: rgba(255, 117, 126, 0.7);
   -fx-text-fill: white;
-  -fx-effect: dropshadow(gaussian, rgba(255, 45, 55, 0.7), 28, 0.35, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(255, 45, 55, 0.5), 16, 0.2, 0, 1);
 }
 
 .start-button-running:hover {
   -fx-background-color: linear-gradient(to bottom, #f47780, #e85a64, #d84953);
-  -fx-effect: dropshadow(gaussian, rgba(255, 45, 55, 0.8), 32, 0.38, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(255, 45, 55, 0.6), 18, 0.22, 0, 1);
 }
 
 .start-button-text {
@@ -687,6 +691,16 @@
 
 .profile-textarea .content {
   -fx-background-color: #151a1e;
+  -fx-background-radius: 8px;
+}
+
+.profile-textarea .scroll-pane {
+  -fx-background-color: transparent;
+  -fx-background-radius: 8px;
+}
+
+.profile-textarea .scroll-pane .viewport {
+  -fx-background-color: transparent;
 }
 
 .profile-input:focused,

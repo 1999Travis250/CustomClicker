@@ -66,8 +66,11 @@
                 <padding><Insets top="16" right="20" bottom="18" left="20"/></padding>
 
                 <!-- SHARED TITLE BAR -->
-                <HBox alignment="CENTER_LEFT" prefHeight="46"
-                    onMousePressed="#handleWindowPressed" onMouseDragged="#handleWindowDragged">
+                <HBox alignment="CENTER_LEFT"
+                    minHeight="46" prefHeight="46" maxHeight="46"
+                    VBox.vgrow="NEVER"
+                    onMousePressed="#handleWindowPressed"
+                    onMouseDragged="#handleWindowDragged">
                     <HBox alignment="CENTER_LEFT" spacing="0">
                         <Label text="Custom" styleClass="page-title"/>
                         <Label text="Clicker" styleClass="page-title, title-accent"/>
@@ -87,7 +90,7 @@
                 <StackPane VBox.vgrow="ALWAYS">
 
                     <!-- CLICKER PAGE -->
-                    <VBox fx:id="clickerPage" spacing="16" maxWidth="Infinity">
+                    <VBox fx:id="clickerPage" spacing="12" maxWidth="Infinity">
 
                         <!-- TIMING -->
                         <VBox spacing="14" styleClass="card">
@@ -434,7 +437,7 @@
                     </VBox>
 
                     <!-- PROFILES PAGE -->
-                    <VBox fx:id="profilesPage" spacing="14"
+                    <VBox fx:id="profilesPage" spacing="12"
                         visible="false" managed="false" maxWidth="Infinity">
                         <HBox alignment="CENTER_LEFT" spacing="12">
                             <VBox spacing="3">
@@ -537,7 +540,7 @@
                     </VBox>
 
                     <!-- SETTINGS PAGE -->
-                    <VBox fx:id="settingsPage" spacing="16"
+                    <VBox fx:id="settingsPage" spacing="12"
                         visible="false" managed="false" maxWidth="Infinity">
 
                         <!-- PAGE HEADER -->
@@ -848,8 +851,11 @@
                             <!-- DISCLAIMER TEXT -->
                             <VBox GridPane.columnIndex="1" spacing="5" minWidth="0" maxWidth="Infinity">
                                 <Label text="Disclaimer" styleClass="about-warning-title"/>
-                                <Label text="CustomClicker is intended for legitimate use only. The developer is not responsible for any damages, losses, or consequences resulting from the use or misuse of this application, including but not limited to violations of terms of service, game restrictions, or any other illegal and unauthorized use."
-                                    wrapText="true" minWidth="0" maxWidth="Infinity"
+                                <Label text="CustomClicker is intended for legitimate use only. The developer is not responsible for any damages, losses, or consequences resulting from the use or misuse of this application, including but not limited to violations of terms of service, game restrictions, or any other illegal or unauthorized use."
+                                    wrapText="true"
+                                    minWidth="0"
+                                    prefWidth="500"
+                                    maxWidth="Infinity"
                                     styleClass="about-disclaimer-text"/>
                             </VBox>
 
