@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class App extends Application {
+    // Loads the existing JavaFX view and connects window and tray lifecycle actions.
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(App.class.getResource("/views/main-view.fxml"));
@@ -39,6 +40,7 @@ public class App extends Application {
         stage.centerOnScreen();
     }
 
+    // Launches the JavaFX application.
     public static void main(String[] args) {
         launch();
     }

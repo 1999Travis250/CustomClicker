@@ -15,10 +15,15 @@ public class AppData {
     private boolean launchAtStartup;
     private boolean minimizeToTray;
 
+    // Keeps a no-argument constructor for JSON deserialization.
     public AppData() {
     }
 
-    public AppData(List<Profile> profiles, String selectedProfileName, Integer startHotkeyCode, Integer nextProfileHotkeyCode, String themeAccent, String uiScale, boolean alwaysOnTop, boolean launchAtStartup, boolean minimizeToTray) {
+    // Initializes the model with the supplied values.
+    public AppData(List<Profile> profiles, String selectedProfileName,
+                   Integer startHotkeyCode, Integer nextProfileHotkeyCode,
+                   String themeAccent, String uiScale, boolean alwaysOnTop,
+                   boolean launchAtStartup, boolean minimizeToTray) {
         this.profiles = profiles;
         this.selectedProfileName = selectedProfileName;
         this.startHotkeyCode = startHotkeyCode;
@@ -30,30 +35,93 @@ public class AppData {
         this.minimizeToTray = minimizeToTray;
     }
 
-    public List<Profile> getProfiles() { return profiles; }
-    public void setProfiles(List<Profile> profiles) { this.profiles = profiles; }
+    // Returns the profiles value.
+    public List<Profile> getProfiles() {
+        return profiles;
+    }
 
-    public String getSelectedProfileName() { return selectedProfileName; }
-    public void setSelectedProfileName(String selectedProfileName) { this.selectedProfileName = selectedProfileName; }
+    // Sets the profiles value.
+    public void setProfiles(List<Profile> profiles) {
+        this.profiles = profiles;
+    }
 
-    public Integer getStartHotkeyCode() { return startHotkeyCode; }
-    public void setStartHotkeyCode(Integer startHotkeyCode) { this.startHotkeyCode = startHotkeyCode; }
+    // Returns the selected profile name value.
+    public String getSelectedProfileName() {
+        return selectedProfileName;
+    }
 
-    public Integer getNextProfileHotkeyCode() { return nextProfileHotkeyCode; }
-    public void setNextProfileHotkeyCode(Integer nextProfileHotkeyCode) { this.nextProfileHotkeyCode = nextProfileHotkeyCode; }
+    // Sets the selected profile name value.
+    public void setSelectedProfileName(String selectedProfileName) {
+        this.selectedProfileName = selectedProfileName;
+    }
 
-    public String getThemeAccent() { return themeAccent; }
-    public void setThemeAccent(String themeAccent) { this.themeAccent = themeAccent; }
+    // Returns the start hotkey code value.
+    public Integer getStartHotkeyCode() {
+        return startHotkeyCode;
+    }
 
-    public String getUiScale() { return uiScale; }
-    public void setUiScale(String uiScale) { this.uiScale = uiScale; }
+    // Sets the start hotkey code value.
+    public void setStartHotkeyCode(Integer startHotkeyCode) {
+        this.startHotkeyCode = startHotkeyCode;
+    }
 
-    public boolean isAlwaysOnTop() { return alwaysOnTop; }
-    public void setAlwaysOnTop(boolean alwaysOnTop) { this.alwaysOnTop = alwaysOnTop; }
+    // Returns the next profile hotkey code value.
+    public Integer getNextProfileHotkeyCode() {
+        return nextProfileHotkeyCode;
+    }
 
-    public boolean isLaunchAtStartup() { return launchAtStartup; }
-    public void setLaunchAtStartup(boolean launchAtStartup) { this.launchAtStartup = launchAtStartup; }
+    // Sets the next profile hotkey code value.
+    public void setNextProfileHotkeyCode(Integer nextProfileHotkeyCode) {
+        this.nextProfileHotkeyCode = nextProfileHotkeyCode;
+    }
 
-    public boolean isMinimizeToTray() { return minimizeToTray; }
-    public void setMinimizeToTray(boolean minimizeToTray) { this.minimizeToTray = minimizeToTray; }
+    // Returns the theme accent value.
+    public String getThemeAccent() {
+        return themeAccent;
+    }
+
+    // Sets the theme accent value.
+    public void setThemeAccent(String themeAccent) {
+        this.themeAccent = themeAccent;
+    }
+
+    // Returns the UI scale option.
+    public String getUiScale() {
+        return uiScale;
+    }
+
+    // Sets the UI scale option.
+    public void setUiScale(String uiScale) {
+        this.uiScale = uiScale;
+    }
+
+    // Returns the always on top value.
+    public boolean isAlwaysOnTop() {
+        return alwaysOnTop;
+    }
+
+    // Sets the always on top value.
+    public void setAlwaysOnTop(boolean alwaysOnTop) {
+        this.alwaysOnTop = alwaysOnTop;
+    }
+
+    // Returns the launch at startup value.
+    public boolean isLaunchAtStartup() {
+        return launchAtStartup;
+    }
+
+    // Sets the launch at startup value.
+    public void setLaunchAtStartup(boolean launchAtStartup) {
+        this.launchAtStartup = launchAtStartup;
+    }
+
+    // Returns the minimize to tratarget Y coordinate.
+    public boolean isMinimizeToTray() {
+        return minimizeToTray;
+    }
+
+    // Sets the minimize to tratarget Y coordinate.
+    public void setMinimizeToTray(boolean minimizeToTray) {
+        this.minimizeToTray = minimizeToTray;
+    }
 }

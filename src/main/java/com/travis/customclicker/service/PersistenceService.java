@@ -13,15 +13,23 @@ public class PersistenceService {
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private final Path dataFile;
 
+    // Uses the existing per-user application data location.
     public PersistenceService() {
-        dataFile = getDataDirectory().resolve("customclicker-data.json");
+        this(getDataDirectory().resolve("customclicker-data.json"));
     }
 
+    // Allows persistence tests to use an isolated file instead of user data.
+    PersistenceService(Path dataFile) {
+        this.dataFile = dataFile;
+    }
+
+    // Writes all profiles and application settings using the existing JSON schema.
     public void saveData(AppData data) throws IOException {
         Files.createDirectories(dataFile.getParent());
         Files.writeString(dataFile, gson.toJson(data));
     }
 
+    // Loads saved data, or returns defaults when no data has been saved.
     public AppData loadData() throws IOException {
         if (!Files.exists(dataFile)) return new AppData();
 
@@ -30,11 +38,13 @@ public class PersistenceService {
         return data != null ? data : new AppData();
     }
 
+    // Returns the location used for both loading and saving.
     public Path getDataFile() {
         return dataFile;
     }
 
-    private Path getDataDirectory() {
+    // Resolves the Windows data directory with the existing home-directory fallback.
+    private static Path getDataDirectory() {
         String appData = System.getenv("APPDATA");
 
         if (appData != null && !appData.isBlank())

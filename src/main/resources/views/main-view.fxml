@@ -6,11 +6,14 @@
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 <?import javafx.scene.shape.SVGPath?>
 
+<!-- Main view: stable controller bindings and existing stylesheet reference. -->
 <StackPane xmlns:fx="http://javafx.com/fxml"
-           fx:controller="com.travis.customclicker.controller.MainController"
-           prefWidth="1200" prefHeight="800"
-           styleClass="window-border"
-           stylesheets="@../css/styles.css">
+    fx:controller="com.travis.customclicker.controller.MainController"
+    prefWidth="1200" prefHeight="800"
+    styleClass="window-border"
+    stylesheets="@../css/styles.css">
+
+    <!-- Shared toggle groups keep related choices mutually exclusive. -->
     <fx:define>
         <ToggleGroup fx:id="timingGroup"/>
         <ToggleGroup fx:id="fixedGroup"/>
@@ -20,10 +23,12 @@
     </fx:define>
     <BorderPane fx:id="appRoot" styleClass="app-root">
 
-        <!-- SIDEBAR -->
+        <!-- Sidebar: application branding and page navigation. -->
         <left>
             <VBox prefWidth="250" spacing="12" styleClass="sidebar">
-                <padding><Insets right="18" top="28" bottom="24" left="18"/></padding>
+                <padding>
+                    <Insets right="18" top="28" bottom="24" left="18"/>
+                </padding>
                 <StackPane styleClass="about-app-icon">
                     <FontIcon iconLiteral="fth-mouse-pointer" iconSize="52" iconColor="white"/>
                 </StackPane>
@@ -33,25 +38,25 @@
                 </HBox>
                 <Region prefHeight="28"/>
                 <Button fx:id="clickerNavButton" text="Clicker" onAction="#handleShowClicker"
-                        maxWidth="Infinity" graphicTextGap="14" styleClass="nav-active">
+                    maxWidth="Infinity" graphicTextGap="14" styleClass="nav-active">
                     <graphic>
                         <FontIcon iconLiteral="fth-home" iconSize="22"/>
                     </graphic>
                 </Button>
                 <Button fx:id="profilesNavButton" text="Profiles" onAction="#handleShowProfiles"
-                        maxWidth="Infinity" graphicTextGap="14" styleClass="nav-button">
+                    maxWidth="Infinity" graphicTextGap="14" styleClass="nav-button">
                     <graphic>
                         <FontIcon iconLiteral="fth-layers" iconSize="22"/>
                     </graphic>
                 </Button>
                 <Button fx:id="settingsNavButton" text="Settings" onAction="#handleShowSettings"
-                        maxWidth="Infinity" graphicTextGap="14" styleClass="nav-button">
+                    maxWidth="Infinity" graphicTextGap="14" styleClass="nav-button">
                     <graphic>
                         <FontIcon iconLiteral="fth-settings" iconSize="22"/>
                     </graphic>
                 </Button>
                 <Button fx:id="aboutNavButton" text="About" onAction="#handleShowAbout"
-                        maxWidth="Infinity" graphicTextGap="14" styleClass="nav-button">
+                    maxWidth="Infinity" graphicTextGap="14" styleClass="nav-button">
                     <graphic>
                         <FontIcon iconLiteral="fth-info" iconSize="22"/>
                     </graphic>
@@ -60,12 +65,14 @@
             </VBox>
         </left>
 
-        <!-- MAIN CONTENT -->
+        <!-- Main content: shared title bar and switchable pages. -->
         <center>
             <VBox spacing="16" styleClass="main-content">
-                <padding><Insets top="16" right="20" bottom="18" left="20"/></padding>
+                <padding>
+                    <Insets top="16" right="20" bottom="18" left="20"/>
+                </padding>
 
-                <!-- SHARED TITLE BAR -->
+                <!-- Title bar: window dragging, click status, and window controls. -->
                 <HBox alignment="CENTER_LEFT"
                     minHeight="46" prefHeight="46" maxHeight="46"
                     VBox.vgrow="NEVER"
@@ -86,13 +93,13 @@
                     <Button text="×" onAction="#handleClose" styleClass="window-close"/>
                 </HBox>
 
-                <!-- PAGE CONTAINER -->
+                <!-- Page container: MainController shows one page at a time. -->
                 <StackPane VBox.vgrow="ALWAYS">
 
-                    <!-- CLICKER PAGE -->
+                    <!-- Clicker page: timing, behavior, target, and start/stop controls. -->
                     <VBox fx:id="clickerPage" spacing="12" maxWidth="Infinity">
 
-                        <!-- TIMING -->
+                        <!-- Timing configuration and equivalent speed/interval displays. -->
                         <VBox spacing="14" styleClass="card">
                             <HBox spacing="12" alignment="CENTER_LEFT">
                                 <StackPane styleClass="section-icon">
@@ -104,21 +111,21 @@
                                 </VBox>
                             </HBox>
 
-                            <!-- FIXED / RANDOM -->
+                            <!-- Choose fixed or randomized click timing. -->
                             <HBox alignment="CENTER" styleClass="tab-bar">
                                 <ToggleButton fx:id="fixedTimingButton" text="Fixed" selected="true"
-                                            toggleGroup="$timingGroup" maxWidth="Infinity"
-                                            HBox.hgrow="ALWAYS" styleClass="tab"/>
+                                    toggleGroup="$timingGroup" maxWidth="Infinity"
+                                    HBox.hgrow="ALWAYS" styleClass="tab"/>
                                 <Region styleClass="tab-divider"/>
                                 <ToggleButton fx:id="randomTimingButton" text="Random"
-                                            toggleGroup="$timingGroup" maxWidth="Infinity"
-                                            HBox.hgrow="ALWAYS" styleClass="tab"/>
+                                    toggleGroup="$timingGroup" maxWidth="Infinity"
+                                    HBox.hgrow="ALWAYS" styleClass="tab"/>
                             </HBox>
                             <StackPane prefHeight="145"
-                                    minHeight="145"
-                                    maxHeight="145">
+                                minHeight="145"
+                                maxHeight="145">
 
-                                <!-- FIXED -->
+                                <!-- Fixed timing: interval or clicks per second. -->
                                 <GridPane fx:id="fixedPane" hgap="28" maxWidth="Infinity">
                                     <columnConstraints>
                                         <ColumnConstraints percentWidth="49" hgrow="ALWAYS"/>
@@ -126,7 +133,7 @@
                                         <ColumnConstraints percentWidth="49" hgrow="ALWAYS"/>
                                     </columnConstraints>
 
-                                    <!-- LEFT SIDE -->
+                                    <!-- Timing input controls. -->
                                     <VBox GridPane.columnIndex="0"
                                         spacing="8"
                                         maxWidth="Infinity">
@@ -136,43 +143,43 @@
                                                 <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
                                             </columnConstraints>
                                             <ToggleButton fx:id="fixedCpsButton"
-                                                        text="CPS"
-                                                        selected="true"
-                                                        toggleGroup="$fixedGroup"
-                                                        maxWidth="Infinity"
-                                                        GridPane.columnIndex="0"
-                                                        styleClass="tab"/>
+                                                text="CPS"
+                                                selected="true"
+                                                toggleGroup="$fixedGroup"
+                                                maxWidth="Infinity"
+                                                GridPane.columnIndex="0"
+                                                styleClass="tab"/>
                                             <ToggleButton fx:id="fixedIntervalButton"
-                                                        text="Interval"
-                                                        toggleGroup="$fixedGroup"
-                                                        maxWidth="Infinity"
-                                                        GridPane.columnIndex="1"
-                                                        styleClass="tab"/>
+                                                text="Interval"
+                                                toggleGroup="$fixedGroup"
+                                                maxWidth="Infinity"
+                                                GridPane.columnIndex="1"
+                                                styleClass="tab"/>
                                         </GridPane>
                                         <Label fx:id="fixedValueLabel"
                                             text="Interval (ms)"
                                             styleClass="field-label"/>
                                         <Spinner fx:id="fixedValueSpinner"
-                                                editable="true"
-                                                maxWidth="Infinity"/>
+                                            editable="true"
+                                            maxWidth="Infinity"/>
                                         <Label fx:id="fixedHelperLabel"
                                             text="Use a constant delay between clicks."
                                             styleClass="muted"/>
                                     </VBox>
 
-                                    <!-- DIVIDER -->
+                                    <!-- Visual divider between adjacent sections. -->
                                     <Region GridPane.columnIndex="1"
-                                            styleClass="timing-vertical-divider"/>
+                                        styleClass="timing-vertical-divider"/>
 
-                                    <!-- RIGHT SIDE -->
+                                    <!-- Equivalent timing display. -->
                                     <VBox GridPane.columnIndex="2"
                                         spacing="8"
                                         maxWidth="Infinity">
                                         <HBox spacing="10" alignment="CENTER_LEFT">
                                             <StackPane styleClass="section-icon-small">
                                                 <FontIcon iconLiteral="fth-activity"
-                                                        iconSize="25"
-                                                       />
+                                                    iconSize="25"
+                                                    />
                                             </StackPane>
                                             <Label fx:id="fixedEquivalentTitle"
                                                 text="Equivalent Speed"
@@ -188,48 +195,48 @@
                                     </VBox>
                                 </GridPane>
 
-                                <!-- RANDOM -->
+                                <!-- Random timing: CPS or interval ranges. -->
                                 <GridPane fx:id="randomPane"
-                                        hgap="28"
-                                        maxWidth="Infinity"
-                                        visible="false"
-                                        managed="false">
+                                    hgap="28"
+                                    maxWidth="Infinity"
+                                    visible="false"
+                                    managed="false">
                                     <columnConstraints>
                                         <ColumnConstraints percentWidth="49" hgrow="ALWAYS"/>
                                         <ColumnConstraints minWidth="1" prefWidth="1" maxWidth="1"/>
                                         <ColumnConstraints percentWidth="49" hgrow="ALWAYS"/>
                                     </columnConstraints>
 
-                                    <!-- LEFT SIDE -->
+                                    <!-- Timing input controls. -->
                                     <VBox GridPane.columnIndex="0"
                                         spacing="8"
                                         maxWidth="Infinity">
 
-                                        <!-- CPS / INTERVAL -->
+                                        <!-- Choose random CPS or interval inputs. -->
                                         <GridPane styleClass="tab-bar">
                                             <columnConstraints>
                                                 <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
                                                 <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
                                             </columnConstraints>
                                             <ToggleButton fx:id="randomCpsButton"
-                                                        text="CPS"
-                                                        selected="true"
-                                                        toggleGroup="$randomGroup"
-                                                        maxWidth="Infinity"
-                                                        GridPane.columnIndex="0"
-                                                        styleClass="tab"/>
+                                                text="CPS"
+                                                selected="true"
+                                                toggleGroup="$randomGroup"
+                                                maxWidth="Infinity"
+                                                GridPane.columnIndex="0"
+                                                styleClass="tab"/>
                                             <ToggleButton fx:id="randomIntervalButton"
-                                                        text="Interval"
-                                                        toggleGroup="$randomGroup"
-                                                        maxWidth="Infinity"
-                                                        GridPane.columnIndex="1"
-                                                        styleClass="tab"/>
+                                                text="Interval"
+                                                toggleGroup="$randomGroup"
+                                                maxWidth="Infinity"
+                                                GridPane.columnIndex="1"
+                                                styleClass="tab"/>
                                         </GridPane>
 
-                                        <!-- RANDOM INPUT CONTENT -->
+                                        <!-- Alternate input panels controlled by the selected timing mode. -->
                                         <StackPane maxWidth="Infinity">
 
-                                            <!-- RANDOM CPS INPUTS -->
+                                            <!-- Minimum and maximum clicks per second. -->
                                             <VBox fx:id="randomCpsInputPane"
                                                 spacing="8"
                                                 maxWidth="Infinity">
@@ -238,22 +245,22 @@
                                                         <Label text="Minimum CPS"
                                                             styleClass="field-label"/>
                                                         <Spinner fx:id="minCpsSpinner"
-                                                                editable="true"
-                                                                maxWidth="Infinity"/>
+                                                            editable="true"
+                                                            maxWidth="Infinity"/>
                                                     </VBox>
                                                     <VBox spacing="8" HBox.hgrow="ALWAYS">
                                                         <Label text="Maximum CPS"
                                                             styleClass="field-label"/>
                                                         <Spinner fx:id="maxCpsSpinner"
-                                                                editable="true"
-                                                                maxWidth="Infinity"/>
+                                                            editable="true"
+                                                            maxWidth="Infinity"/>
                                                     </VBox>
                                                 </HBox>
                                                 <Label text="Clicks are randomly chosen within this CPS range."
                                                     styleClass="muted"/>
                                             </VBox>
 
-                                            <!-- RANDOM INTERVAL INPUTS -->
+                                            <!-- Minimum and maximum interval in milliseconds. -->
                                             <VBox fx:id="randomIntervalInputPane"
                                                 spacing="8"
                                                 maxWidth="Infinity"
@@ -264,15 +271,15 @@
                                                         <Label text="Minimum Interval (ms)"
                                                             styleClass="field-label"/>
                                                         <Spinner fx:id="minIntervalSpinner"
-                                                                editable="true"
-                                                                maxWidth="Infinity"/>
+                                                            editable="true"
+                                                            maxWidth="Infinity"/>
                                                     </VBox>
                                                     <VBox spacing="8" HBox.hgrow="ALWAYS">
                                                         <Label text="Maximum Interval (ms)"
                                                             styleClass="field-label"/>
                                                         <Spinner fx:id="maxIntervalSpinner"
-                                                                editable="true"
-                                                                maxWidth="Infinity"/>
+                                                            editable="true"
+                                                            maxWidth="Infinity"/>
                                                     </VBox>
                                                 </HBox>
                                                 <Label text="Each delay is randomly chosen within this interval range."
@@ -281,15 +288,15 @@
                                         </StackPane>
                                     </VBox>
 
-                                    <!-- DIVIDER -->
+                                    <!-- Visual divider between adjacent sections. -->
                                     <Region GridPane.columnIndex="1"
-                                            styleClass="timing-vertical-divider"/>
+                                        styleClass="timing-vertical-divider"/>
 
-                                    <!-- RIGHT SIDE -->
+                                    <!-- Equivalent timing display. -->
                                     <StackPane GridPane.columnIndex="2"
-                                            maxWidth="Infinity">
+                                        maxWidth="Infinity">
 
-                                        <!-- RANDOM CPS EQUIVALENT -->
+                                        <!-- Equivalent interval for the random CPS range. -->
                                         <VBox fx:id="randomCpsEquivalentPane"
                                             spacing="8"
                                             maxWidth="Infinity">
@@ -297,8 +304,8 @@
                                                 alignment="CENTER_LEFT">
                                                 <StackPane styleClass="section-icon-small">
                                                     <FontIcon iconLiteral="fth-activity"
-                                                            iconSize="25"
-                                                           />
+                                                        iconSize="25"
+                                                        />
                                                 </StackPane>
                                                 <Label text="Equivalent Interval"
                                                     styleClass="field-label"/>
@@ -311,7 +318,7 @@
                                                 styleClass="muted"/>
                                         </VBox>
 
-                                        <!-- RANDOM INTERVAL EQUIVALENT -->
+                                        <!-- Equivalent CPS for the random interval range. -->
                                         <VBox fx:id="randomIntervalEquivalentPane"
                                             spacing="8"
                                             maxWidth="Infinity"
@@ -321,8 +328,8 @@
                                                 alignment="CENTER_LEFT">
                                                 <StackPane styleClass="section-icon-small">
                                                     <FontIcon iconLiteral="fth-activity"
-                                                            iconSize="25"
-                                                           />
+                                                        iconSize="25"
+                                                        />
                                                 </StackPane>
                                                 <Label text="Equivalent Speed"
                                                     styleClass="field-label"/>
@@ -339,7 +346,7 @@
                             </StackPane>
                         </VBox>
 
-                        <!-- CLICK BEHAVIOR + TARGET -->
+                        <!-- Click behavior and cursor/fixed-position target controls. -->
                         <GridPane hgap="16">
                             <columnConstraints>
                                 <ColumnConstraints percentWidth="50" hgrow="ALWAYS" minWidth="0"/>
@@ -391,16 +398,16 @@
                                 <HBox spacing="10" alignment="CENTER_LEFT">
                                     <Label text="X" styleClass="field-label"/>
                                     <Spinner fx:id="xSpinner" editable="true"
-                                            maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                                        maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
                                     <Label text="Y" styleClass="field-label"/>
                                     <Spinner fx:id="ySpinner" editable="true"
-                                            maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                                        maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
                                 </HBox>
                                 <Button text="Pick from screen" onAction="#handlePickFromScreen" maxWidth="Infinity" styleClass="secondary-button"/>
                             </VBox>
                         </GridPane>
 
-                        <!-- PROFILE SELECTOR -->
+                        <!-- Active profile selection and new-profile action. -->
                         <HBox spacing="12" alignment="CENTER_LEFT" styleClass="card, profile-card">
                             <StackPane styleClass="section-icon-small">
                                 <FontIcon iconLiteral="fth-layers" iconSize="25"/>
@@ -409,21 +416,21 @@
                             <ComboBox fx:id="profileCombo" prefWidth="350"/>
                             <Region HBox.hgrow="ALWAYS"/>
                             <Button text="New Profile" onAction="#handleNewProfile"
-                                    graphicTextGap="8" styleClass="secondary-button">
+                                graphicTextGap="8" styleClass="secondary-button">
                                 <graphic>
                                     <FontIcon iconLiteral="fth-plus" iconSize="16" iconColor="white"/>
                                 </graphic>
                             </Button>
                         </HBox>
                         <Button fx:id="startButton" maxWidth="Infinity" prefHeight="68"
-                                onAction="#handleStart" styleClass="start-button">
+                            onAction="#handleStart" styleClass="start-button">
                             <graphic>
                                 <HBox alignment="CENTER" spacing="14">
                                     <SVGPath fx:id="startIcon"
-                                            content="M8 5v14l11-7z"
-                                            fill="white"
-                                            scaleX="1.4"
-                                            scaleY="1.4"/>
+                                        content="M8 5v14l11-7z"
+                                        fill="white"
+                                        scaleX="1.4"
+                                        scaleY="1.4"/>
                                     <Label fx:id="startButtonText"
                                         text="Start Clicking"
                                         styleClass="start-button-text"/>
@@ -436,7 +443,7 @@
                             maxWidth="Infinity" alignment="CENTER" styleClass="summary"/>
                     </VBox>
 
-                    <!-- PROFILES PAGE -->
+                    <!-- Profiles page: saved configurations and selected-profile editor. -->
                     <VBox fx:id="profilesPage" spacing="12"
                         visible="false" managed="false" maxWidth="Infinity">
                         <HBox alignment="CENTER_LEFT" spacing="12">
@@ -446,7 +453,7 @@
                             </VBox>
                             <Region HBox.hgrow="ALWAYS"/>
                             <Button text="New Profile" onAction="#handleNewProfile"
-                                    graphicTextGap="8" styleClass="profile-primary-button">
+                                graphicTextGap="8" styleClass="profile-primary-button">
                                 <graphic>
                                     <FontIcon iconLiteral="fth-plus" iconSize="16" iconColor="#04140c"/>
                                 </graphic>
@@ -458,7 +465,7 @@
                                 <ColumnConstraints percentWidth="60" hgrow="ALWAYS" minWidth="0"/>
                             </columnConstraints>
 
-                            <!-- SAVED PROFILES -->
+                            <!-- Saved-profile list populated by MainController. -->
                             <VBox GridPane.columnIndex="0" spacing="14"
                                 styleClass="card, profiles-panel" maxWidth="Infinity">
                                 <VBox spacing="3">
@@ -467,14 +474,14 @@
                                 </VBox>
                                 <Label fx:id="profileCountLabel" text="1 profile" styleClass="profile-count"/>
                                 <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
-                                            hbarPolicy="NEVER" styleClass="profile-scroll">
+                                    hbarPolicy="NEVER" styleClass="profile-scroll">
                                     <content>
                                         <VBox fx:id="profileList" spacing="10" maxWidth="Infinity"/>
                                     </content>
                                 </ScrollPane>
                             </VBox>
 
-                            <!-- PROFILE DETAILS -->
+                            <!-- Selected profile name, description, settings summary, and actions. -->
                             <VBox GridPane.columnIndex="1" spacing="12"
                                 styleClass="card, profiles-panel" maxWidth="Infinity">
                                 <VBox spacing="3">
@@ -482,15 +489,15 @@
                                     <Label text="Edit your profile settings and click behavior." styleClass="muted"/>
                                 </VBox>
                                 <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
-                                            hbarPolicy="NEVER" styleClass="profile-scroll">
+                                    hbarPolicy="NEVER" styleClass="profile-scroll">
                                     <content>
                                         <VBox spacing="12" maxWidth="Infinity">
                                             <Label text="Profile Name" styleClass="field-label"/>
                                             <TextField fx:id="profileNameField" styleClass="profile-input"/>
                                             <Label text="Description" styleClass="field-label"/>
                                             <TextArea fx:id="profileDescriptionField"
-                                                    prefRowCount="2" wrapText="true"
-                                                    styleClass="profile-textarea"/>
+                                                prefRowCount="2" wrapText="true"
+                                                styleClass="profile-textarea"/>
                                             <Label text="Timing" styleClass="profile-section-title"/>
                                             <HBox spacing="10" alignment="CENTER_LEFT" styleClass="profile-detail-row">
                                                 <VBox spacing="3">
@@ -499,7 +506,7 @@
                                                 </VBox>
                                                 <Region HBox.hgrow="ALWAYS"/>
                                                 <Button text="Edit" onAction="#handleEditConfiguration"
-                                                        styleClass="secondary-button"/>
+                                                    styleClass="secondary-button"/>
                                             </HBox>
                                             <Label text="Click Behavior" styleClass="profile-section-title"/>
                                             <HBox spacing="10" alignment="CENTER_LEFT" styleClass="profile-detail-row">
@@ -509,7 +516,7 @@
                                                 </VBox>
                                                 <Region HBox.hgrow="ALWAYS"/>
                                                 <Button text="Edit" onAction="#handleEditConfiguration"
-                                                        styleClass="secondary-button"/>
+                                                    styleClass="secondary-button"/>
                                             </HBox>
                                             <Label text="Click Target" styleClass="profile-section-title"/>
                                             <HBox spacing="10" alignment="CENTER_LEFT" styleClass="profile-detail-row">
@@ -519,31 +526,31 @@
                                                 </VBox>
                                                 <Region HBox.hgrow="ALWAYS"/>
                                                 <Button text="Edit" onAction="#handleEditConfiguration"
-                                                        styleClass="secondary-button"/>
+                                                    styleClass="secondary-button"/>
                                             </HBox>
                                         </VBox>
                                     </content>
                                 </ScrollPane>
                                 <HBox spacing="8" alignment="CENTER_RIGHT">
                                     <Button text="Duplicate" onAction="#handleDuplicateProfile"
-                                            styleClass="secondary-button"/>
+                                        styleClass="secondary-button"/>
                                     <Button text="Set Default" onAction="#handleSetDefault"
-                                            styleClass="secondary-button"/>
+                                        styleClass="secondary-button"/>
                                     <Button fx:id="deleteProfileButton" text="Delete"
-                                            onAction="#handleDeleteProfile"
-                                            styleClass="profile-delete-button"/>
+                                        onAction="#handleDeleteProfile"
+                                        styleClass="profile-delete-button"/>
                                 </HBox>
                                 <Button text="Save Changes" maxWidth="Infinity"
-                                        onAction="#handleSaveProfile" styleClass="profile-primary-button"/>
+                                    onAction="#handleSaveProfile" styleClass="profile-primary-button"/>
                             </VBox>
                         </GridPane>
                     </VBox>
 
-                    <!-- SETTINGS PAGE -->
+                    <!-- Settings page: appearance, hotkeys, and window preferences. -->
                     <VBox fx:id="settingsPage" spacing="12"
                         visible="false" managed="false" maxWidth="Infinity">
 
-                        <!-- PAGE HEADER -->
+                        <!-- Page heading and introduction. -->
                         <HBox alignment="CENTER_LEFT" spacing="12">
                             <VBox spacing="3">
                                 <Label text="Settings" styleClass="profiles-heading"/>
@@ -551,14 +558,14 @@
                             </VBox>
                         </HBox>
 
-                        <!-- GENERAL + HOTKEYS -->
+                        <!-- General preferences and global hotkey assignments. -->
                         <GridPane hgap="16">
                             <columnConstraints>
                                 <ColumnConstraints percentWidth="50" hgrow="ALWAYS" minWidth="0"/>
                                 <ColumnConstraints percentWidth="50" hgrow="ALWAYS" minWidth="0"/>
                             </columnConstraints>
 
-                            <!-- GENERAL -->
+                            <!-- Appearance and general preference controls. -->
                             <VBox GridPane.columnIndex="0" spacing="14"
                                 maxWidth="Infinity" styleClass="card, settings-card">
                                 <VBox spacing="3">
@@ -566,7 +573,7 @@
                                     <Label text="Appearance and general application settings." styleClass="muted"/>
                                 </VBox>
 
-                                <!-- ACCENT COLORS -->
+                                <!-- Mutually exclusive accent-color swatches. -->
                                 <HBox alignment="CENTER_LEFT" spacing="10">
                                     <Label text="Theme Accent" prefWidth="125" styleClass="field-label"/>
                                     <HBox spacing="9" alignment="CENTER_LEFT">
@@ -588,28 +595,28 @@
                                 </HBox>
                                 <Separator styleClass="settings-separator"/>
 
-                                <!-- LANGUAGE -->
+                                <!-- Language selection. -->
                                 <HBox alignment="CENTER_LEFT" spacing="12">
                                     <Label text="Language" prefWidth="125" styleClass="field-label"/>
                                     <ComboBox fx:id="languageCombo" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
                                 </HBox>
 
-                                <!-- UI SCALE -->
+                                <!-- Window and content scale selection. -->
                                 <HBox alignment="CENTER_LEFT" spacing="12">
                                     <Label text="UI Scale" prefWidth="125" styleClass="field-label"/>
                                     <ComboBox fx:id="uiScaleCombo" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
                                 </HBox>
 
-                                <!-- UPDATES -->
+                                <!-- Update preference selection. -->
                                 <HBox alignment="CENTER_LEFT" spacing="12">
                                     <Label text="Check for Updates" prefWidth="125" styleClass="field-label"/>
                                     <ComboBox fx:id="updateCombo" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
                                 </HBox>
                                 <Button text="Check for Updates Now" maxWidth="Infinity"
-                                        disable="true" styleClass="secondary-button"/>
+                                    disable="true" styleClass="secondary-button"/>
                             </VBox>
 
-                            <!-- HOTKEYS -->
+                            <!-- Read-only fields that capture replacement global hotkeys. -->
                             <VBox GridPane.columnIndex="1" spacing="16"
                                 maxWidth="Infinity" styleClass="card, settings-card">
                                 <VBox spacing="3">
@@ -619,14 +626,14 @@
                                 <HBox spacing="12" alignment="CENTER_LEFT">
                                     <Label text="Start/Stop Clicking" prefWidth="150" styleClass="field-label"/>
                                     <TextField fx:id="startHotkeyField" editable="false"
-                                            maxWidth="Infinity" HBox.hgrow="ALWAYS"
-                                            styleClass="profile-input"/>
+                                        maxWidth="Infinity" HBox.hgrow="ALWAYS"
+                                        styleClass="profile-input"/>
                                 </HBox>
                                 <HBox spacing="12" alignment="CENTER_LEFT">
                                     <Label text="Next Profile" prefWidth="150" styleClass="field-label"/>
                                     <TextField fx:id="nextProfileHotkeyField" editable="false"
-                                            maxWidth="Infinity" HBox.hgrow="ALWAYS"
-                                            styleClass="profile-input"/>
+                                        maxWidth="Infinity" HBox.hgrow="ALWAYS"
+                                        styleClass="profile-input"/>
                                 </HBox>
                                 <HBox spacing="10" alignment="CENTER_LEFT" styleClass="settings-info">
                                     <FontIcon iconLiteral="fth-info" iconSize="19" iconColor="#65bfff"/>
@@ -636,7 +643,7 @@
                             </VBox>
                         </GridPane>
 
-                        <!-- STARTUP & WINDOW -->
+                        <!-- Windows startup, always-on-top, and minimize-to-tray preferences. -->
                         <VBox spacing="14" styleClass="card, settings-card">
                             <VBox spacing="3">
                                 <Label text="Startup &amp; Window" styleClass="card-title"/>
@@ -648,7 +655,9 @@
                                     <Label text="Automatically start CustomClicker with Windows." styleClass="muted"/>
                                 </VBox>
                                 <ToggleButton fx:id="launchStartupCheck" styleClass="settings-switch">
-                                    <graphic><Circle radius="9" fill="white"/></graphic>
+                                    <graphic>
+                                        <Circle radius="9" fill="white"/>
+                                    </graphic>
                                 </ToggleButton>
                             </HBox>
                             <HBox alignment="CENTER_LEFT" spacing="16">
@@ -657,7 +666,9 @@
                                     <Label text="Keep the app window above other windows." styleClass="muted"/>
                                 </VBox>
                                 <ToggleButton fx:id="alwaysOnTopCheck" styleClass="settings-switch">
-                                    <graphic><Circle radius="9" fill="white"/></graphic>
+                                    <graphic>
+                                        <Circle radius="9" fill="white"/>
+                                    </graphic>
                                 </ToggleButton>
                             </HBox>
                             <HBox alignment="CENTER_LEFT" spacing="16">
@@ -667,31 +678,33 @@
                                         styleClass="muted"/>
                                 </VBox>
                                 <ToggleButton fx:id="minimizeToTrayCheck" styleClass="settings-switch">
-                                    <graphic><Circle radius="9" fill="white"/></graphic>
+                                    <graphic>
+                                        <Circle radius="9" fill="white"/>
+                                    </graphic>
                                 </ToggleButton>
                             </HBox>
                         </VBox>
                     </VBox>
 
-                    <!-- ABOUT PAGE -->
+                    <!-- About page: application details, features, and usage information. -->
                     <VBox fx:id="aboutPage" spacing="12" visible="false" managed="false" maxWidth="Infinity">
 
-                        <!-- PAGE HEADER -->
+                        <!-- Page heading and introduction. -->
                         <VBox spacing="3">
                             <Label text="About" styleClass="profiles-heading"/>
                             <Label text="Learn more about CustomClicker, its features, and what makes it different."
                                 styleClass="muted"/>
                         </VBox>
 
-                        <!-- APPLICATION INFORMATION -->
+                        <!-- Application identity, version, and highlights. -->
                         <HBox spacing="18" alignment="CENTER_LEFT" styleClass="card, about-hero">
 
-                            <!-- APP ICON -->
+                            <!-- Application branding icon. -->
                             <StackPane styleClass="about-app-icon">
                                 <FontIcon iconLiteral="fth-mouse-pointer" iconSize="52" iconColor="white"/>
                             </StackPane>
 
-                            <!-- APP DETAILS -->
+                            <!-- Application name, version, and description. -->
                             <VBox spacing="7" HBox.hgrow="ALWAYS" maxWidth="Infinity">
                                 <Label text="CustomClicker" styleClass="about-app-title"/>
                                 <Label text="Version 1.0.0" styleClass="about-version"/>
@@ -703,10 +716,10 @@
                                     styleClass="about-description"/>
                             </VBox>
 
-                            <!-- DIVIDER -->
+                            <!-- Visual divider between adjacent sections. -->
                             <Region styleClass="about-vertical-divider"/>
 
-                            <!-- HIGHLIGHT CARDS -->
+                            <!-- Offline operation, local profiles, and low overhead highlights. -->
                             <HBox spacing="10" alignment="CENTER">
                                 <VBox spacing="6" alignment="CENTER" styleClass="about-mini-card">
                                     <FontIcon iconLiteral="fth-wifi-off" iconSize="27"/>
@@ -732,14 +745,14 @@
                             </HBox>
                         </HBox>
 
-                        <!-- FEATURES + INFORMATION -->
+                        <!-- Feature overview alongside platform and privacy information. -->
                         <GridPane hgap="12">
                             <columnConstraints>
                                 <ColumnConstraints percentWidth="44" hgrow="ALWAYS" minWidth="0"/>
                                 <ColumnConstraints percentWidth="56" hgrow="ALWAYS" minWidth="0"/>
                             </columnConstraints>
 
-                            <!-- FEATURES -->
+                            <!-- Supported clicking, targeting, profile, and background features. -->
                             <VBox GridPane.columnIndex="0" spacing="13" styleClass="card, about-panel"
                                 maxWidth="Infinity">
                                 <VBox spacing="3">
@@ -747,6 +760,7 @@
                                     <Label text="Everything you need for precise and flexible automation."
                                         wrapText="true" styleClass="muted"/>
                                 </VBox>
+
                                 <!-- Flexible Clicking -->
                                 <HBox spacing="13" alignment="CENTER_LEFT">
                                     <StackPane styleClass="about-feature-icon">
@@ -758,6 +772,7 @@
                                             wrapText="true" styleClass="muted"/>
                                     </VBox>
                                 </HBox>
+
                                 <!-- Customizable Behavior -->
                                 <HBox spacing="13" alignment="CENTER_LEFT">
                                     <StackPane styleClass="about-feature-icon">
@@ -769,6 +784,7 @@
                                             wrapText="true" styleClass="muted"/>
                                     </VBox>
                                 </HBox>
+
                                 <!-- Multiple Click Targets -->
                                 <HBox spacing="13" alignment="CENTER_LEFT">
                                     <StackPane styleClass="about-feature-icon">
@@ -780,6 +796,7 @@
                                             wrapText="true" styleClass="muted"/>
                                     </VBox>
                                 </HBox>
+
                                 <!-- Profiles -->
                                 <HBox spacing="13" alignment="CENTER_LEFT">
                                     <StackPane styleClass="about-feature-icon">
@@ -791,6 +808,7 @@
                                             wrapText="true" styleClass="muted"/>
                                     </VBox>
                                 </HBox>
+
                                 <!-- Background Operation -->
                                 <HBox spacing="13" alignment="CENTER_LEFT">
                                     <StackPane styleClass="about-feature-icon">
@@ -804,10 +822,10 @@
                                 </HBox>
                             </VBox>
 
-                            <!-- RIGHT COLUMN -->
+                            <!-- Platform support and privacy information panels. -->
                             <VBox GridPane.columnIndex="1" spacing="12" maxWidth="Infinity">
 
-                                <!-- SUPPORTED PLATFORMS -->
+                                <!-- Supported Windows versions and platform badge. -->
                                 <VBox spacing="12" styleClass="card, about-panel" maxWidth="Infinity">
                                     <VBox spacing="3">
                                         <Label text="Supported Platforms" styleClass="card-title"/>
@@ -831,7 +849,7 @@
                                     </HBox>
                                 </VBox>
 
-                                <!-- PRIVACY & SECURITY -->
+                                <!-- Offline operation and privacy description. -->
                                 <VBox spacing="12" styleClass="card, about-panel" maxWidth="Infinity"
                                     VBox.vgrow="ALWAYS">
                                     <VBox spacing="3">
@@ -854,7 +872,7 @@
                             </VBox>
                         </GridPane>
 
-                        <!-- DISCLAIMER -->
+                        <!-- Responsible-use disclaimer and warning panel. -->
                         <GridPane hgap="14" alignment="CENTER_LEFT" styleClass="about-disclaimer">
                             <columnConstraints>
                                 <ColumnConstraints minWidth="40" prefWidth="40" maxWidth="40"/>
@@ -863,12 +881,12 @@
                                 <ColumnConstraints minWidth="150" prefWidth="150" maxWidth="150"/>
                             </columnConstraints>
 
-                            <!-- WARNING ICON -->
+                            <!-- Disclaimer warning icon. -->
                             <StackPane GridPane.columnIndex="0" styleClass="about-warning-icon">
                                 <FontIcon iconLiteral="fth-alert-triangle" iconSize="30" iconColor="#ffcc52"/>
                             </StackPane>
 
-                            <!-- DISCLAIMER TEXT -->
+                            <!-- Responsible-use and liability text. -->
                             <VBox GridPane.columnIndex="1" spacing="5" minWidth="0" maxWidth="Infinity">
                                 <Label text="Disclaimer" styleClass="about-warning-title"/>
                                 <Label text="CustomClicker is intended for legitimate use only. The developer is not responsible for any damages, losses, or consequences resulting from the use or misuse of this application, including but not limited to violations of terms of service, game restrictions, or any other illegal or unauthorized use."
@@ -879,10 +897,10 @@
                                     styleClass="about-disclaimer-text"/>
                             </VBox>
 
-                            <!-- DIVIDER -->
+                            <!-- Visual divider between adjacent sections. -->
                             <Region GridPane.columnIndex="2" styleClass="about-warning-divider"/>
-                            
-                            <!-- RIGHT MESSAGE -->
+
+                            <!-- Closing reminder beside the disclaimer. -->
                             <VBox GridPane.columnIndex="3" spacing="5" alignment="CENTER">
                                 <Label text="Use responsibly." styleClass="about-warning-title"/>
                                 <Label text="Click with intention." styleClass="about-warning-subtitle"/>
@@ -892,5 +910,5 @@
                 </StackPane>
             </VBox>
         </center>
-    </BorderPane>  
+    </BorderPane>
 </StackPane>

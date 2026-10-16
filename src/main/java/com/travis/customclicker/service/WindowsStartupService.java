@@ -12,6 +12,7 @@ public class WindowsStartupService {
 
     private static final String APP_NAME = "CustomClicker";
 
+    // Adds or removes the packaged executable in the existing per-user Run key.
     public void setLaunchAtStartup(boolean enabled)
             throws IOException, InterruptedException {
 
