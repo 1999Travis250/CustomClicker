@@ -1,14 +1,14 @@
 package com.travis.customclicker.controller;
+
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
+import com.travis.customclicker.model.AppData;
 import com.travis.customclicker.model.ClickSettings;
 import com.travis.customclicker.model.Profile;
 import com.travis.customclicker.service.AutoClickService;
 import com.travis.customclicker.service.GlobalHotkeyService;
 import com.travis.customclicker.service.PersistenceService;
-import com.travis.customclicker.model.AppData;
-import com.travis.customclicker.service.WindowsStartupService;
 import com.travis.customclicker.service.TrayService;
-import java.awt.AWTException;
+import com.travis.customclicker.service.WindowsStartupService;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -19,10 +19,27 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
@@ -32,22 +49,57 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
+
+import java.awt.AWTException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainController {
 
+    private static final double BASE_WIDTH = 1200;
+    private static final double BASE_HEIGHT = 800;
+
     /* Clicker */
-    @FXML private Spinner<Integer> fixedValueSpinner, minCpsSpinner, maxCpsSpinner, minIntervalSpinner, maxIntervalSpinner, xSpinner, ySpinner, repeatAmountSpinner;
-    @FXML private ComboBox<String> mouseButtonCombo, clickTypeCombo, repeatCombo, profileCombo;
-    @FXML private ToggleButton fixedTimingButton, randomTimingButton, fixedIntervalButton, fixedCpsButton, randomCpsButton, randomIntervalButton;
-    @FXML private Label fixedValueLabel, fixedHelperLabel, fixedEquivalentTitle, fixedEquivalentValue, fixedEquivalentHelper, randomCpsEquivalentValue, randomIntervalEquivalentValue;
-    @FXML private GridPane fixedPane, randomPane;
-    @FXML private VBox randomCpsInputPane, randomIntervalInputPane, randomCpsEquivalentPane, randomIntervalEquivalentPane;
-    @FXML private RadioButton followCursorButton, fixedPositionButton;
-    @FXML private HBox repeatAmountRow, statusPill;
+    @FXML private Spinner<Integer> fixedValueSpinner;
+    @FXML private Spinner<Integer> minCpsSpinner;
+    @FXML private Spinner<Integer> maxCpsSpinner;
+    @FXML private Spinner<Integer> minIntervalSpinner;
+    @FXML private Spinner<Integer> maxIntervalSpinner;
+    @FXML private Spinner<Integer> xSpinner;
+    @FXML private Spinner<Integer> ySpinner;
+    @FXML private Spinner<Integer> repeatAmountSpinner;
+    @FXML private ComboBox<String> mouseButtonCombo;
+    @FXML private ComboBox<String> clickTypeCombo;
+    @FXML private ComboBox<String> repeatCombo;
+    @FXML private ComboBox<String> profileCombo;
+    @FXML private ToggleButton fixedTimingButton;
+    @FXML private ToggleButton randomTimingButton;
+    @FXML private ToggleButton fixedIntervalButton;
+    @FXML private ToggleButton fixedCpsButton;
+    @FXML private ToggleButton randomCpsButton;
+    @FXML private ToggleButton randomIntervalButton;
+    @FXML private Label fixedValueLabel;
+    @FXML private Label fixedHelperLabel;
+    @FXML private Label fixedEquivalentTitle;
+    @FXML private Label fixedEquivalentValue;
+    @FXML private Label fixedEquivalentHelper;
+    @FXML private Label randomCpsEquivalentValue;
+    @FXML private Label randomIntervalEquivalentValue;
+    @FXML private GridPane fixedPane;
+    @FXML private GridPane randomPane;
+    @FXML private VBox randomCpsInputPane;
+    @FXML private VBox randomIntervalInputPane;
+    @FXML private VBox randomCpsEquivalentPane;
+    @FXML private VBox randomIntervalEquivalentPane;
+    @FXML private RadioButton followCursorButton;
+    @FXML private RadioButton fixedPositionButton;
+    @FXML private HBox repeatAmountRow;
+    @FXML private HBox statusPill;
     @FXML private Button startButton;
-    @FXML private Label startButtonText, statusText, startHotkeyBadge, clickerSummary;
+    @FXML private Label startButtonText;
+    @FXML private Label statusText;
+    @FXML private Label startHotkeyBadge;
+    @FXML private Label clickerSummary;
     @FXML private Circle statusDot;
     @FXML private SVGPath startIcon;
 
@@ -59,30 +111,47 @@ public class MainController {
     private int startHotkeyCode = NativeKeyEvent.VC_F6;
     private int nextProfileHotkeyCode = NativeKeyEvent.VC_F7;
     private PersistenceService persistenceService;
-    private static final double BASE_WIDTH = 1200;
-    private static final double BASE_HEIGHT = 800;
 
     /* Navigation */
-    @FXML private Button clickerNavButton, profilesNavButton, settingsNavButton, aboutNavButton;
-    @FXML private VBox clickerPage, profilesPage, settingsPage, aboutPage;
+    @FXML private Button clickerNavButton;
+    @FXML private Button profilesNavButton;
+    @FXML private Button settingsNavButton;
+    @FXML private Button aboutNavButton;
+    @FXML private VBox clickerPage;
+    @FXML private VBox profilesPage;
+    @FXML private VBox settingsPage;
+    @FXML private VBox aboutPage;
 
     /* Profiles */
     @FXML private VBox profileList;
     @FXML private TextField profileNameField;
     @FXML private TextArea profileDescriptionField;
-    @FXML private Label profileCountLabel, profileTimingValue, profileBehaviorValue, profileTargetValue;
+    @FXML private Label profileCountLabel;
+    @FXML private Label profileTimingValue;
+    @FXML private Label profileBehaviorValue;
+    @FXML private Label profileTargetValue;
     @FXML private Button deleteProfileButton;
     private final List<Profile> profiles = new ArrayList<>();
     private Profile selectedProfile;
     private int nextProfileNumber = 1;
 
     /* Settings */
-    @FXML private ComboBox<String> languageCombo, uiScaleCombo, updateCombo;
+    @FXML private ComboBox<String> languageCombo;
+    @FXML private ComboBox<String> uiScaleCombo;
+    @FXML private ComboBox<String> updateCombo;
     @FXML private BorderPane appRoot;
-    @FXML private Button maximizeButton;
-    @FXML private ToggleButton greenAccent, blueAccent, purpleAccent, pinkAccent, orangeAccent, yellowAccent, cyanAccent;
-    @FXML private ToggleButton launchStartupCheck, alwaysOnTopCheck, minimizeToTrayCheck;
-    @FXML private TextField startHotkeyField, nextProfileHotkeyField;
+    @FXML private ToggleButton greenAccent;
+    @FXML private ToggleButton blueAccent;
+    @FXML private ToggleButton purpleAccent;
+    @FXML private ToggleButton pinkAccent;
+    @FXML private ToggleButton orangeAccent;
+    @FXML private ToggleButton yellowAccent;
+    @FXML private ToggleButton cyanAccent;
+    @FXML private ToggleButton launchStartupCheck;
+    @FXML private ToggleButton alwaysOnTopCheck;
+    @FXML private ToggleButton minimizeToTrayCheck;
+    @FXML private TextField startHotkeyField;
+    @FXML private TextField nextProfileHotkeyField;
     private double xOffset, yOffset;
     private double uiScale = 1.0, normalScale = 1.0;
     private boolean normalFullscreen = false;
@@ -96,6 +165,7 @@ public class MainController {
     private final TrayService trayService = new TrayService();
     private final WindowsStartupService startupService = new WindowsStartupService();
 
+    // Initializes controls and saved state before starting the click and hotkey services.
     @FXML
     private void initialize() {
         initializeClicker();
@@ -104,11 +174,21 @@ public class MainController {
         initializeProfiles();
         initializeSettings();
         showPage(clickerPage);
+        initializeClickEngine();
+        initializeGlobalHotkeys();
+    }
+
+    // Creates the mouse engine and reports initialization failure through the existing dialog.
+    private void initializeClickEngine() {
         try {
             autoClickService = new AutoClickService();
         } catch (Exception e) {
             showAlert("Click engine error", "Unable to initialize the mouse click engine.");
         }
+    }
+
+    // Starts the global hotkeys after their saved assignments have been restored.
+    private void initializeGlobalHotkeys() {
         try {
             globalHotkeyService = new GlobalHotkeyService();
             globalHotkeyService.setHotkeyCode(startHotkeyCode);
@@ -123,6 +203,7 @@ public class MainController {
     }
 
     /* CLICKER */
+    // Configures click inputs and their existing selection listeners.
     private void initializeClicker() {
         showFixedCpsMode();
         initIntSpinner(minCpsSpinner, 1, 1000, 5);
@@ -165,6 +246,7 @@ public class MainController {
         setupTimingConversions();
     }
 
+    // Refreshes the click summary when an input changes.
     private void setupClickerSummary() {
         for (Spinner<Integer> spinner : List.of(fixedValueSpinner, minCpsSpinner,
                 maxCpsSpinner, minIntervalSpinner, maxIntervalSpinner,
@@ -181,6 +263,7 @@ public class MainController {
         fixedPositionButton.selectedProperty().addListener((obs, oldValue, value) -> updateClickerSummary());
     }
 
+    // Builds the displayed summary from the current input values.
     private void updateClickerSummary() {
         if (clickerSummary == null) return;
 
@@ -215,25 +298,30 @@ public class MainController {
                 "  •  " + target + "  •  " + repeat);
     }
 
+    // Sets an integer spinner's limits and initial value.
     private void initIntSpinner(Spinner<Integer> spinner, int min, int max, int initial) {
         spinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(min, max, initial));
     }
 
+    // Allows unsigned digits and temporarily empty editor text.
     private void restrictNumericInput(Spinner<Integer> spinner) {
         spinner.getEditor().setTextFormatter(new TextFormatter<String>(change ->
                 change.getControlNewText().matches("\\d*") ? change : null));
     }
 
+    // Allows signed digits and temporarily incomplete editor text.
     private void restrictSignedNumericInput(Spinner<Integer> spinner) {
         spinner.getEditor().setTextFormatter(new TextFormatter<String>(change ->
                 change.getControlNewText().matches("-?\\d*") ? change : null));
     }
 
+    // Populates a combo box and selects its initial value.
     private void setupCombo(ComboBox<String> combo, String selected, String... items) {
         combo.getItems().setAll(items);
         combo.setValue(selected);
     }
 
+    // Keeps a toggle selected and runs its action when activated.
     private void setupTab(ToggleButton button, Runnable action) {
         button.setOnAction(event -> {
             if (!button.isSelected()) {
@@ -245,47 +333,51 @@ public class MainController {
         });
     }
 
+    // Shows the panels for fixed or random timing.
     private void showTimingMode(boolean fixed) {
-        fixedPane.setVisible(fixed);
-        fixedPane.setManaged(fixed);
-        randomPane.setVisible(!fixed);
-        randomPane.setManaged(!fixed);
+        setVisibleAndManaged(fixedPane, fixed);
+        setVisibleAndManaged(randomPane, !fixed);
     }
 
+    // Shows the random CPS inputs and their equivalent interval.
     private void showRandomCpsMode() {
-        randomCpsInputPane.setVisible(true);
-        randomCpsInputPane.setManaged(true);
-        randomIntervalInputPane.setVisible(false);
-        randomIntervalInputPane.setManaged(false);
-        randomCpsEquivalentPane.setVisible(true);
-        randomCpsEquivalentPane.setManaged(true);
-        randomIntervalEquivalentPane.setVisible(false);
-        randomIntervalEquivalentPane.setManaged(false);
+        showRandomMode(true);
     }
 
+    // Shows the random interval inputs and their equivalent CPS.
     private void showRandomIntervalMode() {
-        randomCpsInputPane.setVisible(false);
-        randomCpsInputPane.setManaged(false);
-        randomIntervalInputPane.setVisible(true);
-        randomIntervalInputPane.setManaged(true);
-        randomCpsEquivalentPane.setVisible(false);
-        randomCpsEquivalentPane.setManaged(false);
-        randomIntervalEquivalentPane.setVisible(true);
-        randomIntervalEquivalentPane.setManaged(true);
+        showRandomMode(false);
     }
 
+    // Shows the input and equivalent-value panels for the selected random mode.
+    private void showRandomMode(boolean cps) {
+        setVisibleAndManaged(randomCpsInputPane, cps);
+        setVisibleAndManaged(randomIntervalInputPane, !cps);
+        setVisibleAndManaged(randomCpsEquivalentPane, cps);
+        setVisibleAndManaged(randomIntervalEquivalentPane, !cps);
+    }
+
+    // Keeps layout participation consistent with a node's visibility.
+    private void setVisibleAndManaged(Node node, boolean visible) {
+        node.setVisible(visible);
+        node.setManaged(visible);
+    }
+
+    // Configures fixed-interval labels and input limits.
     private void showFixedIntervalMode() {
         configureFixedMode("Interval (ms)", "Use a constant delay between clicks.",
                 "Equivalent Speed", "10 CPS", "Equivalent clicking speed.", 1, 300000, 100);
         if (fixedValueSpinner.getValueFactory() != null) updateFixedEquivalent();
     }
 
+    // Configures fixed-CPS labels and input limits.
     private void showFixedCpsMode() {
         configureFixedMode("Clicks per second (CPS)", "Use a constant number of clicks per second.",
                 "Equivalent Interval", "100 ms", "Equivalent delay between clicks.", 1, 1000, 10);
         if (fixedValueSpinner.getValueFactory() != null) updateFixedEquivalent();
     }
 
+    // Updates labels and resets the shared fixed-timing spinner.
     private void configureFixedMode(String label, String helper, String equivalentTitle,
                                     String equivalentValue, String equivalentHelper,
                                     int min, int max, int initial) {
@@ -297,6 +389,7 @@ public class MainController {
         initIntSpinner(fixedValueSpinner, min, max, initial);
     }
 
+    // Keeps timing equivalents synchronized with spinner input.
     private void setupTimingConversions() {
         fixedValueSpinner.valueProperty().addListener((obs, oldValue, newValue) -> updateFixedEquivalent());
         fixedValueSpinner.getEditor().textProperty().addListener((obs, oldValue, newValue) -> updateFixedEquivalent());
@@ -313,6 +406,7 @@ public class MainController {
         updateRandomIntervalEquivalent();
     }
 
+    // Reads editor text, returning zero for empty or invalid integers.
     private int getSpinnerInput(Spinner<Integer> spinner) {
         String text = spinner.getEditor().getText().trim();
         if (text.isEmpty()) return 0;
@@ -320,6 +414,7 @@ public class MainController {
         catch (NumberFormatException e) { return 0; }
     }
 
+    // Displays the speed or interval equivalent of the fixed input.
     private void updateFixedEquivalent() {
         int value = getSpinnerInput(fixedValueSpinner);
         if (value <= 0) {
@@ -332,6 +427,7 @@ public class MainController {
             fixedEquivalentValue.setText(formatNumber(1000.0 / value) + " CPS");
     }
 
+    // Displays the interval range equivalent to the CPS inputs.
     private void updateRandomCpsEquivalent() {
         int minCps = getSpinnerInput(minCpsSpinner);
         int maxCps = getSpinnerInput(maxCpsSpinner);
@@ -348,6 +444,7 @@ public class MainController {
                         formatNumber(1000.0 / minCps) + " ms");
     }
 
+    // Displays the CPS range equivalent to the interval inputs.
     private void updateRandomIntervalEquivalent() {
         int minInterval = getSpinnerInput(minIntervalSpinner);
         int maxInterval = getSpinnerInput(maxIntervalSpinner);
@@ -364,11 +461,13 @@ public class MainController {
                         formatNumber(1000.0 / minInterval) + " CPS");
     }
 
+    // Formats summary numbers using the existing precision and locale.
     private String formatNumber(double value) {
         if (Math.abs(value - Math.round(value)) < 0.001) return String.valueOf(Math.round(value));
         return String.format("%.2f", value).replaceAll("0+$", "").replaceAll("\\\\.$", "");
     }
 
+    // Copies the current control values into independent click settings.
     private ClickSettings readClickSettings() {
         ClickSettings settings = new ClickSettings();
         if (randomTimingButton.isSelected()) {
@@ -407,6 +506,7 @@ public class MainController {
         return settings;
     }
 
+    // Applies a profile's click settings to the existing controls.
     private void loadClickSettings(ClickSettings settings) {
         if (settings == null) return;
         switch (settings.getTimingMode()) {
@@ -459,6 +559,7 @@ public class MainController {
         ySpinner.getValueFactory().setValue(settings.getY());
     }
 
+    // Rejects reversed random timing ranges before starting.
     private boolean validateSettings(ClickSettings settings) {
         if (settings.getTimingMode() == ClickSettings.TimingMode.RANDOM_CPS &&
                 settings.getMinCps() > settings.getMaxCps()) {
@@ -473,6 +574,7 @@ public class MainController {
         return true;
     }
 
+    // Opens the screen-position picker and supports cancellation with Escape.
     @FXML
     private void handlePickFromScreen() {
         if (pickingPosition || clickerRunning) return;
@@ -522,6 +624,7 @@ public class MainController {
         pickerStage.requestFocus();
     }
 
+    // Calculates the combined bounds of all connected displays.
     private Rectangle2D getVirtualScreenBounds() {
         double minX = Double.MAX_VALUE, minY = Double.MAX_VALUE;
         double maxX = -Double.MAX_VALUE, maxY = -Double.MAX_VALUE;
@@ -536,10 +639,15 @@ public class MainController {
     }
 
     /* NAVIGATION */
+    // Opens the clicker page.
     @FXML private void handleShowClicker() { showPage(clickerPage); }
+    // Opens the profiles page.
     @FXML private void handleShowProfiles() { showPage(profilesPage); }
+    // Opens the settings page.
     @FXML private void handleShowSettings() { showPage(settingsPage); }
+    // Opens the about page.
     @FXML private void handleShowAbout() { showPage(aboutPage); }
+    // Updates page visibility and the selected navigation button.
     private void showPage(VBox selectedPage) {
         setPage(clickerPage, clickerNavButton, selectedPage);
         setPage(profilesPage, profilesNavButton, selectedPage);
@@ -547,15 +655,16 @@ public class MainController {
         setPage(aboutPage, aboutNavButton, selectedPage);
     }
 
+    // Applies visibility and navigation styling for one page.
     private void setPage(VBox page, Button button, VBox selectedPage) {
         boolean active = page == selectedPage;
-        page.setVisible(active);
-        page.setManaged(active);
+        setVisibleAndManaged(page, active);
         button.getStyleClass().removeAll("nav-active", "nav-button");
         button.getStyleClass().add(active ? "nav-active" : "nav-button");
     }
 
     /* PROFILES */
+    // Loads saved application data and selects the saved or default profile.
     private void initializeProfiles() {
         AppData data;
         try {
@@ -608,16 +717,18 @@ public class MainController {
         updateClickerSummary();
     }
 
+    // Creates a profile from the current click inputs.
     @FXML
     private void handleNewProfile() {
         Profile profile = new Profile("New Profile " + nextProfileNumber++, "", false, readClickSettings());
         profiles.add(profile);
         selectProfile(profile);
-        saveProfiles();
+        saveApplicationData();
         updateClickerSummary();
         showPage(profilesPage);
     }
 
+    // Loads a profile into the controls and persists the selection.
     private void selectProfile(Profile profile) {
         selectedProfile = profile;
         profileNameField.setText(profile.getName());
@@ -626,9 +737,10 @@ public class MainController {
         loadClickSettings(profile.getSettings());
         updateProfileDetails(profile);
         refreshProfileList();
-        saveProfiles();
+        saveApplicationData();
     }
 
+    // Cycles through profiles in their existing list order.
     private void selectNextProfile() {
         if (profiles.isEmpty()) return;
         int currentIndex = profiles.indexOf(selectedProfile);
@@ -636,6 +748,7 @@ public class MainController {
         selectProfile(profiles.get(nextIndex));
     }
 
+    // Builds the compact summary displayed on a profile card.
     private String getProfileCardSummary(ClickSettings settings) {
         String timing = switch (settings.getTimingMode()) {
             case FIXED_CPS -> "Fixed CPS";
@@ -648,6 +761,7 @@ public class MainController {
         return timing + "  •  " + clickType + "  •  " + target;
     }
 
+    // Formats a profile's timing settings for its details panel.
     private String getTimingSummary(ClickSettings settings) {
         return switch (settings.getTimingMode()) {
             case FIXED_CPS -> "Fixed  •  " + settings.getFixedValue() + " CPS";
@@ -659,6 +773,7 @@ public class MainController {
         };
     }
 
+    // Formats a profile's mouse button, click type, and repeat settings.
     private String getBehaviorSummary(ClickSettings settings) {
         String button = switch (settings.getMouseButton()) {
             case RIGHT -> "Right";
@@ -672,12 +787,14 @@ public class MainController {
         return button + "  •  " + clickType + "  •  " + repeat;
     }
 
+    // Formats a profile's cursor or fixed-position target.
     private String getTargetSummary(ClickSettings settings) {
         if (settings.getTargetMode() == ClickSettings.TargetMode.FIXED_POSITION)
             return "Fixed Position  •  X: " + settings.getX() + "  •  Y: " + settings.getY();
         return "Follow Cursor";
     }
 
+    // Refreshes the selected profile's details labels.
     private void updateProfileDetails(Profile profile) {
         if (profile == null || profile.getSettings() == null) return;
         profileTimingValue.setText(getTimingSummary(profile.getSettings()));
@@ -685,6 +802,7 @@ public class MainController {
         profileTargetValue.setText(getTargetSummary(profile.getSettings()));
     }
 
+    // Rebuilds profile cards and synchronizes the profile selector.
     private void refreshProfileList() {
         profileList.getChildren().clear();
         for (Profile profile : profiles)
@@ -695,6 +813,7 @@ public class MainController {
             profileCombo.setValue(selectedProfile.getName());
     }
 
+    // Creates a profile card with its existing styles and selection action.
     private Button createProfileCard(Profile profile) {
         FontIcon profileIcon = new FontIcon("fth-file-text");
         profileIcon.setIconSize(24);
@@ -723,16 +842,22 @@ public class MainController {
         return card;
     }
 
-    private void saveProfiles() {
+    // Saves profiles, the current selection, hotkeys, and application settings.
+    private void saveApplicationData() {
         try {
             String selectedName = selectedProfile != null ? selectedProfile.getName() : null;
-            persistenceService.saveData(new AppData(profiles, selectedName, startHotkeyCode, nextProfileHotkeyCode, savedThemeAccent, savedUiScale, savedAlwaysOnTop, savedLaunchAtStartup, savedMinimizeToTray));
+            AppData data = new AppData(
+                    profiles, selectedName, startHotkeyCode, nextProfileHotkeyCode,
+                    savedThemeAccent, savedUiScale, savedAlwaysOnTop,
+                    savedLaunchAtStartup, savedMinimizeToTray);
+            persistenceService.saveData(data);
         } catch (Exception e) {
             showAlert("Save error", "Unable to save application data.");
             System.err.println("Unable to save application data: " + e.getMessage());
         }
     }
 
+    // Validates the name and saves edits to the selected profile.
     @FXML
     private void handleSaveProfile() {
         if (selectedProfile == null) return;
@@ -750,9 +875,10 @@ public class MainController {
         selectedProfile.setSettings(readClickSettings());
         updateProfileDetails(selectedProfile);
         refreshProfileList();
-        saveProfiles();
+        saveApplicationData();
     }
 
+    // Creates an independently editable copy with an available name.
     @FXML
     private void handleDuplicateProfile() {
         if (selectedProfile == null) return;
@@ -769,23 +895,26 @@ public class MainController {
         );
         profiles.add(copy);
         selectProfile(copy);
-        saveProfiles();
+        saveApplicationData();
     }
 
+    // Checks names without case sensitivity, optionally excluding one profile.
     private boolean profileNameExists(String name, Profile excluded) {
         return profiles.stream().anyMatch(profile ->
                 profile != excluded && profile.getName().equalsIgnoreCase(name));
     }
 
+    // Makes the selected profile the only default profile.
     @FXML
     private void handleSetDefault() {
         if (selectedProfile == null) return;
         profiles.forEach(profile -> profile.setDefault(false));
         selectedProfile.setDefault(true);
         selectProfile(selectedProfile);
-        saveProfiles();
+        saveApplicationData();
     }
 
+    // Deletes a non-default profile and selects the default or first profile.
     @FXML
     private void handleDeleteProfile() {
         if (selectedProfile == null || selectedProfile.isDefault()) return;
@@ -794,10 +923,12 @@ public class MainController {
                 .filter(Profile::isDefault)
                 .findFirst()
                 .orElse(profiles.get(0)));
-        saveProfiles();
+        saveApplicationData();
     }
 
+    // Opens the clicker page to edit the selected configuration.
     @FXML private void handleEditConfiguration() { showPage(clickerPage); }
+    // Displays the existing warning dialog with a title and message.
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING, message, ButtonType.OK);
         alert.setTitle(title);
@@ -805,9 +936,20 @@ public class MainController {
         alert.showAndWait();
     }
 
-    
+
     /* SETTINGS */
+    // Restores settings and registers their existing change handlers.
     private void initializeSettings() {
+        initializeGeneralSettings();
+        initializeHotkeyFields();
+        initializeAccentSettings();
+        initializeStartupSetting();
+        initializeTraySetting();
+        initializeAlwaysOnTopSetting();
+    }
+
+    // Restores the existing general options and UI-scale listener.
+    private void initializeGeneralSettings() {
         setupCombo(languageCombo, "English", "English");
         setupCombo(uiScaleCombo, savedUiScale, "75%", "100% (Default)", "Fill Window");
 
@@ -820,21 +962,18 @@ public class MainController {
             if (!"Fill Window".equals(value))
                 lastNormalUiScale = value;
 
-            if ("75%".equals(value))
-                applyUiScale(0.75, false);
-            else if ("Fill Window".equals(value))
-                applyUiScale(1.0, true);
-            else
-                applyUiScale(1.0, false);
+            applySelectedUiScale(value);
 
             windowSnapped = false;
             savedUiScale = value;
-            saveProfiles();
+            saveApplicationData();
         });
 
         setupCombo(updateCombo, "Automatically", "Automatically", "Manually", "Never");
+    }
 
-        // Global hotkeys
+    // Displays restored hotkeys and connects their capture actions.
+    private void initializeHotkeyFields() {
         startHotkeyField.setText(NativeKeyEvent.getKeyText(startHotkeyCode));
         startHotkeyField.setEditable(false);
         nextProfileHotkeyField.setText(NativeKeyEvent.getKeyText(nextProfileHotkeyCode));
@@ -842,40 +981,23 @@ public class MainController {
 
         startHotkeyField.setOnMouseClicked(event -> beginStartHotkeyCapture());
         nextProfileHotkeyField.setOnMouseClicked(event -> beginNextProfileHotkeyCapture());
+    }
 
-        // Theme accents
-        setupTab(greenAccent, () -> {
-            selectAccent("green");
-            saveProfiles();
-        });
-        setupTab(blueAccent, () -> {
-            selectAccent("blue");
-            saveProfiles();
-        });
-        setupTab(purpleAccent, () -> {
-            selectAccent("purple");
-            saveProfiles();
-        });
-        setupTab(pinkAccent, () -> {
-            selectAccent("pink");
-            saveProfiles();
-        });
-        setupTab(orangeAccent, () -> {
-            selectAccent("orange");
-            saveProfiles();
-        });
-        setupTab(yellowAccent, () -> {
-            selectAccent("yellow");
-            saveProfiles();
-        });
-        setupTab(cyanAccent, () -> {
-            selectAccent("cyan");
-            saveProfiles();
-        });
+    // Connects the existing accent toggles and restores the saved accent.
+    private void initializeAccentSettings() {
+        setupAccentButton(greenAccent, "green");
+        setupAccentButton(blueAccent, "blue");
+        setupAccentButton(purpleAccent, "purple");
+        setupAccentButton(pinkAccent, "pink");
+        setupAccentButton(orangeAccent, "orange");
+        setupAccentButton(yellowAccent, "yellow");
+        setupAccentButton(cyanAccent, "cyan");
 
         selectAccent(savedThemeAccent);
+    }
 
-        // Launch at startup
+    // Connects the startup toggle while preserving its rollback on registration failure.
+    private void initializeStartupSetting() {
         launchStartupCheck.setSelected(savedLaunchAtStartup);
         launchStartupCheck.setOnAction(event -> {
             boolean enabled = launchStartupCheck.isSelected();
@@ -883,14 +1005,16 @@ public class MainController {
             try {
                 startupService.setLaunchAtStartup(enabled);
                 savedLaunchAtStartup = enabled;
-                saveProfiles();
+                saveApplicationData();
             } catch (Exception e) {
                 launchStartupCheck.setSelected(savedLaunchAtStartup);
                 showAlert("Startup error", e.getMessage());
             }
         });
+    }
 
-        // Minimize to tray
+    // Connects the tray toggle and retains its existing installation-failure behavior.
+    private void initializeTraySetting() {
         minimizeToTrayCheck.setSelected(savedMinimizeToTray);
         minimizeToTrayCheck.setOnAction(event -> {
             boolean enabled = minimizeToTrayCheck.isSelected();
@@ -902,10 +1026,12 @@ public class MainController {
                 trayService.remove();
 
             savedMinimizeToTray = enabled;
-            saveProfiles();
+            saveApplicationData();
         });
+    }
 
-        // Always on top
+    // Restores the always-on-top toggle before registering its change listener.
+    private void initializeAlwaysOnTopSetting() {
         alwaysOnTopCheck.setSelected(savedAlwaysOnTop);
         alwaysOnTopCheck.selectedProperty().addListener((obs, oldValue, enabled) -> {
             Stage stage = (Stage) alwaysOnTopCheck.getScene().getWindow();
@@ -914,10 +1040,19 @@ public class MainController {
                 stage.setAlwaysOnTop(enabled);
 
             savedAlwaysOnTop = enabled;
-            saveProfiles();
+            saveApplicationData();
         });
     }
 
+    // Applies and persists an accent when its existing toggle is selected.
+    private void setupAccentButton(ToggleButton button, String accent) {
+        setupTab(button, () -> {
+            selectAccent(accent);
+            saveApplicationData();
+        });
+    }
+
+    // Synchronizes accent toggles and applies the selected color.
     private void selectAccent(String accent) {
         savedThemeAccent = accent;
         greenAccent.setSelected("green".equals(accent));
@@ -930,9 +1065,13 @@ public class MainController {
         applyAccent(accent);
     }
 
+    // Applies the saved scale after the application window is shown.
     public void applyInitialUiScale() {
-        String value = uiScaleCombo.getValue();
+        applySelectedUiScale(uiScaleCombo.getValue());
+    }
 
+    // Maps the existing scale options to their window dimensions.
+    private void applySelectedUiScale(String value) {
         if ("75%".equals(value))
             applyUiScale(0.75, false);
         else if ("Fill Window".equals(value))
@@ -941,12 +1080,14 @@ public class MainController {
             applyUiScale(1.0, false);
     }
 
+    // Applies the saved always-on-top setting to the window.
     public void applyInitialAlwaysOnTop() {
         Stage stage = (Stage) alwaysOnTopCheck.getScene().getWindow();
         stage.setAlwaysOnTop(savedAlwaysOnTop);
     }
 
 
+    // Installs tray actions that dispatch back to the JavaFX thread.
     private boolean installTray() {
         try {
             trayService.install(
@@ -960,6 +1101,7 @@ public class MainController {
         }
     }
 
+    // Shows and focuses the application window.
     private void restoreFromTray() {
         Stage stage = (Stage) appRoot.getScene().getWindow();
         stage.show();
@@ -968,6 +1110,7 @@ public class MainController {
         stage.requestFocus();
     }
 
+    // Stops background services and removes the tray icon before exiting.
     private void exitApplication() {
         if (autoClickService != null)
             autoClickService.stop();
@@ -979,6 +1122,7 @@ public class MainController {
         Platform.exit();
     }
 
+    // Applies the existing content transform and window dimensions.
     private void applyUiScale(double scale, boolean fullscreen) {
         Stage stage = (Stage) appRoot.getScene().getWindow();
         Parent content = appRoot.getParent();
@@ -1002,6 +1146,7 @@ public class MainController {
         uiScale = scale;
     }
 
+    // Checks whether a mouse event targets a title-bar button or its children.
     private boolean isWindowButton(MouseEvent event) {
         if (!(event.getTarget() instanceof Node node))
             return false;
@@ -1016,6 +1161,7 @@ public class MainController {
         return false;
     }
 
+    // Applies the existing color associated with an accent name.
     private void applyAccent(String accent) {
         String color = switch (accent) {
             case "blue" -> "#3688f5";
@@ -1029,10 +1175,12 @@ public class MainController {
         appRoot.setStyle("-fx-accent: " + color + ";");
     }
 
+    // Checks the existing native key-code range used for function keys.
     private boolean isFunctionKey(int keyCode) {
         return keyCode >= NativeKeyEvent.VC_F1 && keyCode <= NativeKeyEvent.VC_F12;
     }
 
+    // Captures and validates a replacement start/stop hotkey.
     private void beginStartHotkeyCapture() {
         if (globalHotkeyService == null) return;
         previousStartHotkey = startHotkeyField.getText();
@@ -1059,10 +1207,11 @@ public class MainController {
             startHotkeyCode = keyCode;
             startHotkeyField.setText(keyName);
             startHotkeyBadge.setText(keyName);
-            saveProfiles();
+            saveApplicationData();
         }));
     }
 
+    // Captures and validates a replacement next-profile hotkey.
     private void beginNextProfileHotkeyCapture() {
         if (globalHotkeyService == null) return;
         previousNextProfileHotkey = nextProfileHotkeyField.getText();
@@ -1088,11 +1237,12 @@ public class MainController {
             globalHotkeyService.setNextProfileHotkeyCode(keyCode);
             nextProfileHotkeyCode = keyCode;
             nextProfileHotkeyField.setText(keyName);
-            saveProfiles();
+            saveApplicationData();
         }));
     }
 
     /* APPLICATION CONTROLS */
+    // Stops the active run or validates and starts an independent click configuration.
     @FXML
     private void handleStart() {
         if (autoClickService == null) {
@@ -1113,6 +1263,7 @@ public class MainController {
         }));
     }
 
+    // Updates the start button and status indicators for the engine state.
     private void updateClickerUi(boolean running) {
         if (running) {
             startButtonText.setText("Stop Clicking");
@@ -1136,6 +1287,7 @@ public class MainController {
         }
     }
 
+    // Starts the existing repeating animation on the status dot.
     private void startStatusPulse() {
         stopStatusPulse();
         statusPulse = new FadeTransition(Duration.millis(700), statusDot);
@@ -1146,6 +1298,7 @@ public class MainController {
         statusPulse.play();
     }
 
+    // Stops the status animation and restores full opacity.
     private void stopStatusPulse() {
         if (statusPulse != null) {
             statusPulse.stop();
@@ -1154,11 +1307,13 @@ public class MainController {
         statusDot.setOpacity(1.0);
     }
 
+    // Minimizes the application window.
     @FXML
     private void handleMinimize(ActionEvent event) {
         getStage(event).setIconified(true);
     }
 
+    // Toggles between the saved normal scale and Fill Window.
     @FXML
     private void handleMaximize(ActionEvent event) {
         if ("Fill Window".equals(uiScaleCombo.getValue())) {
@@ -1173,6 +1328,7 @@ public class MainController {
         }
     }
 
+    // Hides to the tray when enabled, or exits the application.
     public void handleWindowCloseRequest() {
         if (savedMinimizeToTray && trayService.isInstalled()) {
             Stage stage = (Stage) appRoot.getScene().getWindow();
@@ -1182,19 +1338,22 @@ public class MainController {
         }
     }
 
+    // Routes the title-bar close action through the normal close behavior.
     @FXML
     private void handleClose(ActionEvent event) {
         handleWindowCloseRequest();
     }
 
+    // Restores the saved tray setting and handles installation failure.
     public void initializeTray() {
         if (savedMinimizeToTray && !installTray()) {
             savedMinimizeToTray = false;
             minimizeToTrayCheck.setSelected(false);
-            saveProfiles();
+            saveApplicationData();
         }
     }
 
+    // Records drag offsets and restores a snapped window before dragging.
     @FXML
     private void handleWindowPressed(MouseEvent event) {
         if (isWindowButton(event)) return;
@@ -1217,6 +1376,7 @@ public class MainController {
         yOffset = event.getSceneY();
     }
 
+    // Moves the window and applies the existing top-edge snap behavior.
     @FXML
     private void handleWindowDragged(MouseEvent event) {
         if (isWindowButton(event)) return;
@@ -1238,7 +1398,8 @@ public class MainController {
         stage.setX(newX);
         stage.setY(newY);
     }
-    
+
+    // Returns the window that owns an action event's source.
     private Stage getStage(ActionEvent event) {
         return (Stage) ((Node) event.getSource()).getScene().getWindow();
     }

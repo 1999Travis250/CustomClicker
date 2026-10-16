@@ -15,15 +15,18 @@ public class AutoClickService {
 
     private Thread clickThread;
 
+    // Creates the mouse robot with no additional automatic delay.
     public AutoClickService() throws AWTException {
         robot = new Robot();
         robot.setAutoDelay(0);
     }
 
+    // Reports the engine running flag.
     public boolean isRunning() {
         return running.get();
     }
 
+    // Starts a daemon click worker and invokes the callback when it finishes.
     public void start(ClickSettings settings, Runnable onStopped) {
         if (running.get()) return;
 
@@ -45,6 +48,7 @@ public class AutoClickService {
         clickThread.start();
     }
 
+    // Requests a stop and interrupts any pending click delay.
     public void stop() {
         running.set(false);
 
@@ -52,6 +56,7 @@ public class AutoClickService {
             clickThread.interrupt();
     }
 
+    // Runs click cycles with the existing startup delay and repeat accounting.
     private void runClickLoop(ClickSettings settings) {
         long completedClicks = 0;
 
@@ -92,6 +97,7 @@ public class AutoClickService {
         }
     }
 
+    // Moves to the configured target and performs a single or double click.
     private void performClick(ClickSettings settings) {
         if (settings.getTargetMode() == ClickSettings.TargetMode.FIXED_POSITION)
             robot.mouseMove(settings.getX(), settings.getY());
@@ -112,11 +118,13 @@ public class AutoClickService {
         }
     }
 
+    // Presses and releases the configured mouse button.
     private void click(int buttonMask) {
         robot.mousePress(buttonMask);
         robot.mouseRelease(buttonMask);
     }
 
+    // Maps a configured mouse button to its AWT input mask.
     private int getButtonMask(ClickSettings.MouseButton button) {
         return switch (button) {
             case RIGHT -> InputEvent.BUTTON3_DOWN_MASK;
@@ -125,6 +133,7 @@ public class AutoClickService {
         };
     }
 
+    // Calculates the next delay using the existing timing rules and random bounds.
     private long calculateDelay(ClickSettings settings) {
         return switch (settings.getTimingMode()) {
 
@@ -151,6 +160,7 @@ public class AutoClickService {
         };
     }
 
+    // Converts CPS to milliseconds with the existing minimum delay and fallback.
     private long cpsToDelay(double cps) {
         if (cps <= 0) return 1000;
 

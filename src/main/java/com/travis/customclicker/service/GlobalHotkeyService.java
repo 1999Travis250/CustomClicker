@@ -21,6 +21,7 @@ public class GlobalHotkeyService implements NativeKeyListener {
     private boolean capturingKey = false;
     private Consumer<Integer> captureAction;
 
+    // Registers the native listener and the two hotkey actions.
     public void start(Runnable hotkeyAction, Runnable nextProfileAction) throws NativeHookException {
         this.hotkeyAction = hotkeyAction;
         this.nextProfileAction = nextProfileAction;
@@ -31,6 +32,7 @@ public class GlobalHotkeyService implements NativeKeyListener {
         GlobalScreen.addNativeKeyListener(this);
     }
 
+    // Removes the listener and unregisters the native hook.
     public void stop() {
         GlobalScreen.removeNativeKeyListener(this);
 
@@ -42,24 +44,29 @@ public class GlobalHotkeyService implements NativeKeyListener {
         }
     }
 
+    // Updates the start/stop assignment and clears its held-key state.
     public void setHotkeyCode(int hotkeyCode) {
         this.hotkeyCode = hotkeyCode;
         hotkeyPressed = false;
     }
 
+    // Returns the start/stop assignment.
     public int getHotkeyCode() {
         return hotkeyCode;
     }
 
+    // Updates the profile-cycle assignment and clears its held-key state.
     public void setNextProfileHotkeyCode(int nextProfileHotkeyCode) {
         this.nextProfileHotkeyCode = nextProfileHotkeyCode;
         nextProfileHotkeyPressed = false;
     }
 
+    // Returns the profile-cycle assignment.
     public int getNextProfileHotkeyCode() {
         return nextProfileHotkeyCode;
     }
 
+    // Captures the next key press instead of dispatching a hotkey action.
     public void captureNextKey(Consumer<Integer> captureAction) {
         this.captureAction = captureAction;
         capturingKey = true;
@@ -68,15 +75,18 @@ public class GlobalHotkeyService implements NativeKeyListener {
         nextProfileHotkeyPressed = false;
     }
 
+    // Clears the pending key-capture callback.
     public void cancelKeyCapture() {
         capturingKey = false;
         captureAction = null;
     }
 
+    // Reports whether the next key press will be captured.
     public boolean isCapturingKey() {
         return capturingKey;
     }
 
+    // Dispatches capture or hotkey actions while suppressing held-key repeats.
     @Override
     public void nativeKeyPressed(NativeKeyEvent event) {
         if (capturingKey) {
@@ -108,6 +118,7 @@ public class GlobalHotkeyService implements NativeKeyListener {
         }
     }
 
+    // Clears held-key state for the released hotkey.
     @Override
     public void nativeKeyReleased(NativeKeyEvent event) {
         if (event.getKeyCode() == hotkeyCode)
@@ -117,6 +128,7 @@ public class GlobalHotkeyService implements NativeKeyListener {
             nextProfileHotkeyPressed = false;
     }
 
+    // Ignores typed events because hotkeys use press and release events.
     @Override
     public void nativeKeyTyped(NativeKeyEvent event) {
     }
