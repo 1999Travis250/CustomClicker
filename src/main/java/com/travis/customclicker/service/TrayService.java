@@ -2,17 +2,18 @@
 package com.travis.customclicker.service;
 
 import java.awt.AWTException;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
-import java.awt.RenderingHints;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
+import java.awt.image.BaseMultiResolutionImage;
+import java.io.IOException;
+import java.net.URL;
+
+import javax.imageio.ImageIO;
 
 public class TrayService {
 
@@ -53,23 +54,28 @@ public class TrayService {
         trayIcon = icon;
     }
 
-    // Draws the existing tray artwork and always releases its graphics context.
-    private BufferedImage createTrayImage() {
-        BufferedImage image = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D graphics = image.createGraphics();
+    // Uses separately rendered sizes to keep the shared artwork sharp at different Windows scales.
+    private Image createTrayImage() throws AWTException {
+        int[] sizes = {16, 20, 24, 32, 40, 48, 64, 128, 256};
+        Image[] images = new Image[sizes.length];
         try {
-            graphics.setRenderingHint(
-                    RenderingHints.KEY_ANTIALIASING,
-                    RenderingHints.VALUE_ANTIALIAS_ON);
-            graphics.setColor(new Color(25, 185, 115));
-            graphics.fillRoundRect(0, 0, 32, 32, 8, 8);
-            graphics.setColor(Color.WHITE);
-            graphics.setFont(new Font("SansSerif", Font.BOLD, 22));
-            graphics.drawString("C", 7, 24);
-        } finally {
-            graphics.dispose();
+            for (int index = 0; index < sizes.length; index++) {
+                String path = "/icons/customclicker-" + sizes[index] + ".png";
+                URL resource = TrayService.class.getResource(path);
+                if (resource == null) {
+                    throw new IOException("Missing icon: " + path);
+                }
+                images[index] = ImageIO.read(resource);
+                if (images[index] == null) {
+                    throw new IOException("Unable to decode icon: " + path);
+                }
+            }
+        } catch (IOException exception) {
+            AWTException trayException = new AWTException("Unable to load the system tray icon.");
+            trayException.initCause(exception);
+            throw trayException;
         }
-        return image;
+        return new BaseMultiResolutionImage(images);
     }
 
     // Reports whether this service has installed a tray icon.
