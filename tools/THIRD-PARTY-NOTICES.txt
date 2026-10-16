@@ -1,0 +1,39 @@
+CustomClicker third-party components
+
+The Windows distribution includes these unmodified dependencies. License and
+attribution documents are provided in this directory, its packaging-licenses
+subdirectory, and the bundled runtime/legal directory. Library JARs remain
+separate in the app directory.
+
+Eclipse Temurin OpenJDK 25
+  Project and source releases: https://github.com/adoptium/temurin25-binaries/releases
+  Build source: https://github.com/adoptium/temurin-build
+  Runtime licenses and notices: runtime/legal and Temurin-NOTICE.txt
+
+OpenJFX 25 (base, graphics, controls, FXML)
+  Source: https://github.com/openjdk/jfx/tree/jfx25
+  GPL version 2 with Classpath Exception; see OpenJFX-LICENSE.txt,
+  OpenJFX-ADDITIONAL_LICENSE_INFO.txt, OpenJFX-ASSEMBLY_EXCEPTION.txt,
+  and the included component-specific notices.
+
+Ikonli 12.4.0 (core, JavaFX, Feather pack)
+  Source: https://github.com/kordamp/ikonli
+  Apache License 2.0; original JAR license documents are included.
+  Feather icon artwork: https://github.com/feathericons/feather
+  MIT license; see Feather-LICENSE.txt.
+
+JNativeHook 2.2.2
+  Project and source: https://github.com/kwhat/jnativehook
+  Source release: https://github.com/kwhat/jnativehook/releases/tag/2.2.2
+  Distributed under the upstream GPL/LGPL version 3 terms.
+  See GPL-3.0.txt and LGPL-3.0.txt. The library remains a separate, replaceable JAR.
+
+Gson 2.13.2
+  Source: https://github.com/google/gson/tree/gson-parent-2.13.2
+  Apache License 2.0; see Apache-2.0.txt.
+
+Error Prone annotations 2.41.0
+  Source: https://github.com/google/error-prone/tree/v2.41.0
+  Apache License 2.0; see Apache-2.0.txt.
+
+These notices do not grant a license to CustomClicker's own source code.
