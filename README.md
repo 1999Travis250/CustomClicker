@@ -70,6 +70,8 @@ In **Settings**, you can choose an accent color, switch between **75%**, **100%*
 
 With **Minimize to tray** enabled, closing the window keeps CustomClicker running in the background. Double-click its tray icon or choose **Open CustomClicker** to bring it back. Choose **Exit CustomClicker** from the tray menu to fully close it and stop clicking.
 
+Only one copy runs per Windows user. Opening the desktop shortcut again brings the existing window back, including when it is hidden in the tray.
+
 Use **Check for Updates Now** in Settings to compare your version with the latest GitHub release. If an update is available, you can open its download page. **Automatically** checks once at launch and only notifies you when a newer version is available; **Manually** and **Never** skip the launch check. You can still use the button with either option. Your update preference is saved. Updates are downloaded and installed manually.
 
 Update checking is available starting with **v1.1.0**. If you have **v1.0.0**, download
