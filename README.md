@@ -30,7 +30,7 @@ The app runs offline and stores profiles and settings locally. There's no accoun
 CustomClicker is built for **Windows 10 and Windows 11, 64-bit (x64)**.
 
 1. Open the [GitHub Releases page](https://github.com/1999Travis250/CustomClicker/releases).
-2. Under the release's **Assets**, download **CustomClicker-1.0.0.exe**. The source-code ZIP isn't the installer.
+2. Under the latest release's **Assets**, download the **CustomClicker installer EXE**. The source-code ZIP isn't the installer.
 3. Run the installer and follow the setup steps.
 4. Open **CustomClicker** from the desktop shortcut or Start Menu.
 
@@ -71,6 +71,11 @@ In **Settings**, you can choose an accent color, switch between **75%**, **100%*
 With **Minimize to tray** enabled, closing the window keeps CustomClicker running in the background. Double-click its tray icon or choose **Open CustomClicker** to bring it back. Choose **Exit CustomClicker** from the tray menu to fully close it and stop clicking.
 
 Use **Check for Updates Now** in Settings to compare your version with the latest GitHub release. If an update is available, you can open its download page. **Automatically** checks once at launch and only notifies you when a newer version is available; **Manually** and **Never** skip the launch check. You can still use the button with either option. Your update preference is saved. Updates are downloaded and installed manually.
+
+Update checking is available starting with **v1.1.0**. If you have **v1.0.0**, download
+the latest installer from GitHub Releases and run it to upgrade. Close CustomClicker
+first, including its tray icon, and use the same installation directory. Your saved
+profiles and settings stay in their existing application data folder.
 
 ## More screenshots
 

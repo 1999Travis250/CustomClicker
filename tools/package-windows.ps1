@@ -118,7 +118,7 @@ try {
             --add-modules javafx.controls,javafx.fxml,jdk.unsupported `
             --enable-native-access=javafx.graphics,ALL-UNNAMED `
             -classpath ($verificationDirectory + ';' + (Join-Path $packagedImage 'app\*')) `
-            VerifyPackage (Join-Path $verificationDirectory 'packaged-preview.png')
+            VerifyPackage (Join-Path $verificationDirectory 'packaged-preview.png') $version
         if ($LASTEXITCODE -ne 0) { throw 'Packaged runtime verification failed.' }
     } finally { $env:APPDATA = $previousAppData }
 

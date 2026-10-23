@@ -3,6 +3,7 @@ import com.travis.customclicker.App;
 import com.travis.customclicker.controller.MainController;
 import com.travis.customclicker.service.GlobalHotkeyService;
 import com.travis.customclicker.service.TrayService;
+import com.travis.customclicker.service.UpdateService;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
@@ -27,6 +28,12 @@ public final class VerifyPackage {
 
     // Run with APPDATA pointing to a disposable directory, never the user's real settings.
     public static void main(String[] args) throws Exception {
+        if (ModuleLayer.boot().findModule("java.net.http").isEmpty()) {
+            throw new IllegalStateException("Packaged HTTP client module is missing.");
+        }
+        if (!UpdateService.currentVersion().equals(args[1])) {
+            throw new IllegalStateException("Packaged application version does not match the installer.");
+        }
         CountDownLatch finished = new CountDownLatch(1);
         AtomicReference<Throwable> failure = new AtomicReference<>();
         Platform.startup(() -> {
