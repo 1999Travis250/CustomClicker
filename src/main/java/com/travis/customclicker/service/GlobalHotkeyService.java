@@ -46,6 +46,8 @@ public class GlobalHotkeyService implements NativeKeyListener {
 
     // Updates the start/stop assignment and clears its held-key state.
     public void setHotkeyCode(int hotkeyCode) {
+        if (!isFunctionKey(hotkeyCode))
+            throw new IllegalArgumentException("Hotkeys must be F1-F12.");
         this.hotkeyCode = hotkeyCode;
         hotkeyPressed = false;
     }
@@ -57,6 +59,8 @@ public class GlobalHotkeyService implements NativeKeyListener {
 
     // Updates the profile-cycle assignment and clears its held-key state.
     public void setNextProfileHotkeyCode(int nextProfileHotkeyCode) {
+        if (!isFunctionKey(nextProfileHotkeyCode))
+            throw new IllegalArgumentException("Hotkeys must be F1-F12.");
         this.nextProfileHotkeyCode = nextProfileHotkeyCode;
         nextProfileHotkeyPressed = false;
     }
@@ -64,6 +68,17 @@ public class GlobalHotkeyService implements NativeKeyListener {
     // Returns the profile-cycle assignment.
     public int getNextProfileHotkeyCode() {
         return nextProfileHotkeyCode;
+    }
+
+    // Native function-key codes are not contiguous; the gaps include other keys.
+    public static boolean isFunctionKey(int keyCode) {
+        return switch (keyCode) {
+            case NativeKeyEvent.VC_F1, NativeKeyEvent.VC_F2, NativeKeyEvent.VC_F3,
+                 NativeKeyEvent.VC_F4, NativeKeyEvent.VC_F5, NativeKeyEvent.VC_F6,
+                 NativeKeyEvent.VC_F7, NativeKeyEvent.VC_F8, NativeKeyEvent.VC_F9,
+                 NativeKeyEvent.VC_F10, NativeKeyEvent.VC_F11, NativeKeyEvent.VC_F12 -> true;
+            default -> false;
+        };
     }
 
     // Captures the next key press instead of dispatching a hotkey action.

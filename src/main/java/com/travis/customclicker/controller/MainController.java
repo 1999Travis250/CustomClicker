@@ -673,10 +673,15 @@ public class MainController {
             System.err.println("Unable to load app data: " + e.getMessage());
             data = new AppData();
         }
-        if (data.getStartHotkeyCode() != null)
+        if (data.getStartHotkeyCode() != null
+                && GlobalHotkeyService.isFunctionKey(data.getStartHotkeyCode()))
             startHotkeyCode = data.getStartHotkeyCode();
-        if (data.getNextProfileHotkeyCode() != null)
+        if (data.getNextProfileHotkeyCode() != null
+                && GlobalHotkeyService.isFunctionKey(data.getNextProfileHotkeyCode()))
             nextProfileHotkeyCode = data.getNextProfileHotkeyCode();
+        if (nextProfileHotkeyCode == startHotkeyCode)
+            nextProfileHotkeyCode = startHotkeyCode == NativeKeyEvent.VC_F7
+                    ? NativeKeyEvent.VC_F6 : NativeKeyEvent.VC_F7;
         if (data.getThemeAccent() != null)
             savedThemeAccent = data.getThemeAccent();
         if (data.getUiScale() != null)
@@ -1175,11 +1180,6 @@ public class MainController {
         appRoot.setStyle("-fx-accent: " + color + ";");
     }
 
-    // Checks the existing native key-code range used for function keys.
-    private boolean isFunctionKey(int keyCode) {
-        return keyCode >= NativeKeyEvent.VC_F1 && keyCode <= NativeKeyEvent.VC_F12;
-    }
-
     // Captures and validates a replacement start/stop hotkey.
     private void beginStartHotkeyCapture() {
         if (globalHotkeyService == null) return;
@@ -1191,7 +1191,7 @@ public class MainController {
                 startHotkeyField.setText(previousStartHotkey);
                 return;
             }
-            if (!isFunctionKey(keyCode)) {
+            if (!GlobalHotkeyService.isFunctionKey(keyCode)) {
                 startHotkeyField.setText(previousStartHotkey);
                 showAlert("Invalid hotkey", "Please choose a function key between F1 and F12.");
                 return;
@@ -1222,7 +1222,7 @@ public class MainController {
                 nextProfileHotkeyField.setText(previousNextProfileHotkey);
                 return;
             }
-            if (!isFunctionKey(keyCode)) {
+            if (!GlobalHotkeyService.isFunctionKey(keyCode)) {
                 nextProfileHotkeyField.setText(previousNextProfileHotkey);
                 showAlert("Invalid hotkey", "Please choose a function key between F1 and F12.");
                 return;
