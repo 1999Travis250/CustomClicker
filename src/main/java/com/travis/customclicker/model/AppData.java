@@ -14,6 +14,15 @@ public class AppData {
     private boolean alwaysOnTop;
     private boolean launchAtStartup;
     private boolean minimizeToTray;
+    private String updatePreference;
+
+    public String getUpdatePreference() {
+        return updatePreference;
+    }
+
+    public void setUpdatePreference(String updatePreference) {
+        this.updatePreference = updatePreference;
+    }
 
     // Keeps a no-argument constructor for JSON deserialization.
     public AppData() {

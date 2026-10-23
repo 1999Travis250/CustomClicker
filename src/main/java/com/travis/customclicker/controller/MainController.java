@@ -9,6 +9,8 @@ import com.travis.customclicker.service.GlobalHotkeyService;
 import com.travis.customclicker.service.PersistenceService;
 import com.travis.customclicker.service.TrayService;
 import com.travis.customclicker.service.WindowsStartupService;
+import com.travis.customclicker.service.UpdateService;
+import javafx.concurrent.Task;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -53,6 +55,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import java.awt.AWTException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class MainController {
 
@@ -139,6 +142,12 @@ public class MainController {
     @FXML private ComboBox<String> languageCombo;
     @FXML private ComboBox<String> uiScaleCombo;
     @FXML private ComboBox<String> updateCombo;
+    @FXML private Button checkUpdatesButton;
+    @FXML private Label versionLabel;
+    private String savedUpdatePreference = "Automatically";
+    private Consumer<String> openWebPage;
+    private boolean checkingUpdates;
+    private final UpdateService updateService = new UpdateService();
     @FXML private BorderPane appRoot;
     @FXML private ToggleButton greenAccent;
     @FXML private ToggleButton blueAccent;
@@ -689,6 +698,9 @@ public class MainController {
         savedAlwaysOnTop = data.isAlwaysOnTop();
         savedLaunchAtStartup = data.isLaunchAtStartup();
         savedMinimizeToTray = data.isMinimizeToTray();
+        if (List.of("Automatically", "Manually", "Never").contains(
+                data.getUpdatePreference() == null ? "" : data.getUpdatePreference()))
+            savedUpdatePreference = data.getUpdatePreference();
         if (data.getProfiles() != null)
             profiles.addAll(data.getProfiles());
         if (profiles.isEmpty()) {
@@ -855,6 +867,7 @@ public class MainController {
                     profiles, selectedName, startHotkeyCode, nextProfileHotkeyCode,
                     savedThemeAccent, savedUiScale, savedAlwaysOnTop,
                     savedLaunchAtStartup, savedMinimizeToTray);
+            data.setUpdatePreference(savedUpdatePreference);
             persistenceService.saveData(data);
         } catch (Exception e) {
             showAlert("Save error", "Unable to save application data.");
@@ -974,7 +987,92 @@ public class MainController {
             saveApplicationData();
         });
 
-        setupCombo(updateCombo, "Automatically", "Automatically", "Manually", "Never");
+        setupCombo(updateCombo, savedUpdatePreference, "Automatically", "Manually", "Never");
+        updateCombo.valueProperty().addListener((obs, oldValue, value) -> {
+            if (value == null) return;
+            savedUpdatePreference = value;
+            saveApplicationData();
+        });
+        versionLabel.setText("Version " + UpdateService.currentVersion());
+    }
+
+    // Called after the window is visible so update dialogs have an owner.
+    public void initializeUpdates(Consumer<String> openWebPage) {
+        this.openWebPage = openWebPage;
+        if ("Automatically".equals(savedUpdatePreference))
+            checkForUpdates(false);
+    }
+
+    @FXML
+    private void handleCheckForUpdates() {
+        checkForUpdates(true);
+    }
+
+    private void checkForUpdates(boolean manual) {
+        if (checkingUpdates) return;
+        checkingUpdates = true;
+        // Keep disabling the button from moving focus to the next control.
+        if (manual) appRoot.requestFocus();
+        checkUpdatesButton.setDisable(true);
+        checkUpdatesButton.setText("Checking...");
+        Task<UpdateService.Result> task = new Task<>() {
+            @Override
+            protected UpdateService.Result call() throws Exception {
+                return updateService.check(UpdateService.currentVersion());
+            }
+        };
+        task.setOnSucceeded(event -> {
+            finishUpdateCheck();
+            // Respect a preference changed while the startup check was running.
+            if (!manual && !"Automatically".equals(savedUpdatePreference)) return;
+            UpdateService.Result result = task.getValue();
+            if (result.status() == UpdateService.Status.AVAILABLE) {
+                ButtonType download = new ButtonType("Open Download Page");
+                Alert alert = new Alert(Alert.AlertType.INFORMATION,
+                        "CustomClicker " + result.version() + " is available. You have "
+                                + UpdateService.currentVersion() + ".", download, ButtonType.CANCEL);
+                alert.setTitle("Update available");
+                if (showUpdateDialog(alert) == download && openWebPage != null)
+                    openWebPage.accept(UpdateService.RELEASES_URL);
+            } else if (manual) {
+                String message = result.status() == UpdateService.Status.NO_RELEASE
+                        ? "No published release is available yet."
+                        : "You're up to date. You have CustomClicker " + UpdateService.currentVersion() + ".";
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+                alert.setTitle("Check for updates");
+                showUpdateDialog(alert);
+            }
+        });
+        task.setOnFailed(event -> {
+            finishUpdateCheck();
+            if (manual) {
+                Alert alert = new Alert(Alert.AlertType.WARNING,
+                        "Unable to check for updates. Check your internet connection "
+                                + "and try again.\n\n" + task.getException().getMessage(), ButtonType.OK);
+                alert.setTitle("Update check failed");
+                showUpdateDialog(alert);
+            }
+        });
+        Thread worker = new Thread(task, "update-check");
+        worker.setDaemon(true);
+        worker.start();
+    }
+
+    private void finishUpdateCheck() {
+        checkingUpdates = false;
+        checkUpdatesButton.setDisable(false);
+        checkUpdatesButton.setText("Check for Updates Now");
+    }
+
+    private ButtonType showUpdateDialog(Alert alert) {
+        alert.setHeaderText(null);
+        alert.initOwner(appRoot.getScene().getWindow());
+        try {
+            return alert.showAndWait().orElse(ButtonType.CANCEL);
+        } finally {
+            // Return focus to the background, leaving the settings controls unselected.
+            appRoot.requestFocus();
+        }
     }
 
     // Displays restored hotkeys and connects their capture actions.

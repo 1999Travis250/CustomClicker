@@ -20,6 +20,18 @@ import static org.junit.Assert.assertTrue;
 
 public class PersistenceServiceTest {
 
+    @Test
+    public void updatePreferencesSurviveRestart() throws Exception {
+        Path file = temporaryFolder.getRoot().toPath().resolve("updates.json");
+        PersistenceService service = new PersistenceService(file);
+        for (String preference : new String[]{"Automatically", "Manually", "Never"}) {
+            AppData data = new AppData();
+            data.setUpdatePreference(preference);
+            service.saveData(data);
+            assertEquals(preference, service.loadData().getUpdatePreference());
+        }
+    }
+
     private static final String SAVED_DATA = """
             {
               "profiles": [{

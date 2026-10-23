@@ -43,6 +43,7 @@ public class App extends Application {
         controller.applyInitialAlwaysOnTop();
         controller.initializeTray();
         stage.centerOnScreen();
+        controller.initializeUpdates(getHostServices()::showDocument);
     }
 
     // Supplies Windows with several resolutions of the existing application artwork.

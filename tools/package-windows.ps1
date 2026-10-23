@@ -85,7 +85,7 @@ try {
     }
 
     # Link JavaFX into the runtime and retain support needed by AWT, Gson, and native hooks.
-    $runtimeModules = 'javafx.controls,javafx.fxml,java.desktop,java.logging,java.prefs,jdk.unsupported,jdk.crypto.ec'
+    $runtimeModules = 'javafx.controls,javafx.fxml,java.desktop,java.logging,java.prefs,java.net.http,jdk.unsupported,jdk.crypto.ec'
     & (Join-Path $jdkDirectory 'bin\jlink.exe') `
         --module-path ((Join-Path $jdkDirectory 'jmods') + ';' + $modulesDirectory) `
         --add-modules $runtimeModules --strip-debug --no-header-files --no-man-pages `

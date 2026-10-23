@@ -70,7 +70,7 @@ In **Settings**, you can choose an accent color, switch between **75%**, **100%*
 
 With **Minimize to tray** enabled, closing the window keeps CustomClicker running in the background. Double-click its tray icon or choose **Open CustomClicker** to bring it back. Choose **Exit CustomClicker** from the tray menu to fully close it and stop clicking.
 
-The update controls shown in Settings aren't implemented yet. Download new versions from the Releases page.
+Use **Check for Updates Now** in Settings to compare your version with the latest GitHub release. If an update is available, you can open its download page. **Automatically** checks once at launch and only notifies you when a newer version is available; **Manually** and **Never** skip the launch check. You can still use the button with either option. Your update preference is saved. Updates are downloaded and installed manually.
 
 ## More screenshots
 

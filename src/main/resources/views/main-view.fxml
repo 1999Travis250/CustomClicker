@@ -612,8 +612,8 @@
                                     <Label text="Check for Updates" prefWidth="125" styleClass="field-label"/>
                                     <ComboBox fx:id="updateCombo" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
                                 </HBox>
-                                <Button text="Check for Updates Now" maxWidth="Infinity"
-                                    disable="true" styleClass="secondary-button"/>
+                                <Button fx:id="checkUpdatesButton" text="Check for Updates Now" maxWidth="Infinity"
+                                    onAction="#handleCheckForUpdates" styleClass="secondary-button"/>
                             </VBox>
 
                             <!-- Read-only fields that capture replacement global hotkeys. -->
@@ -707,7 +707,7 @@
                             <!-- Application name, version, and description. -->
                             <VBox spacing="7" HBox.hgrow="ALWAYS" maxWidth="Infinity">
                                 <Label text="CustomClicker" styleClass="about-app-title"/>
-                                <Label text="Version 1.0.0" styleClass="about-version"/>
+                                <Label fx:id="versionLabel" styleClass="about-version"/>
                                 <Label text="A simple, powerful, and customizable auto clicker for Windows. Built for productivity, gaming, and more."
                                     wrapText="true"
                                     minWidth="0"
