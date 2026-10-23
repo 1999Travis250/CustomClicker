@@ -32,6 +32,29 @@ Its stable upgrade UUID must remain the same for future releases of this app.
 Increment `pom.xml`'s version when making a new release. Build outputs and downloaded
 tools are ignored by Git; source changes should be committed before tagging a release.
 
+## Regenerate application icons
+
+The icons use the white `fth-mouse-pointer` glyph and `.about-app-icon` styling
+from the application, rendered with the default green accent (`#16e889`). The
+fixed green icons do not change when the application's theme changes.
+
+Run `mvn test` to make the project dependencies available locally, select JDK 25
+in `JAVA_HOME`, then run from the project directory:
+
+```powershell
+.\tools\export-app-icon.ps1
+```
+
+The exporter uses the application's CSS and icon font without launching
+CustomClicker, registering hotkeys, or accessing user settings. It generates
+`src/main/resources/icons/customclicker.ico` and matching transparent PNGs at
+16, 20, 24, 32, 40, 48, 64, 128, and 256 pixels. If JavaFX or Ikonli versions
+change in `pom.xml`, update their versions in `tools/export-app-icon.ps1` too.
+
+The packaging script uses the ICO for the executable and shortcuts; the window
+and system tray use the PNGs. Windows may cache an old pinned taskbar icon until
+the shortcut is unpinned and pinned again after installation.
+
 ## Verify before publishing
 
 Install the EXE and check launch, window/tray/shortcut icons, global hotkeys,
